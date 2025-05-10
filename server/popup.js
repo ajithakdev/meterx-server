@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.uploadSpeed !== undefined) uploadSpeedEl.textContent = data.uploadSpeed.toFixed(2);
             if (data.ping !== undefined) pingEl.textContent = data.ping.toFixed(1);
             if (data.jitter !== undefined) jitterEl.textContent = data.jitter.toFixed(1);
-            loadingIndicator.classList.remove('hidden'); // Ensure it's visible during progress
+            loadingIndicator.classList.remove('hidden');
             startButton.disabled = true;
         } else if (message.action === "testComplete") {
             const data = message.data;

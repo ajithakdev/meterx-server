@@ -1,15 +1,9 @@
-// background.js
 
-// Configuration
-// !! IMPORTANT SERVER NOTE !!
-// The current TEST_SERVER_BASE_URL and DOWNLOAD_FILE_PATH for the download test
-// (https://lavish-polite-fenugreek.glitch.me/test-file/25MB.bin) seems to be returning a 404 error.
-// Please ensure your test server is correctly configured and accessible, or update these URLs.
-// const TEST_SERVER_BASE_URL = 'http://localhost:3000'; // Use your local server!
+// const TEST_SERVER_BASE_URL = 'http://localhost:3000';
 const TEST_SERVER_BASE_URL = 'https://meterx-speedtest-server.onrender.com';
-const DOWNLOAD_FILE_MB = 1;  // Smaller file for quicker testing
+const DOWNLOAD_FILE_MB = 1;
 const DOWNLOAD_FILE_PATH = `/test-file/${DOWNLOAD_FILE_MB}MB.bin`;
-const UPLOAD_DATA_SIZE_MB = 1; // Smaller file for quicker testing
+const UPLOAD_DATA_SIZE_MB = 1;
 const UPLOAD_ENDPOINT_PATH = '/upload';
 const PING_ENDPOINT_PATH = '/ping';
 const PING_COUNT = 5;
@@ -59,7 +53,7 @@ async function fetchWithTimeout(resource, options = {}, timeout) {
     }
 }
 
-// --- Test Functions ---
+// Test Functions
 
 async function measureDownloadSpeed() {
     await sendProgress({ status: 'Fetching the bits... 📥' });
@@ -68,13 +62,12 @@ async function measureDownloadSpeed() {
     try {
         const response = await fetchWithTimeout(url, { cache: 'no-store' }, FETCH_DOWNLOAD_TIMEOUT);
         if (!response.ok) {
-             // Improved error handling with status text
             throw new Error(`Download failed: ${response.status} - ${response.statusText}`);
         }
         const data = await response.arrayBuffer();
         const endTime = performance.now();
         const durationSeconds = (endTime - startTime) / 1000;
-        if (durationSeconds === 0) throw new Error("Download too fast to measure!"); // Avoid division by zero
+        if (durationSeconds === 0) throw new Error("Download too fast to measure!");
         const bitsLoaded = data.byteLength * 8;
         const speedMbps = (bitsLoaded / durationSeconds) / (1024 * 1024);
         await sendProgress({ downloadSpeed: speedMbps, status: 'Download done! Zoom! 💨' });
@@ -82,7 +75,7 @@ async function measureDownloadSpeed() {
     } catch (error) {
         console.error('Download test error:', error);
         await sendError(`Download failed: ${error.message}`);
-        return 0;  // Return 0 on error to avoid undefined in results
+        return 0;  // Returns 0 on error to avoid undefined in results
     }
 }
 
@@ -131,10 +124,10 @@ async function measurePingAndJitter() {
             latencies.push(latency);
             totalPingTime += latency;
             await sendProgress({ status: `Pong ${i + 1}/${PING_COUNT}! (${latency.toFixed(1)}ms)` });
-            if (i < PING_COUNT -1) await new Promise(resolve => setTimeout(resolve, 200)); // Slightly longer delay
+            if (i < PING_COUNT -1) await new Promise(resolve => setTimeout(resolve, 200));
         } catch (error) {
             console.error(`Ping ${i + 1} error:`, error);
-            latencies.push(1000); // Penalize failed pings
+            latencies.push(1000);
             await sendProgress({ status: `Ping ${i + 1}/${PING_COUNT} lost... 😢` });
         }
     }
@@ -155,7 +148,7 @@ async function measurePingAndJitter() {
     return { ping: averagePing, jitter };
 }
 
-// --- Main Test Orchestration ---
+// Main Test Orchestration
 let isTestRunning = false;
 
 async function runFullTest() {
@@ -192,7 +185,7 @@ async function runFullTest() {
         // Error message is sent by the failing function
         // Send final partial results
         results.status = `Test failed: ${error.message || 'Mysterious space anomaly'}`;
-        await sendCompletion(results); // Send partial results if any and error status
+        await sendCompletion(results);
     } finally {
         isTestRunning = false;
     }
@@ -206,7 +199,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }).catch(error => {
             sendResponse({ status: `Initiation error: ${error.message}`});
         });
-        return true; // Asynchronous response
+        return true;
     }
 });
 

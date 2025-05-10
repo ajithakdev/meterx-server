@@ -9,7 +9,6 @@
     "alarms"
   ],
   "host_permissions": [
-    // "http://localhost:3000/*" // REMEMBER TO CHANGE THIS WHEN YOU DEPLOY YOUR SERVER
     "https://meterx-speedtest-server.onrender.com/*"
   ],
   "action": {
