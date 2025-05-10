@@ -1,0 +1,31 @@
+
+{
+  "manifest_version": 3,
+  "name": "MeterX - by ajithakdev",
+  "version": "0.2.0",
+  "description": "A fun, classy, and glassy internet speed meter. What's your vibe today?",
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    // "http://localhost:3000/*" // REMEMBER TO CHANGE THIS WHEN YOU DEPLOY YOUR SERVER
+    "https://meterx-speedtest-server.onrender.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icons16.png", 
+      "48": "images/icons48.png",
+      "128": "images/icons128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "images/icons16.png",
+    "48": "images/icons48.png",
+    "128": "images/icons128.png"
+  }
+}
