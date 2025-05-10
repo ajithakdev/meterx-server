@@ -108,7 +108,7 @@ MeterX consists of two main components:
 
 ## 📂 Project Structure
 
-```
+```text
 MeterX/
 ├── extension/            # Browser extension code
 │   ├── icons/
@@ -137,6 +137,7 @@ Contributions are welcome! If you're a developer and want to help improve MeterX
 1.  Fork the repository.
 2.  Create a new branch (`git checkout -b feature/your-feature-name`).
 3.  Make your changes.
+4.  Run `npm run lint:fix` to ensure code style and fix any linting issues.
 4.  Commit your changes (`git commit -am 'Add some feature'`).
 5.  Push to the branch (`git push origin feature/your-feature-name`).
 6.  Create a new Pull Request.
