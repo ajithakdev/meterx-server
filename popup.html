@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MeterX</title>
+    <link rel="stylesheet" href="popup.css">
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MeterX <span class="rocket">🚀</span></h1>
+            <div class="alien-doodle">👽</div>
+        </header>
+        <main>
+            <div id="results">
+                <p>Download: <span id="downloadSpeed">-</span> Mbps</p>
+                <p>Upload: <span id="uploadSpeed">-</span> Mbps</p>
+                <p>Ping: <span id="ping">-</span> ms</p>
+                <p>Jitter: <span id="jitter">-</span> ms</p>
+            </div>
+            <div id="status-container">
+                <p id="status">Click Start to measure!</p>
+            </div>
+            <button id="startButton">Start Test</button>
+            <div id="loading-indicator" class="hidden">
+                <div class="spinner"></div>
+                <p>Testing in progress...</p>
+            </div>
+        </main>
+        <footer>
+            <p class="glitch-effect">Powered by Internet Pixies</p>
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

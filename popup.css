@@ -1,0 +1,156 @@
+/* popup.css */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 350px;
+    background: transparent; /* Essential for glassmorphism */
+    color: #e0e0e0; /* Light text for darkish glass */
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.container {
+    padding: 20px;
+    background: rgba(30, 30, 40, 0.6); /* Darker, slightly blueish semi-transparent background */
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%); /* For Safari */
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+header h1 {
+    font-size: 26px;
+    margin: 0 0 5px 0;
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+header h1 .rocket {
+    display: inline-block;
+    animation: takeOff 2s ease-in-out infinite alternate;
+}
+
+@keyframes takeOff {
+    0% { transform: translateY(0px) rotate(-5deg); }
+    100% { transform: translateY(-5px) rotate(5deg); }
+}
+
+.alien-doodle {
+    font-size: 28px;
+    position: absolute;
+    top: -15px;
+    right: -5px;
+    animation: floatAlien 3.5s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes floatAlien {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-7px) rotate(8deg) scale(1.1); }
+}
+
+#results p {
+    margin: 10px 0;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+#results p:last-child {
+    border-bottom: none;
+}
+
+#results p span {
+    font-weight: bold;
+    color: #82eefd; /* Bright cyan */
+}
+
+#status-container {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    min-height: 40px; /* Reserve space for 2 lines of status */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#status {
+    font-size: 13px;
+    color: #b0b0b0;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+#startButton {
+    background: linear-gradient(145deg, #007bff, #0056b3); /* Vibrant blue */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 17px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    margin-top: 5px;
+}
+
+#startButton:hover:not(:disabled) {
+    background: linear-gradient(145deg, #0069d9, #004085);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+#startButton:active:not(:disabled) {
+    transform: translateY(0px);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+#startButton:disabled {
+    background: #5a5a5a;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.hidden { display: none !important; }
+
+#loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.spinner {
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    border-top: 3px solid #82eefd; /* Match span color */
+    width: 24px;
+    height: 24px;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 8px;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+#loading-indicator p { font-size: 12px; color: #cccccc; }
+
+footer { margin-top: auto; text-align: center; padding-top: 15px; }
+.glitch-effect { font-size: 11px; color: #999; position: relative; animation: glitch 3s infinite steps(2, jump-none); opacity: 0.7;}
+@keyframes glitch{ 0%{ text-shadow:none; } 20%{ text-shadow:2px 2px 0 #ff00ff,-2px -2px 0 #00ffff; } 21%{ text-shadow:none; } 40%{ text-shadow:2px -2px 0 #ff00ff,-2px 2px 0 #00ffff; } 41%{ text-shadow:none; } 60%{ text-shadow:-2px 2px 0 #ff00ff,2px -2px 0 #00ffff; } 61%{ text-shadow:none; } 80%{ text-shadow:-2px -2px 0 #ff00ff,2px 2px 0 #00ffff; } 81%{ text-shadow:none; } 100%{ text-shadow:none; } }
