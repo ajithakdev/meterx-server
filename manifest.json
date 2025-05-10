@@ -1,7 +1,7 @@
 
 {
   "manifest_version": 3,
-  "name": "MeterX - by devMama",
+  "name": "MeterX - by ajithakdev",
   "version": "0.2.0",
   "description": "A fun, classy, and glassy internet speed meter. What's your vibe today?",
   "permissions": [
@@ -9,8 +9,8 @@
     "alarms"
   ],
   "host_permissions": [
-    "http://localhost:3000/*" // REMEMBER TO CHANGE THIS WHEN YOU DEPLOY YOUR SERVER
-    // "https://lavish-polite-fenugreek.glitch.me"// "https://your-live-server.glitch.me/*"
+    // "http://localhost:3000/*" // REMEMBER TO CHANGE THIS WHEN YOU DEPLOY YOUR SERVER
+    "https://meterx-speedtest-server.onrender.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

@@ -5,7 +5,8 @@
 // The current TEST_SERVER_BASE_URL and DOWNLOAD_FILE_PATH for the download test
 // (https://lavish-polite-fenugreek.glitch.me/test-file/25MB.bin) seems to be returning a 404 error.
 // Please ensure your test server is correctly configured and accessible, or update these URLs.
-const TEST_SERVER_BASE_URL = 'http://localhost:3000'; // Use your local server!
+// const TEST_SERVER_BASE_URL = 'http://localhost:3000'; // Use your local server!
+const TEST_SERVER_BASE_URL = 'https://meterx-speedtest-server.onrender.com';
 const DOWNLOAD_FILE_MB = 1;  // Smaller file for quicker testing
 const DOWNLOAD_FILE_PATH = `/test-file/${DOWNLOAD_FILE_MB}MB.bin`;
 const UPLOAD_DATA_SIZE_MB = 1; // Smaller file for quicker testing

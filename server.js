@@ -5,7 +5,8 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+// const PORT = 3000;
+const PORT = process.env.PORT || 3000; // New line
 
 app.use(cors());
 app.use(express.raw({ type: 'application/octet-stream', limit: '200mb' })); // Increased limit
