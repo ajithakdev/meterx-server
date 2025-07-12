@@ -1,0 +1,24 @@
+{
+  "name": "meterx-extension",
+  "version": "0.2.0",
+  "description": "A fun, classy, and glassy internet speed meter browser extension",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "build:fix": "powershell -ExecutionPolicy Bypass -File ./build.ps1"
+  },
+  "keywords": [
+    "browser-extension",
+    "speed-test",
+    "typescript",
+    "vite"
+  ],
+  "author": "ajithakdev",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^7.0.0"
+  }
+}
