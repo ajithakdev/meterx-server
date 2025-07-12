@@ -7,8 +7,8 @@ body, html {
     height: 450px;
     background: transparent;
     color: #e0e0e0;
-    overflow: hidden;
     font-size: 14px;
+    overflow: hidden;
 }
 
 .container {
@@ -22,6 +22,24 @@ body, html {
     height: calc(100% - 30px);
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(130, 238, 253, 0.3) rgba(40, 45, 60, 0.4);
+    scroll-behavior: smooth;
+}
+
+.container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.container::-webkit-scrollbar-track {
+    background: rgba(40, 45, 60, 0.4);
+    border-radius: 3px;
+}
+
+.container::-webkit-scrollbar-thumb {
+    background-color: rgba(130, 238, 253, 0.3);
+    border-radius: 3px;
 }
 
 header {
@@ -195,23 +213,18 @@ main {
     display: none !important; 
 }
 
-#loading-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 8px;
-}
-
-.spinner {
-    border: 3px solid rgba(255, 255, 255, 0.1);
+.mini-spinner {
+    display: inline-block;
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    border-top: 3px solid #82eefd;
-    border-right: 3px solid transparent;
-    width: 20px;
-    height: 20px;
+    border-top: 2px solid #82eefd;
+    border-right: 2px solid transparent;
+    width: 12px;
+    height: 12px;
     animation: spin 0.8s linear infinite, pulse 1.5s ease-in-out infinite;
-    margin-bottom: 6px;
-    box-shadow: 0 0 10px rgba(130, 238, 253, 0.3);
+    margin-left: 5px;
+    vertical-align: middle;
+    box-shadow: 0 0 5px rgba(130, 238, 253, 0.3);
 }
 
 @keyframes spin { 
@@ -220,15 +233,9 @@ main {
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 0 5px rgba(130, 238, 253, 0.3); }
-    50% { box-shadow: 0 0 15px rgba(130, 238, 253, 0.6); }
-    100% { box-shadow: 0 0 5px rgba(130, 238, 253, 0.3); }
-}
-
-#loading-indicator p { 
-    font-size: 12px; 
-    color: #cccccc; 
-    text-align: center;
+    0% { box-shadow: 0 0 3px rgba(130, 238, 253, 0.3); }
+    50% { box-shadow: 0 0 8px rgba(130, 238, 253, 0.6); }
+    100% { box-shadow: 0 0 3px rgba(130, 238, 253, 0.3); }
 }
 
 #history-container {

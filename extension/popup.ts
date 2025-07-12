@@ -31,7 +31,8 @@ function formatDate(dateString: string): { date: string, time: string } {
 function saveHistory(entry: HistoryEntry) {
   const history = JSON.parse(localStorage.getItem('meterxHistory') || '[]');
   history.unshift(entry);
-  localStorage.setItem('meterxHistory', JSON.stringify(history.slice(0, 10)));
+  // Only keep the last 2 entries
+  localStorage.setItem('meterxHistory', JSON.stringify(history.slice(0, 2)));
 }
 
 function renderHistory() {
@@ -40,7 +41,8 @@ function renderHistory() {
   const history = JSON.parse(localStorage.getItem('meterxHistory') || '[]');
   historyList.innerHTML = '';
   
-  history.forEach((entry: HistoryEntry) => {
+  // Only show the last 2 entries
+  history.slice(0, 2).forEach((entry: HistoryEntry) => {
     const li = document.createElement('li');
     
     // Format the date
@@ -74,7 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pingEl = document.getElementById('ping') as HTMLElement;
     const jitterEl = document.getElementById('jitter') as HTMLElement;
     const statusEl = document.getElementById('status') as HTMLElement;
-    const loadingIndicator = document.getElementById('loading-indicator') as HTMLElement;
+    const downloadSpinner = document.querySelector('.download-spinner') as HTMLElement;
+    const uploadSpinner = document.querySelector('.upload-spinner') as HTMLElement;
+    const pingSpinner = document.querySelector('.ping-spinner') as HTMLElement;
+    const jitterSpinner = document.querySelector('.jitter-spinner') as HTMLElement;
     const fileSizeSelect = document.getElementById('fileSizeSelect') as HTMLSelectElement;
     // Only one server, so hardcode the URL
     const SERVER_URL = "https://meterx-speedtest-server.onrender.com";
@@ -85,12 +90,17 @@ document.addEventListener('DOMContentLoaded', () => {
         pingEl.textContent = '-';
         jitterEl.textContent = '-';
         statusEl.textContent = isStarting ? 'Ignition sequence start... 🌠' : 'Click Start to measure!';
+        
+        // Hide all spinners
+        downloadSpinner.classList.add('hidden');
+        uploadSpinner.classList.add('hidden');
+        pingSpinner.classList.add('hidden');
+        jitterSpinner.classList.add('hidden');
     }
 
     startButton.addEventListener('click', () => {
         resetUI(true);
         startButton.disabled = true;
-        loadingIndicator.classList.remove('hidden');
 
         const selectedSize = fileSizeSelect ? parseInt(fileSizeSelect.value, 10) : 1;
         // @ts-ignore
@@ -100,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // @ts-ignore
                 statusEl.textContent = `Error: ${chrome.runtime.lastError.message}`;
                 startButton.disabled = false;
-                loadingIndicator.classList.add('hidden');
             }
         });
     });
@@ -110,19 +119,51 @@ document.addEventListener('DOMContentLoaded', () => {
         if (message.action === "testProgress") {
             const data = message.data;
             if (data.status) statusEl.textContent = data.status;
+            
+            // Handle download speed updates
             if (data.downloadSpeed !== undefined) {
-                downloadSpeedEl.textContent = data.downloadSpeed === -1 ? '-' : data.downloadSpeed.toFixed(2);
+                if (data.downloadSpeed === -1) {
+                    downloadSpeedEl.textContent = '-';
+                    downloadSpinner.classList.remove('hidden');
+                } else {
+                    downloadSpeedEl.textContent = data.downloadSpeed.toFixed(2);
+                    downloadSpinner.classList.add('hidden');
+                }
             }
+            
+            // Handle upload speed updates
             if (data.uploadSpeed !== undefined) {
-                uploadSpeedEl.textContent = data.uploadSpeed === -1 ? '-' : data.uploadSpeed.toFixed(2);
+                if (data.uploadSpeed === -1) {
+                    uploadSpeedEl.textContent = '-';
+                    uploadSpinner.classList.remove('hidden');
+                } else {
+                    uploadSpeedEl.textContent = data.uploadSpeed.toFixed(2);
+                    uploadSpinner.classList.add('hidden');
+                }
             }
+            
+            // Handle ping updates
             if (data.ping !== undefined) {
-                pingEl.textContent = data.ping === -1 ? '-' : data.ping.toFixed(1);
+                if (data.ping === -1) {
+                    pingEl.textContent = '-';
+                    pingSpinner.classList.remove('hidden');
+                } else {
+                    pingEl.textContent = data.ping.toFixed(1);
+                    pingSpinner.classList.add('hidden');
+                }
             }
+            
+            // Handle jitter updates
             if (data.jitter !== undefined) {
-                jitterEl.textContent = data.jitter === -1 ? '-' : data.jitter.toFixed(1);
+                if (data.jitter === -1) {
+                    jitterEl.textContent = '-';
+                    jitterSpinner.classList.remove('hidden');
+                } else {
+                    jitterEl.textContent = data.jitter.toFixed(1);
+                    jitterSpinner.classList.add('hidden');
+                }
             }
-            loadingIndicator.classList.remove('hidden');
+            
             startButton.disabled = true;
         } else if (message.action === "testComplete") {
             const data = message.data;
@@ -132,7 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
             jitterEl.textContent = data.jitter !== undefined ? data.jitter.toFixed(1) : '-';
             statusEl.textContent = data.status || "Test complete! 🎉";
             startButton.disabled = false;
-            loadingIndicator.classList.add('hidden');
+            
+            // Hide all spinners
+            downloadSpinner.classList.add('hidden');
+            uploadSpinner.classList.add('hidden');
+            pingSpinner.classList.add('hidden');
+            jitterSpinner.classList.add('hidden');
 
             // Save to history
             const fileSize = fileSizeSelect ? fileSizeSelect.value : '1';
@@ -153,7 +199,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pingEl.textContent === '-') pingEl.textContent = 'N/A';
             if (jitterEl.textContent === '-') jitterEl.textContent = 'N/A';
             startButton.disabled = false;
-            loadingIndicator.classList.add('hidden');
+            
+            // Hide all spinners
+            downloadSpinner.classList.add('hidden');
+            uploadSpinner.classList.add('hidden');
+            pingSpinner.classList.add('hidden');
+            jitterSpinner.classList.add('hidden');
         }
     });
 });

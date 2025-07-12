@@ -13,10 +13,10 @@
         </header>
         <main>
             <div id="results">
-                <p>Download: <span id="downloadSpeed">-</span> Mbps</p>
-                <p>Upload: <span id="uploadSpeed">-</span> Mbps</p>
-                <p>Ping: <span id="ping">-</span> ms</p>
-                <p>Jitter: <span id="jitter">-</span> ms</p>
+                <p>Download: <span id="downloadSpeed">-</span> Mbps <span class="mini-spinner download-spinner hidden"></span></p>
+                <p>Upload: <span id="uploadSpeed">-</span> Mbps <span class="mini-spinner upload-spinner hidden"></span></p>
+                <p>Ping: <span id="ping">-</span> ms <span class="mini-spinner ping-spinner hidden"></span></p>
+                <p>Jitter: <span id="jitter">-</span> ms <span class="mini-spinner jitter-spinner hidden"></span></p>
             </div>
             
             <div id="test-controls">
@@ -30,10 +30,6 @@
                     </select>
                 </div>
                 <button id="startButton">Start Test</button>
-                <div id="loading-indicator" class="hidden">
-                    <div class="spinner"></div>
-                    <p>Testing in progress...</p>
-                </div>
             </div>
             
             <div id="history-container">
