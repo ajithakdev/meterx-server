@@ -75,11 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadSpeedEl = document.getElementById('uploadSpeed') as HTMLElement;
     const pingEl = document.getElementById('ping') as HTMLElement;
     const jitterEl = document.getElementById('jitter') as HTMLElement;
+    const downloadContainer = document.getElementById('downloadSpeed-container') as HTMLElement;
+    const uploadContainer = document.getElementById('uploadSpeed-container') as HTMLElement;
+    const pingContainer = document.getElementById('ping-container') as HTMLElement;
+    const jitterContainer = document.getElementById('jitter-container') as HTMLElement;
     const statusEl = document.getElementById('status') as HTMLElement;
-    const downloadSpinner = document.querySelector('.download-spinner') as HTMLElement;
-    const uploadSpinner = document.querySelector('.upload-spinner') as HTMLElement;
-    const pingSpinner = document.querySelector('.ping-spinner') as HTMLElement;
-    const jitterSpinner = document.querySelector('.jitter-spinner') as HTMLElement;
     const fileSizeSelect = document.getElementById('fileSizeSelect') as HTMLSelectElement;
     // Only one server, so hardcode the URL
     const SERVER_URL = "https://meterx-speedtest-server.onrender.com";
@@ -91,11 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
         jitterEl.textContent = '-';
         statusEl.textContent = isStarting ? 'Ignition sequence start... 🌠' : 'Click Start to measure!';
         
-        // Hide all spinners
-        downloadSpinner.classList.add('hidden');
-        uploadSpinner.classList.add('hidden');
-        pingSpinner.classList.add('hidden');
-        jitterSpinner.classList.add('hidden');
+        // Remove any spinners
+        downloadContainer.innerHTML = '<span id="downloadSpeed">-</span>';
+        uploadContainer.innerHTML = '<span id="uploadSpeed">-</span>';
+        pingContainer.innerHTML = '<span id="ping">-</span>';
+        jitterContainer.innerHTML = '<span id="jitter">-</span>';
     }
 
     startButton.addEventListener('click', () => {
@@ -123,88 +123,100 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle download speed updates
             if (data.downloadSpeed !== undefined) {
                 if (data.downloadSpeed === -1) {
-                    downloadSpeedEl.textContent = '-';
-                    downloadSpinner.classList.remove('hidden');
+                    downloadContainer.innerHTML = '<div class="mini-spinner"></div>';
                 } else {
-                    downloadSpeedEl.textContent = data.downloadSpeed.toFixed(2);
-                    downloadSpinner.classList.add('hidden');
+                    downloadContainer.innerHTML = `<span id="downloadSpeed">${data.downloadSpeed.toFixed(2)}</span>`;
                 }
             }
             
             // Handle upload speed updates
             if (data.uploadSpeed !== undefined) {
                 if (data.uploadSpeed === -1) {
-                    uploadSpeedEl.textContent = '-';
-                    uploadSpinner.classList.remove('hidden');
+                    uploadContainer.innerHTML = '<div class="mini-spinner"></div>';
                 } else {
-                    uploadSpeedEl.textContent = data.uploadSpeed.toFixed(2);
-                    uploadSpinner.classList.add('hidden');
+                    uploadContainer.innerHTML = `<span id="uploadSpeed">${data.uploadSpeed.toFixed(2)}</span>`;
                 }
             }
             
             // Handle ping updates
             if (data.ping !== undefined) {
                 if (data.ping === -1) {
-                    pingEl.textContent = '-';
-                    pingSpinner.classList.remove('hidden');
+                    pingContainer.innerHTML = '<div class="mini-spinner"></div>';
                 } else {
-                    pingEl.textContent = data.ping.toFixed(1);
-                    pingSpinner.classList.add('hidden');
+                    pingContainer.innerHTML = `<span id="ping">${data.ping.toFixed(1)}</span>`;
                 }
             }
             
             // Handle jitter updates
             if (data.jitter !== undefined) {
                 if (data.jitter === -1) {
-                    jitterEl.textContent = '-';
-                    jitterSpinner.classList.remove('hidden');
+                    jitterContainer.innerHTML = '<div class="mini-spinner"></div>';
                 } else {
-                    jitterEl.textContent = data.jitter.toFixed(1);
-                    jitterSpinner.classList.add('hidden');
+                    jitterContainer.innerHTML = `<span id="jitter">${data.jitter.toFixed(1)}</span>`;
                 }
             }
             
             startButton.disabled = true;
         } else if (message.action === "testComplete") {
             const data = message.data;
-            downloadSpeedEl.textContent = data.downloadSpeed !== undefined ? data.downloadSpeed.toFixed(2) : '-';
-            uploadSpeedEl.textContent = data.uploadSpeed !== undefined ? data.uploadSpeed.toFixed(2) : '-';
-            pingEl.textContent = data.ping !== undefined ? data.ping.toFixed(1) : '-';
-            jitterEl.textContent = data.jitter !== undefined ? data.jitter.toFixed(1) : '-';
+            
+            // Update all values with test results
+            if (data.downloadSpeed !== undefined) {
+                downloadContainer.innerHTML = `<span id="downloadSpeed">${data.downloadSpeed.toFixed(2)}</span>`;
+            } else {
+                downloadContainer.innerHTML = '<span id="downloadSpeed">-</span>';
+            }
+            
+            if (data.uploadSpeed !== undefined) {
+                uploadContainer.innerHTML = `<span id="uploadSpeed">${data.uploadSpeed.toFixed(2)}</span>`;
+            } else {
+                uploadContainer.innerHTML = '<span id="uploadSpeed">-</span>';
+            }
+            
+            if (data.ping !== undefined) {
+                pingContainer.innerHTML = `<span id="ping">${data.ping.toFixed(1)}</span>`;
+            } else {
+                pingContainer.innerHTML = '<span id="ping">-</span>';
+            }
+            
+            if (data.jitter !== undefined) {
+                jitterContainer.innerHTML = `<span id="jitter">${data.jitter.toFixed(1)}</span>`;
+            } else {
+                jitterContainer.innerHTML = '<span id="jitter">-</span>';
+            }
+            
             statusEl.textContent = data.status || "Test complete! 🎉";
             startButton.disabled = false;
-            
-            // Hide all spinners
-            downloadSpinner.classList.add('hidden');
-            uploadSpinner.classList.add('hidden');
-            pingSpinner.classList.add('hidden');
-            jitterSpinner.classList.add('hidden');
 
             // Save to history
             const fileSize = fileSizeSelect ? fileSizeSelect.value : '1';
+            
+            // Get the current values from the containers
+            const downloadValue = data.downloadSpeed !== undefined ? data.downloadSpeed.toFixed(2) : '-';
+            const uploadValue = data.uploadSpeed !== undefined ? data.uploadSpeed.toFixed(2) : '-';
+            const pingValue = data.ping !== undefined ? data.ping.toFixed(1) : '-';
+            const jitterValue = data.jitter !== undefined ? data.jitter.toFixed(1) : '-';
+            
             saveHistory({
               date: new Date().toLocaleString(),
-              downloadSpeed: downloadSpeedEl.textContent || '-',
-              uploadSpeed: uploadSpeedEl.textContent || '-',
-              ping: pingEl.textContent || '-',
-              jitter: jitterEl.textContent || '-',
+              downloadSpeed: downloadValue,
+              uploadSpeed: uploadValue,
+              ping: pingValue,
+              jitter: jitterValue,
               fileSize,
               server: SERVER_URL
             });
             renderHistory();
         } else if (message.action === "testError") {
             statusEl.textContent = `Error: ${message.error} 😥`;
-            if (downloadSpeedEl.textContent === '-') downloadSpeedEl.textContent = 'N/A';
-            if (uploadSpeedEl.textContent === '-') uploadSpeedEl.textContent = 'N/A';
-            if (pingEl.textContent === '-') pingEl.textContent = 'N/A';
-            if (jitterEl.textContent === '-') jitterEl.textContent = 'N/A';
-            startButton.disabled = false;
             
-            // Hide all spinners
-            downloadSpinner.classList.add('hidden');
-            uploadSpinner.classList.add('hidden');
-            pingSpinner.classList.add('hidden');
-            jitterSpinner.classList.add('hidden');
+            // Show N/A for all metrics that are still showing spinners
+            downloadContainer.innerHTML = '<span id="downloadSpeed">N/A</span>';
+            uploadContainer.innerHTML = '<span id="uploadSpeed">N/A</span>';
+            pingContainer.innerHTML = '<span id="ping">N/A</span>';
+            jitterContainer.innerHTML = '<span id="jitter">N/A</span>';
+            
+            startButton.disabled = false;
         }
     });
 });

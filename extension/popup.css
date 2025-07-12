@@ -92,7 +92,8 @@ main {
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden;
+    overflow-y: auto;
+    margin-bottom: 10px;
 }
 
 #results {
@@ -117,10 +118,29 @@ main {
     border-bottom: none;
 }
 
-#results p span {
+#results p span[id$="-container"] {
+    display: inline-block;
+    min-width: 50px;
+    text-align: right;
+}
+
+#results p span[id$="Speed"], #results p span[id="ping"], #results p span[id="jitter"] {
     font-weight: bold;
     color: #82eefd;
     text-shadow: 0 0 5px rgba(130, 238, 253, 0.3);
+}
+
+.mini-spinner {
+    display: inline-block;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top: 2px solid #82eefd;
+    border-right: 2px solid transparent;
+    width: 12px;
+    height: 12px;
+    animation: spin 0.8s linear infinite, pulse 1.5s ease-in-out infinite;
+    vertical-align: middle;
+    box-shadow: 0 0 5px rgba(130, 238, 253, 0.3);
 }
 
 #test-controls {
@@ -239,14 +259,16 @@ main {
 }
 
 #history-container {
-    flex: 1;
-    min-height: 120px;
+    margin-top: 12px;
+    min-height: 100px;
+    max-height: 150px;
     display: flex;
     flex-direction: column;
     background: rgba(40, 45, 60, 0.4);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .history-header {
