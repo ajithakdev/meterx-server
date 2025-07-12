@@ -30,6 +30,7 @@ type Message = {
 async function sendProgress(data: TestResult) {
   try {
     const cleanData = Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined));
+    // @ts-ignore
     await chrome.runtime.sendMessage({ action: "testProgress", data: cleanData });
   } catch (error) {}
 }
@@ -37,12 +38,14 @@ async function sendProgress(data: TestResult) {
 async function sendCompletion(data: TestResult) {
   try {
     const cleanData = Object.fromEntries(Object.entries(data).filter(([_, v]) => v !== undefined));
+    // @ts-ignore
     await chrome.runtime.sendMessage({ action: "testComplete", data: cleanData });
   } catch (error) {}
 }
 
 async function sendError(errorMessage: string) {
   try {
+    // @ts-ignore
     await chrome.runtime.sendMessage({ action: "testError", error: errorMessage });
   } catch (error) {}
 }
@@ -192,7 +195,8 @@ async function runFullTest(fileSizeMB: number = 1, serverUrl: string = 'https://
   return results;
 }
 
-chrome.runtime.onMessage.addListener((message: Message & { fileSizeMB?: number, serverUrl?: string }, sender, sendResponse) => {
+// @ts-ignore
+chrome.runtime.onMessage.addListener((message: Message & { fileSizeMB?: number, serverUrl?: string }, sender: any, sendResponse: any) => {
   if (message.action === "startTest") {
     const fileSizeMB = message.fileSizeMB || 1;
     const serverUrl = message.serverUrl || 'https://meterx-speedtest-server.onrender.com';

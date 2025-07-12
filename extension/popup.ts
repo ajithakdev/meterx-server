@@ -27,7 +27,7 @@ function renderHistory() {
 }
 // TypeScript version of popup.js
 // TODO: Refactor logic to use types and interfaces
-import type {} from 'chrome';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     renderHistory();
@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusEl = document.getElementById('status') as HTMLElement;
     const loadingIndicator = document.getElementById('loading-indicator') as HTMLElement;
     const fileSizeSelect = document.getElementById('fileSizeSelect') as HTMLSelectElement;
-    const serverSelect = document.getElementById('serverSelect') as HTMLSelectElement;
+    // Only one server, so hardcode the URL
+    const SERVER_URL = "https://meterx-speedtest-server.onrender.com";
 
     function resetUI(isStarting = false) {
         downloadSpeedEl.textContent = '-';
@@ -55,9 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingIndicator.classList.remove('hidden');
 
         const selectedSize = fileSizeSelect ? parseInt(fileSizeSelect.value, 10) : 1;
-        const selectedServer = serverSelect ? serverSelect.value : "https://meterx-speedtest-server.onrender.com";
-        chrome.runtime.sendMessage({ action: "startTest", fileSizeMB: selectedSize, serverUrl: selectedServer }, (response) => {
+        // @ts-ignore
+        chrome.runtime.sendMessage({ action: "startTest", fileSizeMB: selectedSize, serverUrl: SERVER_URL }, (response: any) => {
+            // @ts-ignore
             if (chrome.runtime.lastError) {
+                // @ts-ignore
                 statusEl.textContent = `Error: ${chrome.runtime.lastError.message}`;
                 startButton.disabled = false;
                 loadingIndicator.classList.add('hidden');
@@ -65,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    // @ts-ignore
+    chrome.runtime.onMessage.addListener((message: any, sender: any, sendResponse: any) => {
         if (message.action === "testProgress") {
             const data = message.data;
             if (data.status) statusEl.textContent = data.status;
@@ -87,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Save to history
             const fileSize = fileSizeSelect ? fileSizeSelect.value : '1';
-            const server = serverSelect ? serverSelect.value : '';
             saveHistory({
               date: new Date().toLocaleString(),
               downloadSpeed: downloadSpeedEl.textContent || '-',
@@ -95,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ping: pingEl.textContent || '-',
               jitter: jitterEl.textContent || '-',
               fileSize,
-              server
+              server: SERVER_URL
             });
             renderHistory();
         } else if (message.action === "testError") {

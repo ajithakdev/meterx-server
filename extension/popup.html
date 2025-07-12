@@ -24,17 +24,18 @@
             </div>
             <div id="status-container">
                 <p id="status">Click Start to measure!</p>
-                <label for="fileSizeSelect" style="margin-top:10px;display:block;">Test file size:</label>
-                <select id="fileSizeSelect" style="width:100%;margin-bottom:10px;">
-                    <option value="1">1 MB</option>
-                    <option value="10">10 MB</option>
-                    <option value="25">25 MB</option>
-                </select>
-                <label for="serverSelect" style="margin-top:10px;display:block;">Test server:</label>
-                <select id="serverSelect" style="width:100%;margin-bottom:10px;">
-                    <option value="https://meterx-speedtest-server.onrender.com">meterx-speedtest-server.onrender.com</option>
-                    <option value="http://localhost:3000">localhost:3000</option>
-                </select>
+                <div style="margin-top:10px;">
+                    <label for="fileSizeSelect" style="display:block;font-weight:500;">Test file size:</label>
+                    <select id="fileSizeSelect" style="width:100%;margin-bottom:10px;border-radius:6px;padding:6px 10px;background:#232a3a;color:#82eefd;font-size:15px;">
+                        <option value="1">1 MB</option>
+                        <option value="10">10 MB</option>
+                        <option value="25">25 MB</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <span style="font-size:13px;color:#82eefd;font-weight:500;">Server:</span>
+                    <span style="font-size:13px;color:#fff;">https://meterx-speedtest-server.onrender.com</span>
+                </div>
             </div>
             <button id="startButton">Start Test</button>
             <div id="loading-indicator" class="hidden">
@@ -46,6 +47,6 @@
             <p class="glitch-effect">Powered by I-I-C</p>
         </footer>
     </div>
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
 </body>
 </html>
