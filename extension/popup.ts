@@ -110,18 +110,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (message.action === "testProgress") {
             const data = message.data;
             if (data.status) statusEl.textContent = data.status;
-            if (data.downloadSpeed !== undefined) downloadSpeedEl.textContent = data.downloadSpeed.toFixed(2);
-            if (data.uploadSpeed !== undefined) uploadSpeedEl.textContent = data.uploadSpeed.toFixed(2);
-            if (data.ping !== undefined) pingEl.textContent = data.ping.toFixed(1);
-            if (data.jitter !== undefined) jitterEl.textContent = data.jitter.toFixed(1);
+            if (data.downloadSpeed !== undefined) {
+                downloadSpeedEl.textContent = data.downloadSpeed === -1 ? '-' : data.downloadSpeed.toFixed(2);
+            }
+            if (data.uploadSpeed !== undefined) {
+                uploadSpeedEl.textContent = data.uploadSpeed === -1 ? '-' : data.uploadSpeed.toFixed(2);
+            }
+            if (data.ping !== undefined) {
+                pingEl.textContent = data.ping === -1 ? '-' : data.ping.toFixed(1);
+            }
+            if (data.jitter !== undefined) {
+                jitterEl.textContent = data.jitter === -1 ? '-' : data.jitter.toFixed(1);
+            }
             loadingIndicator.classList.remove('hidden');
             startButton.disabled = true;
         } else if (message.action === "testComplete") {
             const data = message.data;
-            downloadSpeedEl.textContent = data.downloadSpeed !== undefined ? data.downloadSpeed.toFixed(2) : 'N/A';
-            uploadSpeedEl.textContent = data.uploadSpeed !== undefined ? data.uploadSpeed.toFixed(2) : 'N/A';
-            pingEl.textContent = data.ping !== undefined ? data.ping.toFixed(1) : 'N/A';
-            jitterEl.textContent = data.jitter !== undefined ? data.jitter.toFixed(1) : 'N/A';
+            downloadSpeedEl.textContent = data.downloadSpeed !== undefined ? data.downloadSpeed.toFixed(2) : '-';
+            uploadSpeedEl.textContent = data.uploadSpeed !== undefined ? data.uploadSpeed.toFixed(2) : '-';
+            pingEl.textContent = data.ping !== undefined ? data.ping.toFixed(1) : '-';
+            jitterEl.textContent = data.jitter !== undefined ? data.jitter.toFixed(1) : '-';
             statusEl.textContent = data.status || "Test complete! 🎉";
             startButton.disabled = false;
             loadingIndicator.classList.add('hidden');

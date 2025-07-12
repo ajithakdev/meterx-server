@@ -71,6 +71,9 @@ async function fetchWithTimeout(resource: string, options: RequestInit = {}, tim
 
 async function measureDownloadSpeed(): Promise<number> {
   await sendProgress({ status: 'Fetching the bits... 📥' });
+  // Update UI to show loading state
+  await sendProgress({ downloadSpeed: -1 }); // -1 will be displayed as "-" in the UI
+  
   const url = `${TEST_SERVER_BASE_URL}/test-file/${DOWNLOAD_FILE_MB}MB.bin?t=${Date.now()}`;
   const startTime = performance.now();
   try {
@@ -95,6 +98,9 @@ async function measureDownloadSpeed(): Promise<number> {
 
 async function measureUploadSpeed(): Promise<number> {
   await sendProgress({ status: 'Sending your vibes... 📤' });
+  // Update UI to show loading state
+  await sendProgress({ uploadSpeed: -1 }); // -1 will be displayed as "-" in the UI
+  
   const url = `${TEST_SERVER_BASE_URL}${UPLOAD_ENDPOINT_PATH}?t=${Date.now()}`;
   const dataSize = UPLOAD_DATA_SIZE_MB * 1024 * 1024;
   const dataToSend = new Uint8Array(dataSize);
@@ -123,6 +129,9 @@ async function measureUploadSpeed(): Promise<number> {
 
 async function measurePingAndJitter(): Promise<{ ping: number; jitter: number }> {
   await sendProgress({ status: 'Pinging the void... 핑!' });
+  // Update UI to show loading state
+  await sendProgress({ ping: -1, jitter: -1 }); // -1 will be displayed as "-" in the UI
+  
   const url = `${TEST_SERVER_BASE_URL}${PING_ENDPOINT_PATH}?t=`;
   let latencies: number[] = [];
   let totalPingTime = 0;

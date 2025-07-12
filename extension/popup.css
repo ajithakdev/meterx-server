@@ -3,8 +3,8 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    width: 340px;
-    height: 480px;
+    width: 300px;
+    height: 450px;
     background: transparent;
     color: #e0e0e0;
     overflow: hidden;
@@ -12,14 +12,14 @@ body, html {
 }
 
 .container {
-    padding: 20px;
+    padding: 15px;
     background: rgba(25, 28, 36, 0.85);
     backdrop-filter: blur(15px) saturate(180%);
     -webkit-backdrop-filter: blur(15px) saturate(180%);
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.4);
-    height: calc(100% - 40px);
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.4);
+    height: calc(100% - 30px);
     display: flex;
     flex-direction: column;
 }
@@ -31,12 +31,19 @@ header {
 }
 
 header h1 {
-    font-size: 24px;
+    font-size: 22px;
     margin: 0 0 5px 0;
     color: #ffffff;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-shadow: 0 0 10px rgba(130, 238, 253, 0.3);
+    position: relative;
+    animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% { text-shadow: 0 0 5px rgba(130, 238, 253, 0.3); }
+    50% { text-shadow: 0 0 15px rgba(130, 238, 253, 0.5); }
 }
 
 header h1 .rocket {
@@ -72,18 +79,19 @@ main {
 
 #results {
     background: rgba(40, 45, 60, 0.4);
-    border-radius: 12px;
-    padding: 12px 15px;
-    margin-bottom: 15px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
 }
 
 #results p {
-    margin: 8px 0;
-    font-size: 15px;
+    margin: 6px 0;
+    font-size: 14px;
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    padding: 3px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -94,14 +102,17 @@ main {
 #results p span {
     font-weight: bold;
     color: #82eefd;
+    text-shadow: 0 0 5px rgba(130, 238, 253, 0.3);
 }
 
 #test-controls {
     background: rgba(40, 45, 60, 0.4);
     border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 12px;
+    margin-bottom: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
 }
 
 #status {
@@ -115,24 +126,26 @@ main {
 }
 
 .file-size-selector {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
 }
 
 .file-size-selector label {
-    display: block;
     font-weight: 500;
-    margin-bottom: 6px;
     font-size: 13px;
     color: #82eefd;
+    margin-right: 10px;
+    white-space: nowrap;
 }
 
 #fileSizeSelect {
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 8px;
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
     background: rgba(35, 42, 58, 0.8);
     color: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
     border: 1px solid rgba(130, 238, 253, 0.3);
     outline: none;
     appearance: none;
@@ -149,14 +162,15 @@ main {
     background: linear-gradient(145deg, #007bff, #0056b3);
     color: white;
     border: none;
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 10px 15px;
+    font-size: 15px;
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease-out;
     width: 100%;
     box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    margin-bottom: 5px;
 }
 
 #startButton:hover:not(:disabled) {
@@ -185,17 +199,19 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .spinner {
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     border-top: 3px solid #82eefd;
-    width: 24px;
-    height: 24px;
-    animation: spin 0.8s linear infinite;
-    margin-bottom: 8px;
+    border-right: 3px solid transparent;
+    width: 20px;
+    height: 20px;
+    animation: spin 0.8s linear infinite, pulse 1.5s ease-in-out infinite;
+    margin-bottom: 6px;
+    box-shadow: 0 0 10px rgba(130, 238, 253, 0.3);
 }
 
 @keyframes spin { 
@@ -203,13 +219,21 @@ main {
     100% { transform: rotate(360deg); } 
 }
 
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px rgba(130, 238, 253, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(130, 238, 253, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(130, 238, 253, 0.3); }
+}
+
 #loading-indicator p { 
     font-size: 12px; 
     color: #cccccc; 
+    text-align: center;
 }
 
 #history-container {
     flex: 1;
+    min-height: 120px;
     display: flex;
     flex-direction: column;
     background: rgba(40, 45, 60, 0.4);
@@ -219,7 +243,7 @@ main {
 }
 
 .history-header {
-    padding: 10px 15px;
+    padding: 8px 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -233,6 +257,7 @@ main {
     flex: 1;
     overflow-y: auto;
     padding: 0 5px;
+    max-height: 150px;
     scrollbar-width: thin;
     scrollbar-color: rgba(130, 238, 253, 0.3) rgba(40, 45, 60, 0.4);
 }
@@ -264,6 +289,14 @@ main {
     background: rgba(30, 35, 50, 0.5);
     border-radius: 6px;
     border-left: 3px solid rgba(130, 238, 253, 0.5);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#historyList li:hover {
+    background: rgba(35, 40, 60, 0.6);
+    transform: translateX(2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 #historyList li:last-child {
@@ -280,12 +313,13 @@ main {
     color: #82eefd;
     margin-bottom: 4px;
     font-weight: 500;
+    text-shadow: 0 0 5px rgba(130, 238, 253, 0.2);
 }
 
 .history-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 4px;
 }
 
 .history-stats span {
@@ -294,6 +328,7 @@ main {
     border-radius: 4px;
     font-size: 10px;
     white-space: nowrap;
+    border: 1px solid rgba(130, 238, 253, 0.1);
 }
 
 footer { 

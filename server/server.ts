@@ -16,30 +16,35 @@ if (!fs.existsSync(testFileDir)) {
     fs.mkdirSync(testFileDir);
 }
 
-const DOWNLOAD_FILE_MB_SERVER = 1;
-const downloadFileName = `${DOWNLOAD_FILE_MB_SERVER}MB.bin`;
-const downloadFilePath = path.join(testFileDir, downloadFileName);
-
-if (!fs.existsSync(downloadFilePath)) {
-    console.log(`Generating ${DOWNLOAD_FILE_MB_SERVER}MB dummy file...`);
-    try {
-        const buffer = Buffer.alloc(DOWNLOAD_FILE_MB_SERVER * 1024 * 1024);
-        fs.writeFileSync(downloadFilePath, buffer);
-        console.log(`Dummy file generated: ${downloadFilePath}`);
-    } catch (e) {
-        console.error('File generation failed:', e);
-        process.exit(1);
-    }
-} else {
-    console.log(`Dummy file ${downloadFileName} already exists.`);
-}
-
-
-app.get(`/test-file/${downloadFileName}`, (req: Request, res: Response) => {
-    if (fs.existsSync(downloadFilePath)) {
-        res.sendFile(downloadFilePath);
+// Generate test files of different sizes
+const fileSizes = [1, 10, 25]; // MB sizes
+fileSizes.forEach(size => {
+    const fileName = `${size}MB.bin`;
+    const filePath = path.join(testFileDir, fileName);
+    
+    if (!fs.existsSync(filePath)) {
+        console.log(`Generating ${size}MB dummy file...`);
+        try {
+            const buffer = Buffer.alloc(size * 1024 * 1024);
+            fs.writeFileSync(filePath, buffer);
+            console.log(`Dummy file generated: ${filePath}`);
+        } catch (e) {
+            console.error(`File generation failed for ${fileName}:`, e);
+        }
     } else {
-        res.status(404).send(`File ${downloadFileName} not found.`);
+        console.log(`Dummy file ${fileName} already exists.`);
+    }
+});
+
+// Serve all test files
+app.get('/test-file/:fileName', (req: Request, res: Response) => {
+    const fileName = req.params.fileName;
+    const filePath = path.join(testFileDir, fileName);
+    
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send(`File ${fileName} not found.`);
     }
 });
 

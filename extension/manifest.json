@@ -20,7 +20,7 @@
     }
   },
   "background": {
-    "service_worker": "dist/background-Do5I6DfJ.js"
+    "service_worker": "dist/background-mUzSNBG0.js"
   },
   "icons": {
     "16": "images/icons16.png",
