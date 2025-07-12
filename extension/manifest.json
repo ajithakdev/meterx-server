@@ -1,8 +1,8 @@
 
 {
   "manifest_version": 3,
-  "name": "MeterX - by ajithakdev",
-  "version": "0.2.0",
+  "name": "NetPulse Pro - by ajithakdev",
+  "version": "2025.2.0",
   "description": "A fun, classy, and glassy internet speed meter. What's your vibe today?",
   "permissions": [
     "storage",

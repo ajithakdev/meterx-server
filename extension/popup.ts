@@ -8,6 +8,26 @@ interface HistoryEntry {
   server: string;
 }
 
+function formatDate(dateString: string): { date: string, time: string } {
+  const date = new Date(dateString);
+  
+  // Format date as "Month Day, Year"
+  const dateFormatted = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+  
+  // Format time as "HH:MM AM/PM"
+  const timeFormatted = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+  
+  return { date: dateFormatted, time: timeFormatted };
+}
+
 function saveHistory(entry: HistoryEntry) {
   const history = JSON.parse(localStorage.getItem('meterxHistory') || '[]');
   history.unshift(entry);
@@ -19,9 +39,26 @@ function renderHistory() {
   if (!historyList) return;
   const history = JSON.parse(localStorage.getItem('meterxHistory') || '[]');
   historyList.innerHTML = '';
+  
   history.forEach((entry: HistoryEntry) => {
     const li = document.createElement('li');
-    li.textContent = `${entry.date}: DL ${entry.downloadSpeed} Mbps, UL ${entry.uploadSpeed} Mbps, Ping ${entry.ping} ms, Jitter ${entry.jitter} ms, Size ${entry.fileSize}MB, Server: ${entry.server}`;
+    
+    // Format the date
+    const formattedDateTime = formatDate(entry.date);
+    
+    // Create HTML structure for the history entry
+    li.innerHTML = `
+      <div class="history-entry">
+        <div class="history-date">${formattedDateTime.date} • ${formattedDateTime.time}</div>
+        <div class="history-stats">
+          <span>↓ ${entry.downloadSpeed} Mbps</span>
+          <span>↑ ${entry.uploadSpeed} Mbps</span>
+          <span>Ping: ${entry.ping} ms</span>
+          <span>Jitter: ${entry.jitter} ms</span>
+        </div>
+      </div>
+    `;
+    
     historyList.appendChild(li);
   });
 }
