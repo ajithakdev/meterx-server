@@ -12,7 +12,7 @@
     "https://meterx-speedtest-server.onrender.com/*"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "dist/popup.html",
     "default_icon": {
       "16": "images/icons16.png", 
       "48": "images/icons48.png",
@@ -20,7 +20,7 @@
     }
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "dist/background-Do5I6DfJ.js"
   },
   "icons": {
     "16": "images/icons16.png",

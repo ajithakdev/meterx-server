@@ -7,8 +7,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        server: 'server.js',
-        test: 'test.js'
+        server: 'server.ts',
+        test: 'test.ts'
       }
     }
   },
