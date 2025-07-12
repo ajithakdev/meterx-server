@@ -18,8 +18,23 @@
                 <p>Ping: <span id="ping">-</span> ms</p>
                 <p>Jitter: <span id="jitter">-</span> ms</p>
             </div>
+            <div id="history-container" style="margin-top:15px;">
+                <h3 style="font-size:15px;margin-bottom:5px;">Test History</h3>
+                <ul id="historyList" style="font-size:13px;max-height:100px;overflow-y:auto;padding-left:15px;"></ul>
+            </div>
             <div id="status-container">
                 <p id="status">Click Start to measure!</p>
+                <label for="fileSizeSelect" style="margin-top:10px;display:block;">Test file size:</label>
+                <select id="fileSizeSelect" style="width:100%;margin-bottom:10px;">
+                    <option value="1">1 MB</option>
+                    <option value="10">10 MB</option>
+                    <option value="25">25 MB</option>
+                </select>
+                <label for="serverSelect" style="margin-top:10px;display:block;">Test server:</label>
+                <select id="serverSelect" style="width:100%;margin-bottom:10px;">
+                    <option value="https://meterx-speedtest-server.onrender.com">meterx-speedtest-server.onrender.com</option>
+                    <option value="http://localhost:3000">localhost:3000</option>
+                </select>
             </div>
             <button id="startButton">Start Test</button>
             <div id="loading-indicator" class="hidden">
