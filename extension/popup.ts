@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadSpeedEl.textContent = '-';
         pingEl.textContent = '-';
         jitterEl.textContent = '-';
-        statusEl.textContent = isStarting ? 'Ignition sequence start... 🌠' : 'Click Start to measure!';
+        statusEl.textContent = isStarting ? 'Ignition sequence start... 🌠' : "Let's see how your internet flows today!";
         
         // Remove any spinners
         downloadContainer.innerHTML = '<span id="downloadSpeed">-</span>';
