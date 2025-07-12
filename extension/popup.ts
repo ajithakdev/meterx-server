@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 jitterContainer.innerHTML = '<span id="jitter">-</span>';
             }
             
-            statusEl.textContent = data.status || "Test complete! 🎉";
+            statusEl.textContent = data.status || "Vibes checked! 🎉";
             startButton.disabled = false;
 
             // Save to history
