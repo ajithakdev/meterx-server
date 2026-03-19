@@ -16,80 +16,79 @@
                 <span class="logo">M</span>
                 <span class="brand-name">MeterX</span>
             </div>
-            <div id="quality-badge" class="badge hidden" aria-live="polite"></div>
+            <div class="header-right">
+                <div id="quality-badge" class="badge hidden" aria-live="polite"></div>
+            </div>
         </header>
 
-        <!-- Central Gauge -->
-        <div class="hero-gauge">
-            <svg class="ring-gauge" viewBox="0 0 200 200">
-                <circle class="ring-bg" cx="100" cy="100" r="85" />
-                <circle class="ring-fill download-ring" id="downloadRing" cx="100" cy="100" r="85" />
-                <circle class="ring-fill upload-ring" id="uploadRing" cx="100" cy="100" r="78" />
-            </svg>
-            <div class="hero-center">
-                <div class="hero-speed" id="heroSpeed">--</div>
-                <div class="hero-unit">Mbps</div>
-                <div class="hero-label" id="heroLabel">download</div>
+        <!-- Speed Display — compact horizontal -->
+        <div class="speed-display">
+            <div class="speed-main" id="heroSection">
+                <div class="speed-number" id="heroSpeed">--</div>
+                <div class="speed-meta">
+                    <span class="speed-unit">Mbps</span>
+                    <span class="speed-label" id="heroLabel">download</span>
+                </div>
+            </div>
+            <!-- Mini bars -->
+            <div class="speed-bars">
+                <div class="bar-row">
+                    <span class="bar-icon dl-icon"></span>
+                    <div class="bar-track"><div class="bar-fill dl-fill" id="dlBar"></div></div>
+                    <span class="bar-val" id="downloadSpeed">--</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-icon ul-icon"></span>
+                    <div class="bar-track"><div class="bar-fill ul-fill" id="ulBar"></div></div>
+                    <span class="bar-val" id="uploadSpeed">--</span>
+                </div>
             </div>
         </div>
 
         <!-- Progress Steps -->
         <div id="progress-bar" class="steps hidden" role="progressbar" aria-label="Test progress">
-            <div class="step" id="seg-download"><span class="step-dot"></span>Download</div>
+            <div class="step" id="seg-download"><span class="step-dot"></span>DL</div>
             <div class="step-line"></div>
-            <div class="step" id="seg-upload"><span class="step-dot"></span>Upload</div>
+            <div class="step" id="seg-upload"><span class="step-dot"></span>UL</div>
             <div class="step-line"></div>
             <div class="step" id="seg-ping"><span class="step-dot"></span>Ping</div>
         </div>
 
-        <!-- Metrics Grid -->
-        <div class="metrics">
-            <div class="metric">
-                <span class="metric-label">Download</span>
-                <span class="metric-value" id="downloadSpeed">--</span>
-                <span class="metric-unit">Mbps</span>
+        <!-- Stats — compact row -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-val" id="ping">--</span>
+                <span class="stat-lbl">Ping <span class="stat-u">ms</span></span>
             </div>
-            <div class="metric">
-                <span class="metric-label">Upload</span>
-                <span class="metric-value" id="uploadSpeed">--</span>
-                <span class="metric-unit">Mbps</span>
+            <div class="stat-sep"></div>
+            <div class="stat-item">
+                <span class="stat-val" id="jitter">--</span>
+                <span class="stat-lbl">Jitter <span class="stat-u">ms</span></span>
             </div>
-            <div class="metric">
-                <span class="metric-label">Ping</span>
-                <span class="metric-value" id="ping">--</span>
-                <span class="metric-unit">ms</span>
-            </div>
-            <div class="metric">
-                <span class="metric-label">Jitter</span>
-                <span class="metric-value" id="jitter">--</span>
-                <span class="metric-unit">ms</span>
-            </div>
-            <div class="metric">
-                <span class="metric-label">Loss</span>
-                <span class="metric-value" id="packetLoss">--</span>
-                <span class="metric-unit">%</span>
+            <div class="stat-sep"></div>
+            <div class="stat-item">
+                <span class="stat-val" id="packetLoss">--</span>
+                <span class="stat-lbl">Loss <span class="stat-u">%</span></span>
             </div>
         </div>
 
-        <!-- Status -->
-        <div id="status-container" aria-live="polite">
-            <p id="status">Ready to test</p>
-        </div>
-
-        <!-- Action -->
-        <div class="action-row">
-            <button id="startButton" aria-label="Start speed test">
-                <span class="btn-text">Start Test</span>
-                <span class="btn-spinner hidden" id="btnSpinner"></span>
-            </button>
-            <button id="cancelButton" class="cancel-btn hidden" aria-label="Cancel speed test">Stop</button>
+        <!-- Status + Action -->
+        <div class="action-area">
+            <p id="status" aria-live="polite">Ready to test</p>
+            <div class="action-row">
+                <button id="startButton" aria-label="Start speed test">
+                    <span class="btn-text">Start Test</span>
+                    <span class="btn-spinner hidden" id="btnSpinner"></span>
+                </button>
+                <button id="cancelButton" class="cancel-btn hidden" aria-label="Cancel">Stop</button>
+            </div>
         </div>
 
         <!-- History -->
-        <div class="history-section">
-            <button id="historyToggle" class="ghost-btn" aria-label="Show test history">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                History
+        <div class="history-section" id="historySection">
+            <button id="historyToggle" class="ghost-btn" aria-label="Toggle test history">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span id="historyLabel">History</span>
             </button>
             <div id="historyList" class="history-list hidden"></div>
         </div>
@@ -99,8 +98,6 @@
             <span>MeterX v2026.0.319</span>
             <span class="dot"></span>
             <a href="https://github.com/ajithakdev" class="footer-link">ajithakdev</a>
-            <span class="dot"></span>
-            <span>MIT</span>
         </footer>
     </div>
     <script src="popup.js"></script>
