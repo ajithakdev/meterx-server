@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MeterX</title>
+    <link rel="stylesheet" href="popup.css">
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MeterX <span class="rocket">🚀</span></h1>
+        </header>
+
+        <!-- Progress Bar -->
+        <div id="progress-bar" class="progress-bar hidden" role="progressbar" aria-label="Test progress">
+            <div class="progress-segment" id="seg-ping">Ping</div>
+            <div class="progress-segment" id="seg-download">Download</div>
+            <div class="progress-segment" id="seg-upload">Upload</div>
+        </div>
+
+        <!-- Gauges -->
+        <div class="gauges">
+            <div class="gauge-card">
+                <svg class="gauge" viewBox="0 0 100 60">
+                    <path class="gauge-bg" d="M10 55 A40 40 0 0 1 90 55" />
+                    <path class="gauge-fill download-fill" id="downloadGauge" d="M10 55 A40 40 0 0 1 90 55" />
+                </svg>
+                <div class="gauge-value">
+                    <span id="downloadSpeed">-</span>
+                    <small>Mbps</small>
+                </div>
+                <div class="gauge-label">Download</div>
+            </div>
+            <div class="gauge-card">
+                <svg class="gauge" viewBox="0 0 100 60">
+                    <path class="gauge-bg" d="M10 55 A40 40 0 0 1 90 55" />
+                    <path class="gauge-fill upload-fill" id="uploadGauge" d="M10 55 A40 40 0 0 1 90 55" />
+                </svg>
+                <div class="gauge-value">
+                    <span id="uploadSpeed">-</span>
+                    <small>Mbps</small>
+                </div>
+                <div class="gauge-label">Upload</div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat">
+                <span class="stat-value" id="ping">-</span>
+                <span class="stat-unit">ms</span>
+                <span class="stat-label">Ping</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="jitter">-</span>
+                <span class="stat-unit">ms</span>
+                <span class="stat-label">Jitter</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value" id="packetLoss">-</span>
+                <span class="stat-unit">%</span>
+                <span class="stat-label">Loss</span>
+            </div>
+        </div>
+
+        <!-- Quality Rating -->
+        <div id="quality-badge" class="quality-badge hidden" aria-live="polite"></div>
+
+        <!-- Status -->
+        <div id="status-container" aria-live="polite">
+            <p id="status">Click Start to measure!</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-row">
+            <button id="startButton" aria-label="Start speed test">Start Test</button>
+            <button id="cancelButton" class="hidden cancel-btn" aria-label="Cancel speed test">Cancel</button>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading-indicator" class="hidden">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- History Toggle -->
+        <div class="history-section">
+            <button id="historyToggle" class="link-btn" aria-label="Show test history">History</button>
+            <div id="historyList" class="history-list hidden"></div>
+        </div>
+
+        <footer>
+            <p class="footer-text">MeterX v2026.0.319 &middot; by <a href="https://github.com/ajithakdev" class="footer-link">ajithakdev</a> &middot; MIT</p>
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
