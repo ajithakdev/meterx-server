@@ -17,44 +17,57 @@ interface HistoryEntry {
 }
 
 const MAX_HISTORY = 20;
-const GAUGE_ARC_LENGTH = 126; // SVG arc length for dashoffset calculation
-const MAX_SPEED_GAUGE = 200; // Mbps — gauge tops out here
+const DL_RING_CIRCUMFERENCE = 534;  // 2 * PI * 85
+const UL_RING_CIRCUMFERENCE = 490;  // 2 * PI * 78
+const MAX_SPEED_GAUGE = 200;
 
 document.addEventListener('DOMContentLoaded', () => {
     const startButton = document.getElementById('startButton') as HTMLButtonElement;
     const cancelButton = document.getElementById('cancelButton') as HTMLButtonElement;
+    const btnText = startButton.querySelector('.btn-text') as HTMLElement;
+    const btnSpinner = document.getElementById('btnSpinner') as HTMLElement;
     const downloadSpeedEl = document.getElementById('downloadSpeed') as HTMLElement;
     const uploadSpeedEl = document.getElementById('uploadSpeed') as HTMLElement;
     const pingEl = document.getElementById('ping') as HTMLElement;
     const jitterEl = document.getElementById('jitter') as HTMLElement;
     const packetLossEl = document.getElementById('packetLoss') as HTMLElement;
     const statusEl = document.getElementById('status') as HTMLElement;
-    const loadingIndicator = document.getElementById('loading-indicator') as HTMLElement;
+    const heroSpeed = document.getElementById('heroSpeed') as HTMLElement;
+    const heroUnit = document.querySelector('.hero-unit') as HTMLElement;
+    const heroLabel = document.getElementById('heroLabel') as HTMLElement;
     const progressBar = document.getElementById('progress-bar') as HTMLElement;
     const qualityBadge = document.getElementById('quality-badge') as HTMLElement;
     const historyToggle = document.getElementById('historyToggle') as HTMLButtonElement;
     const historyList = document.getElementById('historyList') as HTMLElement;
-    const downloadGauge = document.getElementById('downloadGauge') as unknown as SVGPathElement;
-    const uploadGauge = document.getElementById('uploadGauge') as unknown as SVGPathElement;
+    const heroGauge = document.querySelector('.hero-gauge') as HTMLElement;
+
+    const dlRing = document.getElementById('downloadRing') as unknown as SVGCircleElement;
+    const ulRing = document.getElementById('uploadRing') as unknown as SVGCircleElement;
 
     const segments = {
-        ping: document.getElementById('seg-ping') as HTMLElement,
         download: document.getElementById('seg-download') as HTMLElement,
         upload: document.getElementById('seg-upload') as HTMLElement,
+        ping: document.getElementById('seg-ping') as HTMLElement,
     };
 
-    function setGauge(el: SVGPathElement, speedMbps: number): void {
+    function setRing(el: SVGCircleElement, circumference: number, speedMbps: number): void {
         const ratio = Math.min(speedMbps / MAX_SPEED_GAUGE, 1);
-        el.style.strokeDashoffset = String(GAUGE_ARC_LENGTH * (1 - ratio));
+        el.style.strokeDashoffset = String(circumference * (1 - ratio));
     }
 
-    function resetGauges(): void {
-        downloadGauge.style.strokeDashoffset = String(GAUGE_ARC_LENGTH);
-        uploadGauge.style.strokeDashoffset = String(GAUGE_ARC_LENGTH);
+    function resetRings(): void {
+        dlRing.style.strokeDashoffset = String(DL_RING_CIRCUMFERENCE);
+        ulRing.style.strokeDashoffset = String(UL_RING_CIRCUMFERENCE);
     }
 
-    function setSegment(phase: 'ping' | 'download' | 'upload'): void {
-        const order: Array<'ping' | 'download' | 'upload'> = ['ping', 'download', 'upload'];
+    function setHero(value: string, unit: string, label: string): void {
+        heroSpeed.textContent = value;
+        heroUnit.textContent = unit;
+        heroLabel.textContent = label;
+    }
+
+    function setSegment(phase: 'download' | 'upload' | 'ping'): void {
+        const order: Array<'download' | 'upload' | 'ping'> = ['download', 'upload', 'ping'];
         const idx = order.indexOf(phase);
         order.forEach((seg, i) => {
             segments[seg].classList.toggle('active', i === idx);
@@ -69,16 +82,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return { label: 'Poor', cls: 'poor' };
     }
 
+    function setTesting(active: boolean): void {
+        startButton.disabled = active;
+        cancelButton.classList.toggle('hidden', !active);
+        progressBar.classList.toggle('hidden', !active);
+        btnSpinner.classList.toggle('hidden', !active);
+        heroGauge.classList.toggle('testing', active);
+        if (active) {
+            btnText.textContent = 'Testing';
+        } else {
+            btnText.textContent = 'Start Test';
+        }
+    }
+
     function resetUI(): void {
-        downloadSpeedEl.textContent = '-';
-        uploadSpeedEl.textContent = '-';
-        pingEl.textContent = '-';
-        jitterEl.textContent = '-';
-        packetLossEl.textContent = '-';
-        statusEl.textContent = 'Ignition sequence start... 🌠';
+        downloadSpeedEl.textContent = '--';
+        uploadSpeedEl.textContent = '--';
+        pingEl.textContent = '--';
+        jitterEl.textContent = '--';
+        packetLossEl.textContent = '--';
+        setHero('--', 'Mbps', 'download');
         qualityBadge.classList.add('hidden');
-        qualityBadge.className = 'quality-badge hidden';
-        resetGauges();
+        qualityBadge.className = 'badge hidden';
+        resetRings();
         Object.values(segments).forEach(s => { s.classList.remove('active', 'done'); });
     }
 
@@ -86,100 +112,97 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkOnline(): void {
         if (!navigator.onLine) {
             startButton.disabled = true;
-            statusEl.textContent = 'You are offline';
+            statusEl.textContent = 'No connection detected';
         }
     }
     window.addEventListener('online', () => {
         startButton.disabled = false;
-        statusEl.textContent = 'Back online! Click Start to measure.';
+        statusEl.textContent = 'Connection restored';
     });
     window.addEventListener('offline', () => {
         startButton.disabled = true;
-        statusEl.textContent = 'You are offline';
+        statusEl.textContent = 'No connection detected';
     });
     checkOnline();
 
-    // --- Start test ---
+    // --- Start ---
     startButton.addEventListener('click', () => {
         resetUI();
-        startButton.disabled = true;
-        cancelButton.classList.remove('hidden');
-        progressBar.classList.remove('hidden');
-        loadingIndicator.classList.remove('hidden');
+        setTesting(true);
+        statusEl.textContent = 'Initializing test...';
 
         chrome.runtime.sendMessage({ action: "startTest" }, (response) => {
             if (chrome.runtime.lastError) {
                 statusEl.textContent = `Error: ${chrome.runtime.lastError.message}`;
-                startButton.disabled = false;
-                cancelButton.classList.add('hidden');
-                progressBar.classList.add('hidden');
-                loadingIndicator.classList.add('hidden');
+                setTesting(false);
             } else if (response?.status) {
-                // Ack received
+                // ack
             }
         });
     });
 
-    // --- Cancel test ---
+    // --- Cancel ---
     cancelButton.addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: "cancelTest" });
-        statusEl.textContent = 'Test cancelled.';
-        startButton.disabled = false;
-        cancelButton.classList.add('hidden');
-        progressBar.classList.add('hidden');
-        loadingIndicator.classList.add('hidden');
+        statusEl.textContent = 'Test cancelled';
+        setTesting(false);
     });
 
-    // --- Listen for messages ---
+    // --- Messages ---
     chrome.runtime.onMessage.addListener((message) => {
         if (message.action === "testProgress") {
             const data = message.data;
             if (data.status) {
                 statusEl.textContent = data.status;
-                // Determine phase from status
-                if (data.status.includes('Ping') || data.status.includes('Pong')) setSegment('ping');
-                else if (data.status.includes('bits') || data.status.includes('Download')) setSegment('download');
-                else if (data.status.includes('vibe') || data.status.includes('Upload')) setSegment('upload');
+                if (data.status.includes('latency') || data.status.includes('Ping') || data.status.includes('Pong')) setSegment('ping');
+                else if (data.status.includes('Download') || data.status.includes('download')) setSegment('download');
+                else if (data.status.includes('Upload') || data.status.includes('upload')) setSegment('upload');
             }
             if (data.downloadSpeed !== undefined) {
-                downloadSpeedEl.textContent = data.downloadSpeed.toFixed(2);
-                setGauge(downloadGauge, data.downloadSpeed);
+                const val = data.downloadSpeed.toFixed(1);
+                downloadSpeedEl.textContent = val;
+                setHero(val, 'Mbps', 'download');
+                setRing(dlRing, DL_RING_CIRCUMFERENCE, data.downloadSpeed);
             }
             if (data.uploadSpeed !== undefined) {
-                uploadSpeedEl.textContent = data.uploadSpeed.toFixed(2);
-                setGauge(uploadGauge, data.uploadSpeed);
+                const val = data.uploadSpeed.toFixed(1);
+                uploadSpeedEl.textContent = val;
+                setHero(val, 'Mbps', 'upload');
+                setRing(ulRing, UL_RING_CIRCUMFERENCE, data.uploadSpeed);
             }
-            if (data.ping !== undefined) pingEl.textContent = data.ping.toFixed(1);
+            if (data.ping !== undefined) {
+                pingEl.textContent = data.ping.toFixed(1);
+                setHero(data.ping.toFixed(0), 'ms', 'ping');
+            }
             if (data.jitter !== undefined) jitterEl.textContent = data.jitter.toFixed(1);
             if (data.packetLoss !== undefined) packetLossEl.textContent = data.packetLoss.toFixed(0);
         } else if (message.action === "testComplete") {
             const data = message.data;
-            downloadSpeedEl.textContent = data.downloadSpeed !== undefined ? data.downloadSpeed.toFixed(2) : 'N/A';
-            uploadSpeedEl.textContent = data.uploadSpeed !== undefined ? data.uploadSpeed.toFixed(2) : 'N/A';
-            pingEl.textContent = data.ping !== undefined ? data.ping.toFixed(1) : 'N/A';
-            jitterEl.textContent = data.jitter !== undefined ? data.jitter.toFixed(1) : 'N/A';
-            packetLossEl.textContent = data.packetLoss !== undefined ? data.packetLoss.toFixed(0) : 'N/A';
+            const fmt = (v: number | undefined, dec: number) => v !== undefined ? v.toFixed(dec) : '--';
 
-            if (data.downloadSpeed !== undefined) setGauge(downloadGauge, data.downloadSpeed);
-            if (data.uploadSpeed !== undefined) setGauge(uploadGauge, data.uploadSpeed);
+            downloadSpeedEl.textContent = fmt(data.downloadSpeed, 1);
+            uploadSpeedEl.textContent = fmt(data.uploadSpeed, 1);
+            pingEl.textContent = fmt(data.ping, 1);
+            jitterEl.textContent = fmt(data.jitter, 1);
+            packetLossEl.textContent = fmt(data.packetLoss, 0);
 
-            // Quality rating
+            if (data.downloadSpeed !== undefined) {
+                setRing(dlRing, DL_RING_CIRCUMFERENCE, data.downloadSpeed);
+                setHero(data.downloadSpeed.toFixed(1), 'Mbps', 'download');
+            }
+            if (data.uploadSpeed !== undefined) setRing(ulRing, UL_RING_CIRCUMFERENCE, data.uploadSpeed);
+
+            // Quality
             if (data.downloadSpeed !== undefined && data.uploadSpeed !== undefined && data.ping !== undefined) {
                 const q = getQuality(data.downloadSpeed, data.uploadSpeed, data.ping);
                 qualityBadge.textContent = q.label;
-                qualityBadge.className = `quality-badge ${q.cls}`;
+                qualityBadge.className = `badge ${q.cls}`;
             }
 
-            statusEl.textContent = data.status || "Test complete! 🎉";
-            startButton.disabled = false;
-            cancelButton.classList.add('hidden');
-            progressBar.classList.add('hidden');
-            loadingIndicator.classList.add('hidden');
-
-            // Mark all segments done
+            statusEl.textContent = data.status || 'Test complete';
+            setTesting(false);
             Object.values(segments).forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
 
-            // Save to history
             saveHistory({
                 timestamp: Date.now(),
                 downloadSpeed: data.downloadSpeed,
@@ -189,16 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 packetLoss: data.packetLoss,
             });
         } else if (message.action === "testError") {
-            statusEl.textContent = `Error: ${message.error}`;
-            if (downloadSpeedEl.textContent === '-') downloadSpeedEl.textContent = 'N/A';
-            if (uploadSpeedEl.textContent === '-') uploadSpeedEl.textContent = 'N/A';
-            if (pingEl.textContent === '-') pingEl.textContent = 'N/A';
-            if (jitterEl.textContent === '-') jitterEl.textContent = 'N/A';
-            if (packetLossEl.textContent === '-') packetLossEl.textContent = 'N/A';
-            startButton.disabled = false;
-            cancelButton.classList.add('hidden');
-            progressBar.classList.add('hidden');
-            loadingIndicator.classList.add('hidden');
+            statusEl.textContent = message.error || 'Test failed';
+            setTesting(false);
         }
     });
 
@@ -218,19 +233,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderHistory(entries: HistoryEntry[]): void {
         if (entries.length === 0) {
-            historyList.innerHTML = '<div class="history-item" style="justify-content:center;color:rgba(255,255,255,0.3)">No history yet</div>';
+            historyList.innerHTML = '<div class="history-item" style="justify-content:center">No tests recorded yet</div>';
             return;
         }
         historyList.innerHTML = entries.map(e => {
             const date = new Date(e.timestamp);
             const timeStr = `${date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} ${date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
-            const dl = e.downloadSpeed !== undefined ? e.downloadSpeed.toFixed(1) : '-';
-            const ul = e.uploadSpeed !== undefined ? e.uploadSpeed.toFixed(1) : '-';
+            const dl = e.downloadSpeed !== undefined ? e.downloadSpeed.toFixed(1) : '--';
+            const ul = e.uploadSpeed !== undefined ? e.uploadSpeed.toFixed(1) : '--';
             return `<div class="history-item">
                 <span class="time">${timeStr}</span>
                 <span class="speeds">
-                    <span class="dl">↓${dl}</span>
-                    <span class="ul">↑${ul}</span>
+                    <span class="dl">${dl}</span>
+                    <span class="ul">${ul}</span>
                 </span>
             </div>`;
         }).join('');
@@ -243,10 +258,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const entries = await loadHistory();
             renderHistory(entries);
             historyList.classList.remove('hidden');
-            historyToggle.textContent = 'Hide History';
         } else {
             historyList.classList.add('hidden');
-            historyToggle.textContent = 'History';
         }
     });
 });

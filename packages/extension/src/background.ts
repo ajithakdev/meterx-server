@@ -90,7 +90,7 @@ async function fetchWithTimeout(resource: string, options: RequestInit = {}, tim
 // --- Test Functions ---
 
 async function measureDownloadSpeed(): Promise<number> {
-    await sendProgress({ status: 'Fetching the bits... 📥' });
+    await sendProgress({ status: 'Downloading test file...' });
     const url = `${TEST_SERVER_BASE_URL}${DOWNLOAD_FILE_PATH}?t=${Date.now()}`;
     const startTime = performance.now();
 
@@ -105,12 +105,12 @@ async function measureDownloadSpeed(): Promise<number> {
 
     const bitsLoaded = data.byteLength * 8;
     const speedMbps = (bitsLoaded / durationSeconds) / (1024 * 1024);
-    await sendProgress({ downloadSpeed: speedMbps, status: 'Download done! Zoom! 💨' });
+    await sendProgress({ downloadSpeed: speedMbps, status: 'Download complete' });
     return speedMbps;
 }
 
 async function measureUploadSpeed(): Promise<number> {
-    await sendProgress({ status: 'Sending your vibes... 📤' });
+    await sendProgress({ status: 'Uploading test data...' });
     const url = `${TEST_SERVER_BASE_URL}${UPLOAD_ENDPOINT_PATH}?t=${Date.now()}`;
     const dataSize = UPLOAD_DATA_SIZE_MB * 1024 * 1024;
     const dataToSend = new Uint8Array(dataSize);
@@ -130,12 +130,12 @@ async function measureUploadSpeed(): Promise<number> {
 
     const bitsUploaded = dataSize * 8;
     const speedMbps = (bitsUploaded / durationSeconds) / (1024 * 1024);
-    await sendProgress({ uploadSpeed: speedMbps, status: 'Upload complete! Sent! 🚀' });
+    await sendProgress({ uploadSpeed: speedMbps, status: 'Upload complete' });
     return speedMbps;
 }
 
 async function measurePingAndJitter(): Promise<PingResult> {
-    await sendProgress({ status: 'Pinging the void... 🏓' });
+    await sendProgress({ status: 'Measuring latency...' });
     const url = `${TEST_SERVER_BASE_URL}${PING_ENDPOINT_PATH}?t=`;
     const latencies: number[] = [];
     let lost = 0;
@@ -157,7 +157,7 @@ async function measurePingAndJitter(): Promise<PingResult> {
             const msg = error instanceof Error ? error.message : 'Unknown error';
             console.error(`Ping ${i + 1} error:`, msg);
             lost++;
-            await sendProgress({ status: `Ping ${i + 1}/${PING_COUNT} lost...` });
+            await sendProgress({ status: `Ping ${i + 1}/${PING_COUNT} lost` });
         }
         if (i < PING_COUNT - 1) await new Promise(resolve => setTimeout(resolve, 200));
     }
@@ -178,7 +178,7 @@ async function measurePingAndJitter(): Promise<PingResult> {
         ping: averagePing,
         jitter,
         packetLoss,
-        status: `Ping & Jitter done! ${lost > 0 ? `(${packetLoss.toFixed(0)}% loss)` : '🎯'}`
+        status: `Latency measured${lost > 0 ? ` (${packetLoss.toFixed(0)}% loss)` : ''}`
     });
     return { ping: averagePing, jitter, packetLoss };
 }
@@ -206,7 +206,7 @@ async function runFullTest(): Promise<TestResults> {
         ping: undefined,
         jitter: undefined,
         packetLoss: undefined,
-        status: 'Ignition sequence start... 🌠'
+        status: 'Initializing test...'
     };
 
     try {
@@ -222,7 +222,7 @@ async function runFullTest(): Promise<TestResults> {
         results.jitter = pingResult.jitter;
         results.packetLoss = pingResult.packetLoss;
 
-        results.status = 'All tests complete! 🎉';
+        results.status = 'Test complete';
 
         // Set badge with download speed
         if (results.downloadSpeed !== undefined) {
@@ -267,4 +267,4 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-console.log("MeterX Background Service: Ready!");
+console.log("MeterX Background Service: Ready");

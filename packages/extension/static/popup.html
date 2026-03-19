@@ -4,92 +4,103 @@
     <title>MeterX</title>
     <link rel="stylesheet" href="popup.css">
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <header>
-            <h1>MeterX <span class="rocket">🚀</span></h1>
+            <div class="brand">
+                <span class="logo">M</span>
+                <span class="brand-name">MeterX</span>
+            </div>
+            <div id="quality-badge" class="badge hidden" aria-live="polite"></div>
         </header>
 
-        <!-- Progress Bar -->
-        <div id="progress-bar" class="progress-bar hidden" role="progressbar" aria-label="Test progress">
-            <div class="progress-segment" id="seg-ping">Ping</div>
-            <div class="progress-segment" id="seg-download">Download</div>
-            <div class="progress-segment" id="seg-upload">Upload</div>
-        </div>
-
-        <!-- Gauges -->
-        <div class="gauges">
-            <div class="gauge-card">
-                <svg class="gauge" viewBox="0 0 100 60">
-                    <path class="gauge-bg" d="M10 55 A40 40 0 0 1 90 55" />
-                    <path class="gauge-fill download-fill" id="downloadGauge" d="M10 55 A40 40 0 0 1 90 55" />
-                </svg>
-                <div class="gauge-value">
-                    <span id="downloadSpeed">-</span>
-                    <small>Mbps</small>
-                </div>
-                <div class="gauge-label">Download</div>
-            </div>
-            <div class="gauge-card">
-                <svg class="gauge" viewBox="0 0 100 60">
-                    <path class="gauge-bg" d="M10 55 A40 40 0 0 1 90 55" />
-                    <path class="gauge-fill upload-fill" id="uploadGauge" d="M10 55 A40 40 0 0 1 90 55" />
-                </svg>
-                <div class="gauge-value">
-                    <span id="uploadSpeed">-</span>
-                    <small>Mbps</small>
-                </div>
-                <div class="gauge-label">Upload</div>
+        <!-- Central Gauge -->
+        <div class="hero-gauge">
+            <svg class="ring-gauge" viewBox="0 0 200 200">
+                <circle class="ring-bg" cx="100" cy="100" r="85" />
+                <circle class="ring-fill download-ring" id="downloadRing" cx="100" cy="100" r="85" />
+                <circle class="ring-fill upload-ring" id="uploadRing" cx="100" cy="100" r="78" />
+            </svg>
+            <div class="hero-center">
+                <div class="hero-speed" id="heroSpeed">--</div>
+                <div class="hero-unit">Mbps</div>
+                <div class="hero-label" id="heroLabel">download</div>
             </div>
         </div>
 
-        <!-- Stats Row -->
-        <div class="stats-row">
-            <div class="stat">
-                <span class="stat-value" id="ping">-</span>
-                <span class="stat-unit">ms</span>
-                <span class="stat-label">Ping</span>
-            </div>
-            <div class="stat">
-                <span class="stat-value" id="jitter">-</span>
-                <span class="stat-unit">ms</span>
-                <span class="stat-label">Jitter</span>
-            </div>
-            <div class="stat">
-                <span class="stat-value" id="packetLoss">-</span>
-                <span class="stat-unit">%</span>
-                <span class="stat-label">Loss</span>
-            </div>
+        <!-- Progress Steps -->
+        <div id="progress-bar" class="steps hidden" role="progressbar" aria-label="Test progress">
+            <div class="step" id="seg-download"><span class="step-dot"></span>Download</div>
+            <div class="step-line"></div>
+            <div class="step" id="seg-upload"><span class="step-dot"></span>Upload</div>
+            <div class="step-line"></div>
+            <div class="step" id="seg-ping"><span class="step-dot"></span>Ping</div>
         </div>
 
-        <!-- Quality Rating -->
-        <div id="quality-badge" class="quality-badge hidden" aria-live="polite"></div>
+        <!-- Metrics Grid -->
+        <div class="metrics">
+            <div class="metric">
+                <span class="metric-label">Download</span>
+                <span class="metric-value" id="downloadSpeed">--</span>
+                <span class="metric-unit">Mbps</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Upload</span>
+                <span class="metric-value" id="uploadSpeed">--</span>
+                <span class="metric-unit">Mbps</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Ping</span>
+                <span class="metric-value" id="ping">--</span>
+                <span class="metric-unit">ms</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Jitter</span>
+                <span class="metric-value" id="jitter">--</span>
+                <span class="metric-unit">ms</span>
+            </div>
+            <div class="metric">
+                <span class="metric-label">Loss</span>
+                <span class="metric-value" id="packetLoss">--</span>
+                <span class="metric-unit">%</span>
+            </div>
+        </div>
 
         <!-- Status -->
         <div id="status-container" aria-live="polite">
-            <p id="status">Click Start to measure!</p>
+            <p id="status">Ready to test</p>
         </div>
 
-        <!-- Buttons -->
-        <div class="button-row">
-            <button id="startButton" aria-label="Start speed test">Start Test</button>
-            <button id="cancelButton" class="hidden cancel-btn" aria-label="Cancel speed test">Cancel</button>
+        <!-- Action -->
+        <div class="action-row">
+            <button id="startButton" aria-label="Start speed test">
+                <span class="btn-text">Start Test</span>
+                <span class="btn-spinner hidden" id="btnSpinner"></span>
+            </button>
+            <button id="cancelButton" class="cancel-btn hidden" aria-label="Cancel speed test">Stop</button>
         </div>
 
-        <!-- Loading -->
-        <div id="loading-indicator" class="hidden">
-            <div class="spinner"></div>
-        </div>
-
-        <!-- History Toggle -->
+        <!-- History -->
         <div class="history-section">
-            <button id="historyToggle" class="link-btn" aria-label="Show test history">History</button>
+            <button id="historyToggle" class="ghost-btn" aria-label="Show test history">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                History
+            </button>
             <div id="historyList" class="history-list hidden"></div>
         </div>
 
+        <!-- Footer -->
         <footer>
-            <p class="footer-text">MeterX v2026.0.319 &middot; by <a href="https://github.com/ajithakdev" class="footer-link">ajithakdev</a> &middot; MIT</p>
+            <span>MeterX v2026.0.319</span>
+            <span class="dot"></span>
+            <a href="https://github.com/ajithakdev" class="footer-link">ajithakdev</a>
+            <span class="dot"></span>
+            <span>MIT</span>
         </footer>
     </div>
     <script src="popup.js"></script>
