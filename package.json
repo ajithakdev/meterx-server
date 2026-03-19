@@ -11,6 +11,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "npm run build --workspaces --if-present",
+    "start": "node packages/server/dist/server.js",
+    "dev": "npm run build --workspaces --if-present && node packages/server/dist/server.js",
     "test": "npm run test --workspaces --if-present"
   },
   "keywords": ["speed-test", "browser-extension", "network-monitor"],
