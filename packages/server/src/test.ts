@@ -71,7 +71,7 @@ async function checkServerRunning() {
   try {
     await makeRequest(`${SERVER_URL}/ping`);
     return true;
-  } catch (error) {
+  } catch {
     console.error(`❌ Server is not running at ${SERVER_URL}`);
     console.error('Please start the server with "node server.js" before running tests');
     return false;
