@@ -1,0 +1,6 @@
+name = "meterx-speedtest"
+main = "src/index.ts"
+compatibility_date = "2025-03-14"
+
+[observability]
+enabled = true

@@ -13,6 +13,9 @@ import path from 'path';
 
 const app = express();
 
+// Trust proxy (required behind Render/Cloudflare/nginx reverse proxies)
+app.set('trust proxy', 1);
+
 // --- CORS ---
 const ALLOWED_ORIGINS = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
