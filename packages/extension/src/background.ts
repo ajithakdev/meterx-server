@@ -8,16 +8,26 @@
 /// <reference types="chrome" />
 
 // --- Configuration ---
-const TEST_SERVER_BASE_URL = 'https://meterx-speedtest-server.onrender.com';
-const DOWNLOAD_FILE_MB = 1;
+const DEFAULT_SERVER_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
+const DOWNLOAD_FILE_MB = 10; // 10MB for better TCP ramp-up (M-Lab uses 9-60s tests)
 const DOWNLOAD_FILE_PATH = `/test-file/${DOWNLOAD_FILE_MB}MB.bin`;
-const UPLOAD_DATA_SIZE_MB = 1;
+const UPLOAD_DATA_SIZE_MB = 5;
 const UPLOAD_ENDPOINT_PATH = '/upload';
 const PING_ENDPOINT_PATH = '/ping';
 const PING_COUNT = 5;
 const FETCH_DOWNLOAD_TIMEOUT = 60000;
 const FETCH_UPLOAD_TIMEOUT = 60000;
 const FETCH_PING_TIMEOUT = 5000;
+
+// --- Server URL (configurable via options page) ---
+async function getServerUrl(): Promise<string> {
+    try {
+        const result = await chrome.storage.sync.get('serverUrl');
+        return result.serverUrl || DEFAULT_SERVER_URL;
+    } catch {
+        return DEFAULT_SERVER_URL;
+    }
+}
 
 // --- Types ---
 interface TestProgress {
@@ -89,29 +99,71 @@ async function fetchWithTimeout(resource: string, options: RequestInit = {}, tim
 
 // --- Test Functions ---
 
-async function measureDownloadSpeed(): Promise<number> {
+async function measureDownloadSpeed(baseUrl: string): Promise<number> {
+    // Warm-up: establish TCP + TLS connection before timing
+    await sendProgress({ status: 'Warming up connection...' });
+    try {
+        await fetchWithTimeout(`${baseUrl}/ping?warmup=${Date.now()}`, { method: 'HEAD', cache: 'no-store' }, 5000);
+    } catch { /* warmup failure is non-fatal */ }
+
     await sendProgress({ status: 'Downloading test file...' });
-    const url = `${TEST_SERVER_BASE_URL}${DOWNLOAD_FILE_PATH}?t=${Date.now()}`;
-    const startTime = performance.now();
+    const url = `${baseUrl}${DOWNLOAD_FILE_PATH}?t=${Date.now()}`;
 
     const response = await fetchWithTimeout(url, { cache: 'no-store' }, FETCH_DOWNLOAD_TIMEOUT);
     if (!response.ok) {
         throw new Error(`Download failed: ${response.status} ${response.statusText}`);
     }
-    const data = await response.arrayBuffer();
-    const endTime = performance.now();
-    const durationSeconds = (endTime - startTime) / 1000;
-    if (durationSeconds === 0) throw new Error("Download too fast to measure");
 
-    const bitsLoaded = data.byteLength * 8;
-    const speedMbps = (bitsLoaded / durationSeconds) / (1024 * 1024);
+    // Stream the response to show live progress, measure total bytes / total time
+    const reader = response.body?.getReader();
+    if (!reader) {
+        const data = await response.arrayBuffer();
+        const endTime = performance.now();
+        const dur = (endTime - performance.now()) / 1000 || 1;
+        return (data.byteLength * 8 / dur) / (1024 * 1024);
+    }
+
+    let totalBytes = 0;
+    const startTime = performance.now();
+    let lastProgressBytes = 0;
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        totalBytes += value.byteLength;
+        lastProgressBytes += value.byteLength;
+
+        // Send live speed updates every ~500KB
+        if (lastProgressBytes >= 512 * 1024) {
+            const now = performance.now();
+            const elapsed = (now - startTime) / 1000;
+            if (elapsed > 0) {
+                const liveSpeed = (totalBytes * 8 / elapsed) / (1024 * 1024);
+                await sendProgress({ downloadSpeed: liveSpeed, status: 'Downloading...' });
+            }
+            lastProgressBytes = 0;
+        }
+    }
+
+    const endTime = performance.now();
+    const totalDuration = (endTime - startTime) / 1000;
+    if (totalDuration === 0) throw new Error("Download too fast to measure");
+
+    // Simple total bytes / total time — same method as M-Lab
+    const speedMbps = (totalBytes * 8 / totalDuration) / (1024 * 1024);
     await sendProgress({ downloadSpeed: speedMbps, status: 'Download complete' });
     return speedMbps;
 }
 
-async function measureUploadSpeed(): Promise<number> {
+async function measureUploadSpeed(baseUrl: string): Promise<number> {
+    await sendProgress({ status: 'Preparing upload...' });
+    // Warm-up for upload path
+    try {
+        await fetchWithTimeout(`${baseUrl}/ping?warmup_ul=${Date.now()}`, { method: 'HEAD', cache: 'no-store' }, 5000);
+    } catch { /* non-fatal */ }
+
     await sendProgress({ status: 'Uploading test data...' });
-    const url = `${TEST_SERVER_BASE_URL}${UPLOAD_ENDPOINT_PATH}?t=${Date.now()}`;
+    const url = `${baseUrl}${UPLOAD_ENDPOINT_PATH}?t=${Date.now()}`;
     const dataSize = UPLOAD_DATA_SIZE_MB * 1024 * 1024;
     const dataToSend = new Uint8Array(dataSize);
 
@@ -134,9 +186,9 @@ async function measureUploadSpeed(): Promise<number> {
     return speedMbps;
 }
 
-async function measurePingAndJitter(): Promise<PingResult> {
+async function measurePingAndJitter(baseUrl: string): Promise<PingResult> {
     await sendProgress({ status: 'Measuring latency...' });
-    const url = `${TEST_SERVER_BASE_URL}${PING_ENDPOINT_PATH}?t=`;
+    const url = `${baseUrl}${PING_ENDPOINT_PATH}?t=`;
     const latencies: number[] = [];
     let lost = 0;
 
@@ -210,14 +262,20 @@ async function runFullTest(): Promise<TestResults> {
     };
 
     try {
+        // Resolve server URL once at the start
+        const baseUrl = await getServerUrl();
         await sendProgress({ status: results.status });
 
         checkCancelled();
-        results.downloadSpeed = await measureDownloadSpeed();
+        results.downloadSpeed = await measureDownloadSpeed(baseUrl);
         checkCancelled();
-        results.uploadSpeed = await measureUploadSpeed();
+        results.uploadSpeed = await measureUploadSpeed(baseUrl);
         checkCancelled();
-        const pingResult = await measurePingAndJitter();
+        // Wait 1s after upload for router buffers to drain (prevents bufferbloat from inflating ping)
+        await sendProgress({ status: 'Settling connection...' });
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        checkCancelled();
+        const pingResult = await measurePingAndJitter(baseUrl);
         results.ping = pingResult.ping;
         results.jitter = pingResult.jitter;
         results.packetLoss = pingResult.packetLoss;
@@ -248,7 +306,7 @@ async function runFullTest(): Promise<TestResults> {
 }
 
 chrome.runtime.onMessage.addListener(
-    (message: { action: string }, _sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
+    (message: { action: string; url?: string }, _sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
         if (message.action === "startTest") {
             runFullTest().then(result => {
                 sendResponse({ status: result.status || "Test initiated..." });
@@ -263,6 +321,19 @@ chrome.runtime.onMessage.addListener(
             }
             sendResponse({ status: "Cancelled" });
             return false;
+        }
+        if (message.action === "getServerUrl") {
+            getServerUrl().then(url => sendResponse({ url }));
+            return true;
+        }
+        if (message.action === "setServerUrl") {
+            const url = message.url?.trim() || '';
+            if (url) {
+                chrome.storage.sync.set({ serverUrl: url }).then(() => sendResponse({ success: true }));
+            } else {
+                chrome.storage.sync.remove('serverUrl').then(() => sendResponse({ success: true }));
+            }
+            return true;
         }
     }
 );
