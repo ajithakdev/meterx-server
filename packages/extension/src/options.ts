@@ -1,7 +1,7 @@
 /**
  * MeterX Options Page
  * @author ajithakdev (https://github.com/ajithakdev)
- * @license MIT
+ * @license AGPL-3.0
  */
 
 /// <reference types="chrome" />

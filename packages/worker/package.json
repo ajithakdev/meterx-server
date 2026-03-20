@@ -4,7 +4,7 @@
   "private": true,
   "description": "MeterX Cloudflare Worker — edge speed test server",
   "author": "ajithakdev (https://github.com/ajithakdev)",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",

@@ -2,6 +2,7 @@
   "name": "@meterx/extension",
   "version": "2026.0.319-MR1.0",
   "private": true,
+  "license": "AGPL-3.0",
   "scripts": {
     "build": "node build.mjs"
   },

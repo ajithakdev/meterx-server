@@ -1,7 +1,7 @@
 /**
  * MeterX Popup UI
  * @author ajithakdev (https://github.com/ajithakdev)
- * @license MIT
+ * @license AGPL-3.0
  * @version 2026.0.319-MR1.0
  */
 
@@ -693,7 +693,7 @@ ${envParts.length > 0 ? `<div class="env">${envParts.join(' &middot; ')}</div>` 
                 doc.line(margin, footerY - 4, pdfW - margin, footerY - 4);
                 doc.setFontSize(7);
                 doc.setTextColor('#555570');
-                doc.text('github.com/ajithakdev/meterx-server  |  v2026.0.319  |  MIT License', pdfW / 2, footerY, { align: 'center' });
+                doc.text('github.com/ajithakdev/meterx-server  |  v2026.0.319  |  AGPL-3.0', pdfW / 2, footerY, { align: 'center' });
                 doc.setTextColor('#8888a0');
                 doc.text(`${p} / ${totalPages}`, pdfW - margin, footerY, { align: 'right' });
                 // Continuation header on page 2+

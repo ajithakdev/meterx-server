@@ -1,7 +1,7 @@
 /**
  * MeterX Cloudflare Worker — Edge Speed Test Server
  * @author ajithakdev (https://github.com/ajithakdev)
- * @license MIT
+ * @license AGPL-3.0
  * @version 2026.0.319-MR1.0
  *
  * Replaces the Express server with a Cloudflare Worker that runs

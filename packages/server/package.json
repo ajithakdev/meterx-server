@@ -2,6 +2,7 @@
   "name": "@meterx/server",
   "version": "2026.0.319-MR1.0",
   "private": true,
+  "license": "AGPL-3.0",
   "main": "dist/server.js",
   "scripts": {
     "build": "esbuild src/server.ts --bundle --platform=node --target=node18 --outfile=dist/server.js --packages=external",

@@ -1,7 +1,7 @@
 /**
  * MeterX Background Service Worker
  * @author ajithakdev (https://github.com/ajithakdev)
- * @license MIT
+ * @license AGPL-3.0
  * @version 2026.0.319-MR1.0
  */
 
