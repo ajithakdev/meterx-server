@@ -8,8 +8,13 @@
     "storage"
   ],
   "host_permissions": [
-    "https://meterx-speedtest-server.onrender.com/*"
+    "https://meterx-speedtest.meterx-ajithakdev.workers.dev/*"
   ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "options_page": "options.html",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

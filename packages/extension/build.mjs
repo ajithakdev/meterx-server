@@ -10,6 +10,7 @@ await build({
     entryPoints: [
         resolve(__dirname, 'src/background.ts'),
         resolve(__dirname, 'src/popup.ts'),
+        resolve(__dirname, 'src/options.ts'),
     ],
     bundle: true,
     outdir: resolve(__dirname, 'dist'),
