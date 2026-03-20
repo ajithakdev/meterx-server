@@ -1,0 +1,16 @@
+{
+  "name": "@meterx/extension",
+  "version": "2026.0.319-MR1.0",
+  "private": true,
+  "license": "AGPL-3.0",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1"
+  }
+}

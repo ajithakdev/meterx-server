@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "MeterX — by ajithakdev",
+  "author": "ajithakdev (https://github.com/ajithakdev)",
+  "version": "2026.3.19.1",
+  "description": "Open-source internet speed test. Measure download, upload, ping, jitter, and packet loss.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://meterx-speedtest.meterx-ajithakdev.workers.dev/*"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icons16.png",
+      "48": "images/icons48.png",
+      "128": "images/icons128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "images/icons16.png",
+    "48": "images/icons48.png",
+    "128": "images/icons128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

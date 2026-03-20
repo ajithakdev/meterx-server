@@ -1,8 +1,27 @@
-# .gitignore
+# Dependencies
 node_modules/
+
+# Build output
+dist/
 test-files/
+
+# Environment
 .env
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-extension/node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Extension package
+*.zip
+*.crx

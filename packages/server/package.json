@@ -1,0 +1,25 @@
+{
+  "name": "@meterx/server",
+  "version": "2026.0.319-MR1.0",
+  "private": true,
+  "license": "AGPL-3.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "esbuild src/server.ts --bundle --platform=node --target=node18 --outfile=dist/server.js --packages=external",
+    "dev": "node dist/server.js",
+    "start": "node dist/server.js",
+    "test": "npx vitest run"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^22.0.0",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.0"
+  }
+}

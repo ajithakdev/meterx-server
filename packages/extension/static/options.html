@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MeterX Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">MX</div>
+            <div class="header-text">
+                <h1>MeterX Settings</h1>
+                <p class="sub">Configure your speed test server</p>
+            </div>
+            <button id="closeBtn" class="close-btn" aria-label="Close" title="Close"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg></button>
+        </div>
+
+        <!-- Server Status -->
+        <div class="card status-card">
+            <div class="status-row">
+                <div class="status-dot" id="statusDot"></div>
+                <div class="status-info">
+                    <div class="status-label" id="statusLabel">Checking connection...</div>
+                    <div class="status-detail" id="statusDetail"></div>
+                </div>
+                <div class="status-ping" id="statusPing"></div>
+            </div>
+        </div>
+
+        <!-- Server Selection -->
+        <div class="card">
+            <label>Server</label>
+            <div class="radio-group">
+                <label class="radio-option" id="optDefault">
+                    <input type="radio" name="serverType" value="default" checked>
+                    <div class="radio-content">
+                        <span class="radio-label">Cloudflare Edge</span>
+                        <span class="radio-desc">Auto-routes to nearest location. Zero cold starts.</span>
+                    </div>
+                </label>
+                <label class="radio-option" id="optCustom">
+                    <input type="radio" name="serverType" value="custom">
+                    <div class="radio-content">
+                        <span class="radio-label">Custom Server</span>
+                        <span class="radio-desc">Use your own self-hosted MeterX server.</span>
+                    </div>
+                </label>
+            </div>
+
+            <div id="customUrlSection" class="custom-url hidden">
+                <div class="input-row">
+                    <input type="url" id="serverUrl" placeholder="https://your-server.example.com" spellcheck="false" autocomplete="off">
+                    <button id="testBtn" class="btn btn-secondary">Test</button>
+                </div>
+                <div id="testStatus" class="test-status hidden"></div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="saveBtn" class="btn btn-primary">Save</button>
+        </div>
+
+        <div class="info">
+            <p>Self-host the MeterX server for LAN testing or maximum privacy.</p>
+            <p>See <a href="https://github.com/ajithakdev/meterx-server" target="_blank">github.com/ajithakdev/meterx-server</a> for setup instructions.</p>
+        </div>
+
+        <div class="footer">
+            MeterX v2026.0.319 &middot; AGPL-3.0 &middot; <a href="https://github.com/ajithakdev/meterx-server" target="_blank">About</a>
+        </div>
+    </div>
+    <script src="options.js"></script>
+</body>
+</html>

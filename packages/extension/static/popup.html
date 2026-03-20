@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MeterX</title>
+    <link rel="stylesheet" href="popup.css">
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="brand">
+                <span class="logo">MX</span>
+                <span class="brand-name">MeterX</span>
+            </div>
+            <div class="header-right">
+                <div id="quality-badge" class="badge hidden" aria-live="polite"></div>
+                <button id="settingsBtn" class="icon-btn" aria-label="Settings" title="Settings"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+                <button id="closeBtn" class="close-btn" aria-label="Close popup"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg></button>
+            </div>
+        </header>
+
+        <!-- Speed Display — compact horizontal -->
+        <div class="speed-display">
+            <div class="speed-main" id="heroSection">
+                <div class="speed-number" id="heroSpeed">--</div>
+                <div class="speed-meta">
+                    <span class="speed-unit">Mbps</span>
+                    <span class="speed-label" id="heroLabel">download</span>
+                </div>
+            </div>
+            <!-- Mini bars -->
+            <div class="speed-bars">
+                <div class="bar-row">
+                    <span class="bar-icon dl-icon"></span>
+                    <div class="bar-track"><div class="bar-fill dl-fill" id="dlBar"></div></div>
+                    <span class="bar-val" id="downloadSpeed">--</span>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-icon ul-icon"></span>
+                    <div class="bar-track"><div class="bar-fill ul-fill" id="ulBar"></div></div>
+                    <span class="bar-val" id="uploadSpeed">--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Steps -->
+        <div id="progress-bar" class="steps hidden" role="progressbar" aria-label="Test progress">
+            <div class="step" id="seg-download"><span class="step-dot"></span>DL</div>
+            <div class="step-line"><div class="step-line-fill" id="line-dl-ul"></div></div>
+            <div class="step" id="seg-upload"><span class="step-dot"></span>UL</div>
+            <div class="step-line"><div class="step-line-fill" id="line-ul-ping"></div></div>
+            <div class="step" id="seg-ping"><span class="step-dot"></span>Ping</div>
+        </div>
+
+        <!-- Use-Case Readiness -->
+        <div id="use-cases" class="use-cases hidden">
+            <div class="uc" id="uc-calls"><span class="uc-dot"></span>Calls</div>
+            <div class="uc" id="uc-stream"><span class="uc-dot"></span>Streaming</div>
+            <div class="uc" id="uc-gaming"><span class="uc-dot"></span>Gaming</div>
+            <div class="uc" id="uc-upload"><span class="uc-dot"></span>Uploads</div>
+        </div>
+
+        <!-- Stats — compact row -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-val" id="ping">--</span>
+                <span class="stat-lbl">Ping <span class="stat-u">ms</span></span>
+            </div>
+            <div class="stat-sep"></div>
+            <div class="stat-item">
+                <span class="stat-val" id="jitter">--</span>
+                <span class="stat-lbl">Jitter <span class="stat-u">ms</span></span>
+            </div>
+            <div class="stat-sep"></div>
+            <div class="stat-item">
+                <span class="stat-val" id="packetLoss">--</span>
+                <span class="stat-lbl">Loss <span class="stat-u">%</span></span>
+            </div>
+        </div>
+
+        <!-- Status + Action -->
+        <div class="action-area">
+            <p id="status" aria-live="polite">Ready to test</p>
+            <div class="action-row">
+                <button id="startButton" aria-label="Start speed test">
+                    <span class="btn-text">Start Test</span>
+                    <span class="btn-spinner hidden" id="btnSpinner"></span>
+                </button>
+                <button id="cancelButton" class="cancel-btn hidden" aria-label="Cancel">Stop</button>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-section" id="historySection">
+            <div class="history-header">
+                <button id="historyToggle" class="ghost-btn" aria-label="Toggle test history">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="historyLabel">History</span>
+                </button>
+                <button id="exportBtn" class="ghost-btn" aria-label="Export PDF report">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Report
+                </button>
+            </div>
+            <div id="historyList" class="history-list hidden"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <span>MeterX v2026.0.319</span>
+            <span class="dot"></span>
+            <a href="https://github.com/ajithakdev" class="footer-link">ajithakdev</a><span class="heart">&#9829;</span>
+        </footer>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
