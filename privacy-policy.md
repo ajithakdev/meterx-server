@@ -61,5 +61,6 @@ If this policy changes, the "Last Updated" date at the top will reflect it.
 
 ## 9. Contact
 
-- **Author:** ajithakdev
+- **Author:** Ajith Kumar K ([@ajithakdev](https://github.com/ajithakdev))
+- **Email:** ajithkumarks2579@gmail.com
 - **GitHub:** [github.com/ajithakdev/meterx-server/issues](https://github.com/ajithakdev/meterx-server/issues)

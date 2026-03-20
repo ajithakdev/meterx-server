@@ -1,7 +1,7 @@
 # MeterX
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![CI](https://github.com/ajithakdev/meterx-server/actions/workflows/ci.yml/badge.svg)](https://github.com/ajithakdev/meterx-server/actions)
+[![CI](https://github.com/ajithakdev/meterx-server/actions/workflows/ci.yml/badge.svg?branch=add/dev/2026.0.MAR.1)](https://github.com/ajithakdev/meterx-server/actions)
 
 Open-source speed test browser extension. Measures download, upload, ping, jitter, and packet loss from your toolbar — powered by Cloudflare's edge network.
 
@@ -105,6 +105,11 @@ MeterX collects zero personal data. All results are stored locally in your brows
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[AGPL-3.0](LICENSE) — see [TRADEMARK.md](TRADEMARK.md) for brand usage policy.
 
-Created by [ajithakdev](https://github.com/ajithakdev)
+## Author
+
+**Ajith Kumar K** ([@ajithakdev](https://github.com/ajithakdev))
+
+- GitHub: [github.com/ajithakdev](https://github.com/ajithakdev)
+- Email: ajithkumarks2579@gmail.com
