@@ -1,83 +1,81 @@
 # Contributing to MeterX
 
-Thanks for your interest in contributing! Here's how to get started.
+Here's how to get set up and contribute.
 
-## Development Setup
+## Dev Setup
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/ajithakdev/meterx-server.git
-   cd meterx-server
-   ```
+```bash
+git clone https://github.com/ajithakdev/meterx-server.git
+cd meterx-server
+npm install
+npm run build
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Load the Extension
 
-3. **Build everything**
-   ```bash
-   npm run build
-   ```
+1. Go to `chrome://extensions` (or `edge://extensions`)
+2. Enable "Developer mode"
+3. Click "Load unpacked"
+4. Select `packages/extension/dist/`
 
-4. **Run the server locally**
-   ```bash
-   npm run dev:server
-   ```
+Rebuild with `npm run build` after changes, then hit reload on the extensions page.
 
-5. **Load the extension in Chrome/Edge**
-   - Navigate to `chrome://extensions`
-   - Enable "Developer mode"
-   - Click "Load unpacked"
-   - Select `packages/extension/dist/`
+## Run the Worker Locally
+
+```bash
+cd packages/worker
+npx wrangler dev
+```
+
+This starts a local Cloudflare Worker on `http://localhost:8787`. Update the server URL in the extension settings to point here.
+
+## Run the Server Locally
+
+```bash
+npm start
+```
+
+Starts the Express.js self-host server. Useful for LAN testing or when you don't want to touch the worker.
 
 ## Project Structure
 
 ```text
 packages/
-  server/       # Express.js speed test server (TypeScript)
-    src/
-      app.ts        # Express app (exported for testing)
-      server.ts     # Entry point (starts listening)
-      app.test.ts   # Vitest tests
-  extension/    # Browser extension (TypeScript, Manifest V3)
-    src/
-      background.ts # Service worker — test orchestration
-      popup.ts      # Popup UI logic
-    static/
-      popup.html    # Popup markup
-      popup.css     # Styles
-      manifest.json # Extension manifest
-    build.mjs       # esbuild script
+  extension/    # Browser extension (TypeScript, Manifest V3, esbuild)
+  worker/       # Cloudflare Worker — primary serverless backend
+  server/       # Express.js server — self-host fallback
 ```
 
 ## Commands
 
-| Command | Description |
+| Command | What it does |
 |---------|-------------|
+| `npm install` | Install all workspace deps |
 | `npm run build` | Build all packages |
-| `npm run build:server` | Build server only |
-| `npm run build:extension` | Build extension only |
-| `npm run lint` | Run ESLint |
+| `npm start` | Run self-host server |
+| `npm test` | Run all tests |
+| `npm run lint` | ESLint check |
 | `npm run lint:fix` | Auto-fix lint issues |
-| `npm -w @meterx/server run test` | Run server tests |
-| `npm run dev:server` | Start server locally |
+| `npm -w @meterx/server run test` | Run server tests only |
+| `cd packages/worker && npx wrangler dev` | Run worker locally |
+| `cd packages/worker && npx wrangler deploy` | Deploy worker to Cloudflare |
 
 ## Code Style
 
-- TypeScript for all source code
-- ESLint with strict rules enabled
-- Use `_` prefix for intentionally unused parameters
-- Keep functions small and focused
-- Prefer throwing errors over returning sentinel values
+- TypeScript everywhere — no plain JS
+- ESLint with strict rules, run `npm run lint` before committing
+- Prefix unused parameters with `_`
+- Keep functions short and focused
+- Throw errors, don't return sentinel values
+- No `any` unless absolutely necessary
 
-## Pull Request Process
+## Pull Requests
 
-1. Fork the repo and create a branch from `main`
+1. Fork the repo, branch from `main`
 2. Make your changes
-3. Run `npm run lint` and `npm run build` — both must pass
-4. Run `npm -w @meterx/server run test` — tests must pass
-5. Open a PR with a clear description of what and why
+3. Run `npm run lint && npm run build && npm test` — all must pass
+4. Open a PR with a clear description of what changed and why
+5. One approval required to merge
 
 ## Reporting Bugs
 
@@ -85,4 +83,4 @@ Open an issue with:
 - Browser and version
 - Steps to reproduce
 - Expected vs actual behavior
-- Console errors (if any)
+- Console errors if applicable
