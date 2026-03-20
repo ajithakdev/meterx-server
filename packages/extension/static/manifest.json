@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "MeterX — by ajithakdev",
   "author": "ajithakdev (https://github.com/ajithakdev)",
-  "version": "2026.3.19.1",
-  "description": "Open-source internet speed test. Measure download, upload, ping, jitter, and packet loss.",
+  "version": "2026.3.20.1",
+  "description": "Open-source network health tool. Test download, upload, ping, jitter, packet loss with use-case readiness and PDF reports. Powered by Cloudflare edge.",
   "permissions": [
     "storage"
   ],
