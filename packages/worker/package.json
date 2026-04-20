@@ -10,6 +10,9 @@
     "deploy": "wrangler deploy",
     "build": "echo 'Worker is built by wrangler on deploy'"
   },
+  "dependencies": {
+    "@meterx/shared": "*"
+  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250313.0",
     "wrangler": "^4.8.0"

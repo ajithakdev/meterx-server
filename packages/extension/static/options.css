@@ -24,10 +24,27 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 28px 20px;
 }
 
-.container { width: 100%; max-width: 520px; }
+/* Fill near-full viewport but clamp on ultrawide so reading line length stays sane. */
+.container { width: 100%; max-width: 1680px; }
+
+/* Cards flow in responsive grid that fills wider viewports
+   instead of a narrow centered column. Status/actions/info stay full-width. */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 14px;
+    align-items: start;
+    margin-bottom: 14px;
+}
+.options-grid > .card { margin-bottom: 0; }
+
+@media (max-width: 720px) {
+    body { padding: 20px 12px; }
+    .options-grid { grid-template-columns: 1fr; }
+}
 
 .header {
     display: flex;
@@ -176,3 +193,25 @@ input[type="url"]::placeholder { color: var(--t3); }
 .footer { font-size: 11px; color: var(--t3); text-align: center; }
 .footer a { color: var(--t3); text-decoration: none; transition: color 0.15s; }
 .footer a:hover { color: var(--cyan); }
+
+/* ISP plan card — grid children need min-width:0 so inputs don't push past card edge at zoom */
+.isp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.isp-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.isp-field-wide { grid-column: 1 / -1; }
+.isp-fl { font-size: 11px; color: var(--t2); }
+.isp-field input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--t1);
+    font-family: var(--font);
+    font-size: 12px;
+    outline: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.isp-field input:focus { border-color: var(--cyan); }
+.isp-actions { display: flex; justify-content: flex-end; gap: 8px; }

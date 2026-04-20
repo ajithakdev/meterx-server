@@ -6,7 +6,12 @@
 
 /// <reference types="chrome" />
 
+import type { IspPlan } from '@meterx/shared';
+
 const DEFAULT_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
+const ISP_KEY = 'ispPlan';
+const SCHEDULE_KEY = 'scheduleMinutes';
+const NOTIFY_KEY = 'notifyOnDrop';
 
 // IATA code to city name mapping for common Cloudflare PoPs
 const EDGE_NAMES: Record<string, string> = {
@@ -33,8 +38,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     const radios = document.querySelectorAll<HTMLInputElement>('input[name="serverType"]');
     const radioOptions = document.querySelectorAll('.radio-option');
 
+    const ispDown = document.getElementById('ispDown') as HTMLInputElement | null;
+    const ispUp = document.getElementById('ispUp') as HTMLInputElement | null;
+    const ispProvider = document.getElementById('ispProvider') as HTMLInputElement | null;
+    const ispClearBtn = document.getElementById('ispClearBtn') as HTMLButtonElement | null;
+    const scheduleRadios = document.querySelectorAll<HTMLInputElement>('input[name="schedule"]');
+    const notifyCheckbox = document.getElementById('notifyOnDrop') as HTMLInputElement | null;
+
     // Close button
     closeBtn.addEventListener('click', () => window.close());
+
+    // Load ISP plan + schedule prefs
+    const stored = await chrome.storage.sync.get([ISP_KEY, SCHEDULE_KEY, NOTIFY_KEY]);
+    const plan = stored[ISP_KEY] as IspPlan | undefined;
+    if (plan && ispDown && ispUp && ispProvider) {
+        ispDown.value = String(plan.downloadMbps);
+        ispUp.value = String(plan.uploadMbps);
+        ispProvider.value = plan.providerName ?? '';
+    }
+    const scheduleMinutes: number = stored[SCHEDULE_KEY] ?? 0;
+    scheduleRadios.forEach(r => { r.checked = Number(r.value) === scheduleMinutes || (r.value === 'off' && scheduleMinutes === 0); });
+    if (notifyCheckbox) notifyCheckbox.checked = !!stored[NOTIFY_KEY];
+
+    if (ispClearBtn) {
+        ispClearBtn.addEventListener('click', async () => {
+            if (ispDown) ispDown.value = '';
+            if (ispUp) ispUp.value = '';
+            if (ispProvider) ispProvider.value = '';
+            await chrome.storage.sync.remove(ISP_KEY);
+        });
+    }
 
     // Load current setting
     const result = await chrome.storage.sync.get('serverUrl');
@@ -64,6 +97,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateRadioStyles();
         });
     });
+
+    // Validate server URL matches manifest-declared optional_host_permissions patterns.
+    // Why: manifest now scopes http:// to localhost/127.0.0.1/*.local only. Reject anything else
+    // before chrome.permissions.request to surface a clear error instead of a silent denial.
+    function validateServerUrl(raw: string): string | null {
+        let parsed: URL;
+        try { parsed = new URL(raw); } catch { return 'Invalid URL format'; }
+        if (parsed.protocol === 'https:') return null;
+        if (parsed.protocol === 'http:') {
+            const host = parsed.hostname;
+            if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.local')) return null;
+            return 'Plain http:// only allowed for localhost, 127.0.0.1, or *.local. Use https for remote servers.';
+        }
+        return 'URL must use https:// (or http:// for localhost)';
+    }
 
     // Get active server URL
     function getActiveUrl(): string {
@@ -155,6 +203,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 testStatus.className = 'test-status error';
                 return;
             }
+            const validationError = validateServerUrl(url);
+            if (validationError) {
+                testStatus.textContent = validationError;
+                testStatus.className = 'test-status error';
+                return;
+            }
             // Request host permission for custom URL
             try {
                 const origin = new URL(url).origin + '/*';
@@ -173,6 +227,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             await chrome.storage.sync.remove('serverUrl');
         }
+
+        // Save ISP plan
+        if (ispDown && ispUp) {
+            const dl = Number(ispDown.value);
+            const ul = Number(ispUp.value);
+            if (dl > 0 || ul > 0) {
+                const planToSave: IspPlan = {
+                    downloadMbps: dl > 0 ? dl : 0,
+                    uploadMbps: ul > 0 ? ul : 0,
+                    providerName: ispProvider?.value.trim() || undefined,
+                };
+                await chrome.storage.sync.set({ [ISP_KEY]: planToSave });
+            } else {
+                await chrome.storage.sync.remove(ISP_KEY);
+            }
+        }
+
+        // Save schedule
+        const selectedSchedule = Array.from(scheduleRadios).find(r => r.checked);
+        const minutes = selectedSchedule && selectedSchedule.value !== 'off' ? Number(selectedSchedule.value) : 0;
+        await chrome.storage.sync.set({ [SCHEDULE_KEY]: minutes, [NOTIFY_KEY]: !!notifyCheckbox?.checked });
+        chrome.runtime.sendMessage({ action: 'rescheduleTests' });
 
         // Re-check status with new URL
         checkStatus();

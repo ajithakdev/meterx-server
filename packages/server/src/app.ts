@@ -33,9 +33,11 @@ app.use(cors({
 }));
 
 // --- Rate limiting ---
-const pingLimiter = rateLimit({ windowMs: 60000, max: 60, standardHeaders: true, legacyHeaders: false, message: 'Too many ping requests.' });
-const downloadLimiter = rateLimit({ windowMs: 60000, max: 10, standardHeaders: true, legacyHeaders: false, message: 'Too many download requests.' });
-const uploadLimiter = rateLimit({ windowMs: 60000, max: 10, standardHeaders: true, legacyHeaders: false, message: 'Too many upload requests.' });
+// Higher buckets to allow multi-stream duration-based tests (4 parallel x ~8s window
+// can emit 8-16 requests per test). Ping probes the loaded-ping probe needs room too.
+const pingLimiter = rateLimit({ windowMs: 60000, max: 240, standardHeaders: true, legacyHeaders: false, message: 'Too many ping requests.' });
+const downloadLimiter = rateLimit({ windowMs: 60000, max: 120, standardHeaders: true, legacyHeaders: false, message: 'Too many download requests.' });
+const uploadLimiter = rateLimit({ windowMs: 60000, max: 120, standardHeaders: true, legacyHeaders: false, message: 'Too many upload requests.' });
 
 app.use(express.raw({ type: 'application/octet-stream', limit: '10mb' }));
 
@@ -85,5 +87,13 @@ app.post('/upload', uploadLimiter, (req: Request, res: Response) => {
 app.head('/ping', pingLimiter, (_req: Request, res: Response) => { res.status(200).end(); });
 app.get('/ping', pingLimiter, (_req: Request, res: Response) => { res.status(200).send('Pong!'); });
 app.get('/health', (_req: Request, res: Response) => { res.status(200).json({ status: 'ok', version: '2026.0.319-MR1.0' }); });
+
+app.get('/ip', pingLimiter, (req: Request, res: Response) => {
+    const ip = String(req.ip || '');
+    const family: 'ipv4' | 'ipv6' | 'unknown' = ip.includes(':') ? 'ipv6' : ip.match(/^\d+\.\d+\.\d+\.\d+$/) ? 'ipv4' : 'unknown';
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Timing-Allow-Origin', '*');
+    res.status(200).json({ ip, family });
+});
 
 export default app;

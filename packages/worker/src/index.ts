@@ -28,6 +28,9 @@ function corsHeaders(request: Request): HeadersInit {
         'Access-Control-Allow-Methods': 'GET, POST, HEAD, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Max-Age': '86400',
+        // Allow Resource Timing API (domainLookup*/connect*) to surface across origins
+        // so the extension can extract DNS lookup time.
+        'Timing-Allow-Origin': allowed ? origin : '',
     };
 }
 
@@ -127,6 +130,28 @@ function handlePing(request: Request, method: string): Response {
 }
 
 /**
+ * Route handler: GET /ip
+ * Reflects the connecting IP + family so the extension can detect IPv4/IPv6 reachability.
+ * No PII stored, only returned to the caller in-band.
+ */
+function handleIp(request: Request): Response {
+    const ip = request.headers.get('cf-connecting-ip') || '';
+    const family: 'ipv4' | 'ipv6' | 'unknown' = ip.includes(':') ? 'ipv6' : ip.match(/^\d+\.\d+\.\d+\.\d+$/) ? 'ipv4' : 'unknown';
+    return new Response(
+        JSON.stringify({ ip, family }),
+        {
+            status: 200,
+            headers: {
+                ...corsHeaders(request),
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-store',
+                'Timing-Allow-Origin': '*',
+            },
+        }
+    );
+}
+
+/**
  * Route handler: GET /health
  * Returns server status and edge location.
  */
@@ -182,6 +207,11 @@ export default {
         // Route: /health
         if (path === '/health' && method === 'GET') {
             return handleHealth(request);
+        }
+
+        // Route: /ip
+        if (path === '/ip' && method === 'GET') {
+            return handleIp(request);
         }
 
         // 404 for everything else

@@ -17,6 +17,7 @@ yarn-error.log*
 .idea/
 .vscode/
 *.swp
+.claude/settings.local.json
 
 # OS
 .DS_Store

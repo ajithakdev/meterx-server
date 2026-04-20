@@ -11,6 +11,7 @@ await build({
         resolve(__dirname, 'src/background.ts'),
         resolve(__dirname, 'src/popup.ts'),
         resolve(__dirname, 'src/options.ts'),
+        resolve(__dirname, 'src/sidepanel.ts'),
     ],
     bundle: true,
     outdir: resolve(__dirname, 'dist'),
