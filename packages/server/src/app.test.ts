@@ -43,6 +43,20 @@ describe('GET /test-file/:filename', () => {
     });
 });
 
+describe('GET /ip', () => {
+    it('returns connecting IP and family', async () => {
+        const res = await request(app).get('/ip');
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('family');
+        expect(['ipv4', 'ipv6', 'unknown']).toContain(res.body.family);
+    });
+
+    it('sets Timing-Allow-Origin', async () => {
+        const res = await request(app).get('/ip');
+        expect(res.headers['timing-allow-origin']).toBe('*');
+    });
+});
+
 describe('POST /upload', () => {
     it('accepts octet-stream upload', async () => {
         const res = await request(app)

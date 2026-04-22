@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MeterX — Network Dashboard</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body class="sidepanel">
+    <div class="sp-container">
+        <header class="sp-header">
+            <div class="brand">
+                <span class="logo">MX</span>
+                <span class="brand-name">MeterX Dashboard</span>
+            </div>
+            <div id="quality-badge" class="badge hidden" aria-live="polite" data-tip="quality"></div>
+        </header>
+
+        <section class="sp-hero">
+            <div class="sp-hero-main">
+                <span class="sp-hero-num" id="heroNum">--</span>
+                <span class="sp-hero-unit">Mbps ↓</span>
+            </div>
+            <div class="sp-hero-side">
+                <div class="sp-sub"><span id="heroUp">--</span> Mbps ↑</div>
+                <div class="sp-sub"><span id="heroPing">--</span> ms ping</div>
+                <div class="sp-sub"><span id="heroBB">--</span> bufferbloat</div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="sp-h2">Trend</h2>
+            <div id="chart" class="sp-chart" aria-label="Download speed over time"></div>
+        </section>
+
+        <section>
+            <h2 class="sp-h2">ISP Plan</h2>
+            <div id="ispCompare" class="isp-compare hidden" aria-live="polite"></div>
+            <p id="ispEmpty" class="sp-empty">Set your ISP plan in Settings to see how much of what you pay for you are getting.</p>
+        </section>
+
+        <section>
+            <h2 class="sp-h2">Recent Tests</h2>
+            <div id="historyList" class="history-list"></div>
+        </section>
+
+        <div class="sp-actions">
+            <button id="startButton" class="sp-primary">Run test</button>
+            <button id="openOptions" class="sp-secondary">Settings</button>
+        </div>
+
+        <footer class="sp-footer">
+            MeterX &middot; <a href="https://github.com/ajithakdev/meterx-server" target="_blank">source</a>
+        </footer>
+    </div>
+    <script src="sidepanel.js"></script>
+</body>
+</html>

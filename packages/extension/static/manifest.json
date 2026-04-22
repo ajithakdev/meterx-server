@@ -5,14 +5,19 @@
   "version": "2026.3.20.1",
   "description": "Open-source speed test. Measure download, upload, ping, jitter, packet loss with readiness labels and PDF reports.",
   "permissions": [
-    "storage"
+    "storage",
+    "alarms",
+    "notifications",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://meterx-speedtest.meterx-ajithakdev.workers.dev/*"
   ],
   "optional_host_permissions": [
     "https://*/*",
-    "http://*/*"
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "http://*.local/*"
   ],
   "options_page": "options.html",
   "action": {
@@ -22,6 +27,9 @@
       "48": "images/icons48.png",
       "128": "images/icons128.png"
     }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "background": {
     "service_worker": "background.js"

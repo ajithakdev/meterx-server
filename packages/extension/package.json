@@ -4,12 +4,15 @@
   "private": true,
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "test": "npx vitest run"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.287"
+    "@types/chrome": "^0.0.287",
+    "jsdom": "^29.0.2"
   },
   "dependencies": {
+    "@meterx/shared": "*",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1"
   }

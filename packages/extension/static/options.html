@@ -28,6 +28,7 @@
             </div>
         </div>
 
+        <div class="options-grid">
         <!-- Server Selection -->
         <div class="card">
             <label>Server</label>
@@ -55,6 +56,45 @@
                 </div>
                 <div id="testStatus" class="test-status hidden"></div>
             </div>
+        </div>
+
+        <!-- ISP Plan -->
+        <div class="card">
+            <label>Your ISP plan (optional)</label>
+            <p class="radio-desc" style="margin-bottom:10px">Enter your advertised speeds to see how much of what you pay for you actually get.</p>
+            <div class="isp-grid">
+                <div class="isp-field">
+                    <label for="ispDown" class="isp-fl">Download (Mbps)</label>
+                    <input type="number" min="0" step="1" id="ispDown" placeholder="e.g. 300">
+                </div>
+                <div class="isp-field">
+                    <label for="ispUp" class="isp-fl">Upload (Mbps)</label>
+                    <input type="number" min="0" step="1" id="ispUp" placeholder="e.g. 100">
+                </div>
+                <div class="isp-field isp-field-wide">
+                    <label for="ispProvider" class="isp-fl">Provider (optional)</label>
+                    <input type="text" id="ispProvider" placeholder="e.g. Airtel" maxlength="40">
+                </div>
+            </div>
+            <div class="isp-actions">
+                <button id="ispClearBtn" type="button" class="btn btn-secondary">Clear</button>
+            </div>
+        </div>
+
+        <!-- Scheduled background tests -->
+        <div class="card">
+            <label>Scheduled background tests</label>
+            <p class="radio-desc" style="margin-bottom:10px">Run a quick check on a timer. Get a notification if quality drops.</p>
+            <div class="radio-group">
+                <label class="radio-option"><input type="radio" name="schedule" value="off" checked><div class="radio-content"><span class="radio-label">Off</span><span class="radio-desc">Only run tests when I click.</span></div></label>
+                <label class="radio-option"><input type="radio" name="schedule" value="30"><div class="radio-content"><span class="radio-label">Every 30 min</span><span class="radio-desc">Frequent &mdash; best for troubleshooting a flaky connection.</span></div></label>
+                <label class="radio-option"><input type="radio" name="schedule" value="120"><div class="radio-content"><span class="radio-label">Every 2 hours</span><span class="radio-desc">Balanced default.</span></div></label>
+                <label class="radio-option"><input type="radio" name="schedule" value="1440"><div class="radio-content"><span class="radio-label">Once a day</span><span class="radio-desc">Low overhead trend data.</span></div></label>
+            </div>
+            <label class="isp-fl" style="display:flex;align-items:center;gap:8px;margin-top:10px">
+                <input type="checkbox" id="notifyOnDrop"> Notify when quality drops to Poor
+            </label>
+        </div>
         </div>
 
         <div class="actions">
