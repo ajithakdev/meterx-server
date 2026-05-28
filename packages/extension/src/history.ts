@@ -10,7 +10,7 @@ import { fmt } from './format';
 import { getQualityClass } from './quality';
 
 export const MAX_HISTORY = 200;
-export const HISTORY_DISPLAY = 7;
+export const HISTORY_DISPLAY = 5;
 
 export async function saveHistory(entry: HistoryEntry): Promise<void> {
     const result = await chrome.storage.local.get('history');

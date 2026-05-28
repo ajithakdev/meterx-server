@@ -13,6 +13,7 @@ import { loadHistory, loadAllHistory, saveHistory } from './history';
 import { renderHistory } from './history';
 import { exportPdfReport } from './export-pdf';
 import { exportJson, exportCsv } from './export-data';
+import { exportPngScorecard } from './export-image';
 import { buildShareUrl } from './share';
 import { renderSparkline } from './sparkline';
 import { bindTooltips } from './tooltips';
@@ -20,8 +21,53 @@ import { loadIspPlan, renderIspComparison } from './isp';
 
 const MAX_SPEED = 200;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const $ = (id: string) => document.getElementById(id) as HTMLElement;
+
+    // ── Theme system (auto/dark/light) ──
+    const applyTheme = (mode: 'auto' | 'dark' | 'light') => {
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        themeButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-theme') === mode);
+        });
+
+        if (mode === 'auto') {
+            // Follow system preference
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.dataset.theme = prefersDark ? 'dark' : 'light';
+        } else {
+            document.documentElement.dataset.theme = mode;
+        }
+        chrome.storage.sync.set({ theme: mode });
+    };
+
+    // Load saved popup width
+    const { popupWidth } = await chrome.storage.sync.get('popupWidth');
+    if (popupWidth) {
+        document.documentElement.style.setProperty('--popup-width', `${popupWidth}px`);
+    }
+
+    // Load saved theme preference
+    const { theme } = await chrome.storage.sync.get('theme');
+    const currentTheme = (theme || 'auto') as 'auto' | 'dark' | 'light';
+    applyTheme(currentTheme);
+
+    // Listen for system theme changes when in auto mode
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        chrome.storage.sync.get('theme', (result) => {
+            if ((result.theme || 'auto') === 'auto') {
+                document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
+            }
+        });
+    });
+
+    // Theme toggle click handlers
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const mode = btn.getAttribute('data-theme') as 'auto' | 'dark' | 'light';
+            applyTheme(mode);
+        });
+    });
 
     const startButton = $('startButton') as HTMLButtonElement;
     const cancelButton = $('cancelButton') as HTMLButtonElement;
@@ -109,6 +155,23 @@ document.addEventListener('DOMContentLoaded', () => {
         heroLabel.textContent = label;
     }
 
+    function updateSpeedometer(speed: number): void {
+        const needle = document.getElementById('speedoNeedle');
+        const fill = document.getElementById('speedoFill');
+        if (!needle || !fill) return;
+
+        // Rotate needle: -90deg (0 Mbps) to +90deg (200 Mbps), center at (120, 110)
+        const maxSpeed = 200;
+        const clampedSpeed = Math.min(speed, maxSpeed);
+        const rotation = -90 + (clampedSpeed / maxSpeed) * 180;
+        needle.setAttribute('transform', `rotate(${rotation} 120 110)`);
+
+        // Fill arc: dasharray = 282.74 (full arc), dashoffset animates from full to 0
+        const fillPct = clampedSpeed / maxSpeed;
+        const dashOffset = 282.74 - (fillPct * 282.74);
+        fill.setAttribute('stroke-dashoffset', String(dashOffset));
+    }
+
     function setSegment(phase: 'download' | 'upload' | 'ping'): void {
         const order: Array<'download' | 'upload' | 'ping'> = ['download', 'upload', 'ping'];
         const idx = order.indexOf(phase);
@@ -120,6 +183,25 @@ document.addEventListener('DOMContentLoaded', () => {
         lineFills['ul-ping'].style.width = idx >= 2 ? '100%' : '0%';
         dlIcon.classList.toggle('active-pulse', phase === 'download');
         ulIcon.classList.toggle('active-pulse', phase === 'upload');
+
+        // Apply phase class to speed display for color consistency
+        speedDisplay.classList.remove('phase-dl', 'phase-ul', 'phase-ping');
+        
+        let phaseColor = 'var(--dl)';
+        if (phase === 'download') {
+            speedDisplay.classList.add('phase-dl');
+            phaseColor = 'var(--dl)';
+        } else if (phase === 'upload') {
+            speedDisplay.classList.add('phase-ul');
+            phaseColor = 'var(--ul)';
+        } else if (phase === 'ping') {
+            speedDisplay.classList.add('phase-ping');
+            phaseColor = 'var(--ping)';
+        }
+
+        // We can also override the gauge fill color to match the phase color instead of gradient
+        const fill = document.getElementById('speedoFill');
+        if (fill) fill.setAttribute('stroke', phaseColor);
     }
 
     function applyUseCases(dl?: number, ul?: number, ping?: number, jitter?: number, loss?: number): void {
@@ -168,6 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.values(segments).forEach(s => { s.classList.remove('active', 'done'); });
         lineFills['dl-ul'].style.width = '0%';
         lineFills['ul-ping'].style.width = '0%';
+        speedDisplay.classList.remove('phase-dl', 'phase-ul', 'phase-ping');
+        const fill = document.getElementById('speedoFill');
+        if (fill) fill.setAttribute('stroke', 'url(#speedGradient)');
     }
 
     function checkOnline(): void {
@@ -241,21 +326,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = message.data;
             if (data.status) {
                 statusEl.textContent = data.status;
-                if (data.status.includes('latency') || data.status.includes('Ping') || data.status.includes('Pong')) setSegment('ping');
-                else if (data.status.includes('Download') || data.status.includes('download')) setSegment('download');
-                else if (data.status.includes('Upload') || data.status.includes('upload')) setSegment('upload');
+                const status = data.status.toLowerCase();
+                if (status.includes('latency') || status.includes('ping') || status.includes('pong')) {
+                    setSegment('ping');
+                } else if (status.includes('download') || status.includes('dl')) {
+                    setSegment('download');
+                } else if (status.includes('upload') || status.includes('ul')) {
+                    setSegment('upload');
+                }
             }
             if (data.downloadSpeed !== undefined) {
                 downloadSpeedEl.textContent = data.downloadSpeed.toFixed(1);
                 downloadSpeedEl.classList.add('has-val');
                 setHero(data.downloadSpeed, 'download');
                 setBar(dlBar, data.downloadSpeed);
+                updateSpeedometer(data.downloadSpeed);
             }
             if (data.uploadSpeed !== undefined) {
                 uploadSpeedEl.textContent = data.uploadSpeed.toFixed(1);
                 uploadSpeedEl.classList.add('has-val');
                 setHero(data.uploadSpeed, 'upload');
                 setBar(ulBar, data.uploadSpeed);
+                updateSpeedometer(data.uploadSpeed);
             }
             if (data.ping !== undefined) {
                 pingEl.textContent = data.ping.toFixed(1);
@@ -331,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Export dispatch ---
-    async function dispatchExport(kind: 'pdf' | 'json' | 'csv'): Promise<void> {
+    async function dispatchExport(kind: 'pdf' | 'json' | 'csv' | 'png'): Promise<void> {
         const all = await loadAllHistory();
         if (all.length === 0) { statusEl.textContent = 'No data to export'; return; }
         try {
@@ -342,9 +434,13 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (kind === 'json') {
                 exportJson(all);
                 statusEl.textContent = 'JSON exported';
-            } else {
+            } else if (kind === 'csv') {
                 exportCsv(all);
                 statusEl.textContent = 'CSV exported';
+            } else if (kind === 'png') {
+                statusEl.textContent = 'Generating scorecard...';
+                await exportPngScorecard(all[0]); // Use most recent result
+                statusEl.textContent = 'Scorecard downloaded';
             }
         } catch (e) {
             statusEl.textContent = e instanceof Error ? `Export failed: ${e.message}` : 'Export failed';
@@ -375,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exportMenu) {
         exportMenu.querySelectorAll<HTMLElement>('[data-export]').forEach(el => {
             el.addEventListener('click', () => {
-                const kind = el.dataset.export as 'pdf' | 'json' | 'csv';
+                const kind = el.dataset.export as 'pdf' | 'json' | 'csv' | 'png';
                 closeExportMenu();
                 dispatchExport(kind);
             });

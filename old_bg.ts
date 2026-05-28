@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MeterX Background Service Worker
  * @author ajithakdev (https://github.com/ajithakdev)
  * @license AGPL-3.0
@@ -6,8 +6,6 @@
  */
 
 /// <reference types="chrome" />
-
-import type { TestProgress, TestResults, PingResult } from '@meterx/shared';
 
 // --- Configuration ---
 const DEFAULT_SERVER_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
@@ -20,9 +18,6 @@ const PING_COUNT = 5;
 const FETCH_DOWNLOAD_TIMEOUT = 60000;
 const FETCH_UPLOAD_TIMEOUT = 60000;
 const FETCH_PING_TIMEOUT = 5000;
-const LOADED_PING_INTERVAL_MS = 300; // probe ping every 300ms during load
-const SCHEDULE_ALARM_NAME = 'meterx-scheduled-test';
-const QUALITY_DROP_NOTIFICATION_ID = 'meterx-quality-drop';
 
 // --- Server URL (configurable via options page) ---
 async function getServerUrl(): Promise<string> {
@@ -34,13 +29,29 @@ async function getServerUrl(): Promise<string> {
     }
 }
 
-// --- Bufferbloat grading ---
-function gradeBufferbloat(deltaMs: number): 'A' | 'B' | 'C' | 'D' | 'F' {
-    if (deltaMs <= 5) return 'A';
-    if (deltaMs <= 30) return 'B';
-    if (deltaMs <= 60) return 'C';
-    if (deltaMs <= 200) return 'D';
-    return 'F';
+// --- Types ---
+interface TestProgress {
+    status?: string;
+    downloadSpeed?: number;
+    uploadSpeed?: number;
+    ping?: number;
+    jitter?: number;
+    packetLoss?: number;
+}
+
+interface TestResults {
+    downloadSpeed?: number;
+    uploadSpeed?: number;
+    ping?: number;
+    jitter?: number;
+    packetLoss?: number;
+    status: string;
+}
+
+interface PingResult {
+    ping: number;
+    jitter: number;
+    packetLoss: number;
 }
 
 // --- Messaging Helpers ---
@@ -87,79 +98,6 @@ async function fetchWithTimeout(resource: string, options: RequestInit = {}, tim
 }
 
 // --- Test Functions ---
-
-// Loaded-ping probe: fires HEAD /ping on an interval while a flag is live.
-// Returns array of observed latencies in ms. Never throws — individual probe
-// failures are silently skipped because we only care about aggregate delay.
-interface LoadedPingHandle {
-    stop: () => Promise<number[]>;
-}
-
-function startLoadedPingProbe(baseUrl: string): LoadedPingHandle {
-    const samples: number[] = [];
-    let stopped = false;
-    let wakeSleep: (() => void) | null = null;
-
-    async function loop(): Promise<void> {
-        while (!stopped) {
-            const t0 = performance.now();
-            try {
-                const ctl = new AbortController();
-                const to = setTimeout(() => ctl.abort(), FETCH_PING_TIMEOUT);
-                const res = await fetch(`${baseUrl}${PING_ENDPOINT_PATH}?load=${Date.now()}`, { method: 'HEAD', cache: 'no-store', signal: ctl.signal });
-                clearTimeout(to);
-                if (res.ok) samples.push(performance.now() - t0);
-            } catch { /* skip */ }
-            if (stopped) break;
-            // Sleep, but be interruptible by stop() so the loop doesn't hang
-            // the outer `await runner` when tests cancel fast.
-            await new Promise<void>(resolve => {
-                const timer = setTimeout(() => { wakeSleep = null; resolve(); }, LOADED_PING_INTERVAL_MS);
-                wakeSleep = () => { clearTimeout(timer); wakeSleep = null; resolve(); };
-            });
-        }
-    }
-
-    const runner = loop();
-
-    return {
-        stop: async () => {
-            stopped = true;
-            if (wakeSleep) wakeSleep();
-            await runner;
-            return samples;
-        },
-    };
-}
-
-async function detectIpFamily(baseUrl: string): Promise<{ ipv4Ok?: boolean; ipv6Ok?: boolean }> {
-    try {
-        const res = await fetchWithTimeout(`${baseUrl}/ip?t=${Date.now()}`, { cache: 'no-store' }, 5000);
-        if (!res.ok) return {};
-        const data = await res.json() as { family?: string };
-        if (data.family === 'ipv4') return { ipv4Ok: true };
-        if (data.family === 'ipv6') return { ipv6Ok: true };
-        return {};
-    } catch {
-        return {};
-    }
-}
-
-function extractDnsMs(urlPrefix: string): number | undefined {
-    // Scan recent resource entries for the most recent request to our server.
-    // Returns domainLookupEnd - domainLookupStart if the origin honored
-    // Timing-Allow-Origin; otherwise returns undefined (zeros are filtered out).
-    try {
-        const entries = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-        for (let i = entries.length - 1; i >= 0; i--) {
-            const e = entries[i];
-            if (!e.name.startsWith(urlPrefix)) continue;
-            const dns = e.domainLookupEnd - e.domainLookupStart;
-            if (dns > 0) return dns;
-        }
-    } catch { /* no perf api */ }
-    return undefined;
-}
 
 async function measureDownloadSpeed(baseUrl: string): Promise<number> {
     // Warm-up: establish TCP + TLS connection before timing
@@ -211,7 +149,7 @@ async function measureDownloadSpeed(baseUrl: string): Promise<number> {
     const totalDuration = (endTime - startTime) / 1000;
     if (totalDuration === 0) throw new Error("Download too fast to measure");
 
-    // Simple total bytes / total time — same method as M-Lab
+    // Simple total bytes / total time ΓÇö same method as M-Lab
     const speedMbps = (totalBytes * 8 / totalDuration) / (1024 * 1024);
     await sendProgress({ downloadSpeed: speedMbps, status: 'Download complete' });
     return speedMbps;
@@ -328,20 +266,8 @@ async function runFullTest(): Promise<TestResults> {
         const baseUrl = await getServerUrl();
         await sendProgress({ status: results.status });
 
-        // IP family detect runs early and non-fatally
-        detectIpFamily(baseUrl).then(f => {
-            results.ipv4Ok = f.ipv4Ok;
-            results.ipv6Ok = f.ipv6Ok;
-        }).catch(() => { /* non-fatal */ });
-
         checkCancelled();
-        const loadedProbe = startLoadedPingProbe(baseUrl);
         results.downloadSpeed = await measureDownloadSpeed(baseUrl);
-        const loadedSamples = await loadedProbe.stop();
-
-        // DNS timing captured from the most recent resource entry to our server
-        results.dnsLookupMs = extractDnsMs(baseUrl);
-
         checkCancelled();
         results.uploadSpeed = await measureUploadSpeed(baseUrl);
         checkCancelled();
@@ -353,15 +279,6 @@ async function runFullTest(): Promise<TestResults> {
         results.ping = pingResult.ping;
         results.jitter = pingResult.jitter;
         results.packetLoss = pingResult.packetLoss;
-
-        // Bufferbloat = loaded ping median minus idle ping. Graded A-F.
-        if (loadedSamples.length > 0 && results.ping !== undefined) {
-            const sorted = [...loadedSamples].sort((a, b) => a - b);
-            const median = sorted[Math.floor(sorted.length / 2)];
-            const delta = Math.max(0, median - results.ping);
-            results.bufferbloatDelta = delta;
-            results.bufferbloatGrade = gradeBufferbloat(delta);
-        }
 
         results.status = 'Test complete';
 
@@ -388,62 +305,6 @@ async function runFullTest(): Promise<TestResults> {
     return results;
 }
 
-// --- Scheduled background tests ---
-async function rescheduleTestsFromPrefs(): Promise<void> {
-    try {
-        const { scheduleMinutes } = await chrome.storage.sync.get('scheduleMinutes');
-        const minutes = Number(scheduleMinutes) || 0;
-        await chrome.alarms.clear(SCHEDULE_ALARM_NAME);
-        if (minutes > 0) {
-            chrome.alarms.create(SCHEDULE_ALARM_NAME, { periodInMinutes: minutes, delayInMinutes: minutes });
-        }
-    } catch (e) {
-        console.error('Reschedule failed:', e);
-    }
-}
-
-function qualityGrade(dl?: number, ul?: number, ping?: number): 'excellent' | 'good' | 'fair' | 'poor' | null {
-    if (dl === undefined || ul === undefined || ping === undefined) return null;
-    if (dl >= 50 && ul >= 20 && ping < 30) return 'excellent';
-    if (dl >= 20 && ul >= 10 && ping < 60) return 'good';
-    if (dl >= 5 && ul >= 2 && ping < 150) return 'fair';
-    return 'poor';
-}
-
-async function maybeNotifyQualityDrop(current: TestResults): Promise<void> {
-    try {
-        const { notifyOnDrop } = await chrome.storage.sync.get('notifyOnDrop');
-        if (!notifyOnDrop) return;
-        const grade = qualityGrade(current.downloadSpeed, current.uploadSpeed, current.ping);
-        if (grade !== 'poor') return;
-        await chrome.notifications.create(QUALITY_DROP_NOTIFICATION_ID, {
-            type: 'basic',
-            iconUrl: chrome.runtime.getURL('images/icons128.png'),
-            title: 'MeterX — connection quality dropped',
-            message: `Poor: ${(current.downloadSpeed ?? 0).toFixed(1)} Mbps down, ping ${(current.ping ?? 0).toFixed(0)}ms.`,
-            priority: 1,
-        });
-    } catch (e) {
-        console.error('Notify failed:', e);
-    }
-}
-
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-    if (alarm.name !== SCHEDULE_ALARM_NAME) return;
-    const result = await runFullTest();
-    if (result.status.startsWith('Test complete')) {
-        await maybeNotifyQualityDrop(result);
-    }
-});
-
-chrome.runtime.onInstalled.addListener(() => { rescheduleTestsFromPrefs(); });
-chrome.runtime.onStartup.addListener(() => { rescheduleTestsFromPrefs(); });
-
-// Side Panel — open on action click when popup disabled, plus available via API
-if (chrome.sidePanel?.setPanelBehavior) {
-    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false }).catch(() => { /* old chrome */ });
-}
-
 chrome.runtime.onMessage.addListener(
     (message: { action: string; url?: string }, _sender: chrome.runtime.MessageSender, sendResponse: (response: unknown) => void) => {
         if (message.action === "startTest") {
@@ -464,17 +325,6 @@ chrome.runtime.onMessage.addListener(
         if (message.action === "getServerUrl") {
             getServerUrl().then(url => sendResponse({ url }));
             return true;
-        }
-        if (message.action === "rescheduleTests") {
-            rescheduleTestsFromPrefs().then(() => sendResponse({ success: true }));
-            return true;
-        }
-        if (message.action === "openSidePanel") {
-            if (chrome.sidePanel?.open && _sender.tab?.windowId !== undefined) {
-                chrome.sidePanel.open({ windowId: _sender.tab.windowId }).catch(() => { /* not supported */ });
-            }
-            sendResponse({ success: true });
-            return false;
         }
         if (message.action === "setServerUrl") {
             const url = message.url?.trim() || '';

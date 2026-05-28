@@ -95,11 +95,39 @@
                 <input type="checkbox" id="notifyOnDrop"> Notify when quality drops to Poor
             </label>
         </div>
+        <!-- Popup Size -->
+        <div class="card">
+            <label>Popup width</label>
+            <p class="radio-desc" style="margin-bottom:10px">Adjust the extension popup size to fit your screen.</p>
+            <div class="slider-row">
+                <input type="range" id="popupWidth" min="320" max="500" step="10" value="380">
+                <span id="popupWidthVal" class="slider-val">380px</span>
+            </div>
+            <label class="isp-fl" style="display:flex;align-items:center;gap:8px;margin-top:10px">
+                <input type="checkbox" id="livePreview"> Live preview
+            </label>
+            <div id="previewFrame" class="preview-frame hidden">
+                <div class="preview-device">
+                    <div class="preview-screen-label" id="previewLabel">380px on 14" display</div>
+                    <div class="preview-screen" id="previewScreen">
+                        <div class="preview-popup" id="previewPopup">
+                            <div class="preview-header">MX MeterX</div>
+                            <div class="preview-gauge"></div>
+                            <div class="preview-bars"><div class="preview-bar cyan"></div><div class="preview-bar purple"></div></div>
+                            <div class="preview-stats">Ping &middot; Jitter &middot; Loss</div>
+                            <div class="preview-btn">Start Test</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
 
         <div class="actions">
-            <button id="saveBtn" class="btn btn-primary">Save</button>
+            <button id="resetBtn" class="btn btn-secondary">Reset to Default</button>
         </div>
+
+        <div id="saveToast" class="save-toast hidden">Settings saved</div>
 
         <div class="info">
             <p>Self-host the MeterX server for LAN testing or maximum privacy.</p>

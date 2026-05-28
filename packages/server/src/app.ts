@@ -42,7 +42,7 @@ const uploadLimiter = rateLimit({ windowMs: 60000, max: 120, standardHeaders: tr
 app.use(express.raw({ type: 'application/octet-stream', limit: '10mb' }));
 
 // --- Test files ---
-const ALLOWED_FILE_SIZES = [1, 5, 10, 25];
+const ALLOWED_FILE_SIZES = [1, 5, 10, 25, 50, 100]; // Match worker whitelist
 const testFileDir = path.join(__dirname, '..', 'test-files');
 if (!fs.existsSync(testFileDir)) fs.mkdirSync(testFileDir, { recursive: true });
 

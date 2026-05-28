@@ -9,8 +9,20 @@
  * to the nearest PoP.
  */
 
-const ALLOWED_SIZES = [1, 5, 10, 25]; // MB
+const ALLOWED_SIZES = [1, 5, 10, 25, 50, 100]; // MB — added 50, 100 for high-speed links
 const CHUNK_SIZE = 65536; // 64KB chunks for streaming
+
+/**
+ * Cloudflare Worker environment bindings.
+ * RATE_LIMITER is optional — fail-open if not configured.
+ */
+interface Env {
+    RATE_LIMITER?: RateLimit;
+}
+
+interface RateLimit {
+    limit(options: { key: string }): Promise<{ success: boolean }>;
+}
 
 /**
  * CORS headers for browser extension origins.
@@ -178,14 +190,34 @@ function handleHealth(request: Request): Response {
  * Main fetch handler — routes requests to the appropriate handler.
  */
 export default {
-    async fetch(request: Request): Promise<Response> {
+    async fetch(request: Request, env: Env): Promise<Response> {
         const url = new URL(request.url);
         const path = url.pathname;
         const method = request.method;
 
-        // Handle CORS preflight
+        // Handle CORS preflight BEFORE rate limiting (don't waste quota on OPTIONS)
         if (method === 'OPTIONS') {
             return new Response(null, { status: 204, headers: corsHeaders(request) });
+        }
+
+        // Rate limit by IP (100 req/IP/60s = ~2-3 full tests per minute)
+        const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+        if (env.RATE_LIMITER) {
+            try {
+                const { success } = await env.RATE_LIMITER.limit({ key: `ip:${ip}` });
+                if (!success) {
+                    return new Response('Rate limit exceeded. Wait 60s and try again.', {
+                        status: 429,
+                        headers: {
+                            ...corsHeaders(request),
+                            'Retry-After': '60',
+                        },
+                    });
+                }
+            } catch (e) {
+                // Rate limiter failure is non-fatal — fail open to avoid breaking tests
+                console.error('Rate limiter error:', e);
+            }
         }
 
         // Route: /test-file/:size

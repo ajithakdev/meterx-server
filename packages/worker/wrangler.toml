@@ -4,3 +4,10 @@ compatibility_date = "2025-03-14"
 
 [observability]
 enabled = true
+
+# Rate limiting to prevent abuse (100 req per IP per 60s)
+[[unsafe.bindings]]
+type = "ratelimit"
+name = "RATE_LIMITER"
+namespace_id = "meterx_global_limiter"
+simple = { limit = 100, period = 60 }
