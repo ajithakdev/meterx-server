@@ -26,3 +26,6 @@ Thumbs.db
 # Extension package
 *.zip
 *.crx
+
+# graphify knowledge graph (local)
+graphify-out/

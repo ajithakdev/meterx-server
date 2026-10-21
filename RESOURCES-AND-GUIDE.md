@@ -67,6 +67,9 @@ To point the extension at a self-hosted server, click the settings gear icon in 
 
 ## More detail
 
+- docs/STATE.md: What is in progress and what comes next.
+- docs/KNOWN-ISSUES.md: Open bugs by area, each linked to its GitHub issue.
+- docs/CODEMAP.md: File map with line counts and the extension's message protocol.
 - README.md: Architecture overview, feature list, and server endpoint details.
 - CONTRIBUTING.md: Development setup, commands, code style, and pull request guidelines.
 - CHANGELOG.md: Version history and migration notes.
