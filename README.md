@@ -1,5 +1,7 @@
 # MeterX
 
+Every link and how-to is in [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md).
+
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![CI](https://github.com/ajithakdev/meterx-server/actions/workflows/ci.yml/badge.svg?branch=add/dev/2026.0.MAR.1)](https://github.com/ajithakdev/meterx-server/actions)
 
