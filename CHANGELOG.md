@@ -1,6 +1,39 @@
 # Changelog
 
-## 2026.0.320-MR1.1 — "Edge Migration" — 2026-03-20
+All notable changes to MeterX are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow [Semantic Versioning](https://semver.org/), with the year as the major number so store versions keep increasing.
+
+## [Unreleased]
+
+### Changed
+- CHANGELOG moved to Keep a Changelog format and past releases tagged as `v2026.0.0`, `v2026.1.0` and `v2026.2.0` (#91)
+
+## [2026.2.0] - 2026-04-23
+
+Released on GitHub only. It never went to a store; stores stay on 2026.3.20.1 until 2027.0.0.
+
+### Added
+- Multi-stream measurement: 4 parallel download and 3 upload streams over a fixed window, with ramp-up and tail trimmed
+- Loaded-latency pings during download and a bufferbloat grade (A to F)
+- DNS lookup time from the Resource Timing API, and IPv4 or IPv6 detection through a new `/ip` endpoint
+- Side panel dashboard with a trend chart, ISP comparison and history
+- Scheduled background tests (30 minutes, 2 hours or daily) with an optional notification when quality drops to Poor
+- ISP plan comparison against advertised download and upload speeds
+- Share links, JSON and CSV export, a download sparkline in the popup, and plain-language tooltips
+- `@meterx/shared` package for types and thresholds shared by the extension, worker and server
+
+### Changed
+- `popup.ts` split into focused modules (quality, history, format, exports, share, chart)
+- Optional host permissions narrowed to `https://*/*` plus localhost addresses
+- Server rate limits raised for the multi-stream burst (ping 240/min, transfers 120/min)
+
+### Fixed
+- Download time on the non-streaming fallback path was always about 1 second
+- The test could hang on "Testing..." after the download finished
+- Export menu, ISP inputs and options layout overflowing at high zoom
+
+## [2026.1.0] - 2026-03-20
+
+Shipped to Firefox Add-ons, Edge Add-ons and Opera as store version 2026.3.20.1 ("Edge Migration").
 
 ### Added
 - Cloudflare Worker (`packages/worker/`) — serverless edge speed test server
@@ -56,9 +89,9 @@
 - Render as default/primary server (kept as self-host option)
 - jsPDF coordinate-based PDF generation (replaced with html2canvas approach)
 
----
+## [2026.0.0] - 2026-03-19
 
-## 2026.0.319-MR1.0 — "Major Rewrite One" — 2026-03-19
+First store release, store version 2026.3.19.1 ("Major Rewrite One").
 
 ### Added
 - Monorepo structure with npm workspaces (`packages/server`, `packages/extension`)
@@ -89,10 +122,16 @@
 ### Removed
 - Duplicate extension files from server directory
 
----
+## [0.2.0] - 2025-05-10
 
-## 0.2.0 — Initial Development
+### Added
 
 - Basic speed test extension with download, upload, ping, jitter
 - Express.js server with test file generation
 - Simple popup UI
+
+[Unreleased]: https://github.com/ajithakdev/meterx-server/compare/v2026.2.0...HEAD
+[2026.2.0]: https://github.com/ajithakdev/meterx-server/compare/v2026.1.0...v2026.2.0
+[2026.1.0]: https://github.com/ajithakdev/meterx-server/compare/v2026.0.0...v2026.1.0
+[2026.0.0]: https://github.com/ajithakdev/meterx-server/compare/v0.2.0...v2026.0.0
+[0.2.0]: https://github.com/ajithakdev/meterx-server/releases/tag/v0.2.0
