@@ -80,7 +80,8 @@ function renderChart(rows: HistoryEntry[], plan: IspPlan | null): void {
         ],
         format: (v: number) => `${fmtSpeed(v)} Mbps`,
         tickFormat: (v: number) => String(Math.round(v)),
-        height: 140,
+        // Shorter chart on short panels so the results list keeps room without the page scrolling.
+        height: innerHeight < 780 ? 96 : innerHeight < 900 ? 118 : 140,
         reference: plan && plan.downloadMbps > 0 ? { value: plan.downloadMbps, label: `Plan ${plan.downloadMbps}` } : undefined,
     });
     if (legend) $('legend').append(legend);
@@ -102,9 +103,8 @@ function renderPlan(rows: HistoryEntry[], plan: IspPlan | null): void {
         const scale = Math.max(i.planned, i.got ?? 0) * 1.05;
         const width = i.got === undefined ? 0 : (i.got / scale) * 100;
         return `<div class="plan-row ${i.cls}">
-            <div class="top"><span>${i.label}</span><b>${fmtSpeed(i.got)} <span class="unit">of ${i.planned} Mbps</span></b></div>
+            <div class="top"><span>${i.label}</span><span><b>${fmtSpeed(i.got)}</b> <span class="unit">of ${i.planned} Mbps</span>${share === null ? '' : ` <b class="share ${share < 50 ? 'is-low' : ''}" title="Average as a share of the advertised speed">${Math.round(share)}%</b>`}</span></div>
             <div class="bar-track" aria-hidden="true"><i style="width:${width}%"></i><span class="target" style="left:calc(${(i.planned / scale) * 100}% - 1px)"></span></div>
-            <div class="sub ${share !== null && share < 50 ? 'is-low' : ''}">${share === null ? 'No results in this range' : `${Math.round(share)}% of the advertised speed, on average`}</div>
         </div>`;
     }).join('');
 }
@@ -235,6 +235,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (msg.action === 'testComplete') { setRunning(false); setStatus('Test complete'); }
         if (msg.action === 'testError') { setRunning(false); setStatus(msg.cancelled ? '' : msg.error, !msg.cancelled); }
     });
+    let resizing: number | undefined;
+    window.addEventListener('resize', () => { clearTimeout(resizing); resizing = window.setTimeout(refresh, 150); });
     chrome.storage.onChanged.addListener((changes, area) => {
         if ((area === 'local' && 'history' in changes) || (area === 'sync' && ('ispPlan' in changes || 'serverUrl' in changes))) refresh();
     });

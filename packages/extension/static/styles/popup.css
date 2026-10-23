@@ -14,7 +14,6 @@ body.popup {
   font-size: var(--fs-figure); line-height: 48px; font-weight: 500; letter-spacing: -0.02em;
   color: var(--data);
 }
-.figure.dash { color: var(--muted); }
 .figure-row .unit { font-size: var(--fs-body); }
 /* Two lines reserved so a longer finding never pushes the cards down. */
 .finding { margin-top: 6px; min-height: 40px; color: var(--text); }

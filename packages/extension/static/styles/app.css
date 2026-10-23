@@ -180,7 +180,12 @@ button, input, select { font: inherit; color: inherit; }
 .strip dt { color: var(--muted); font-size: var(--fs-small); line-height: 16px; white-space: nowrap; }
 .strip dd { font-size: 20px; line-height: 28px; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .unit { color: var(--muted); font-size: var(--fs-small); font-weight: 400; margin-left: 2px; }
-.dash { color: var(--muted); }
+/* No value yet: a short muted bar sized to the figure instead of a dash character; the unit keeps its space but hides. */
+.dash { display: inline-block; position: relative; width: 1.1em; }
+/* Hide the hyphen itself; listed with the figure classes so their colours don't win. */
+.dash, .figure.dash, .strip .lead.dash { color: transparent; }
+.dash::after { content: ""; position: absolute; left: 0; right: 0.15em; top: 50%; height: max(2px, 0.1em); margin-top: -0.05em; border-radius: 1px; background: var(--control); }
+.dash + .unit { visibility: hidden; }
 
 /* Latency under load: idle vs loaded, the bufferbloat evidence. */
 .load-rows { display: grid; gap: 8px; }

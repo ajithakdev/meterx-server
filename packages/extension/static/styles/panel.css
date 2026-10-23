@@ -21,7 +21,6 @@
 .strip { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); }
 .strip dd { font-size: 20px; }
 .strip .lead { font-size: 28px; line-height: 32px; color: var(--data); letter-spacing: -0.01em; }
-.strip .lead.dash { color: var(--muted); }
 .strip dd { display: flex; align-items: baseline; min-height: 32px; }
 @media (max-width: 600px) {
   .strip { grid-template-columns: 1fr 1fr; }
@@ -31,23 +30,23 @@
 
 .legend { display: flex; gap: 12px; color: var(--muted); font-size: var(--fs-small); }
 .legend > * { display: inline-flex; align-items: center; gap: 6px; }
-.chart { min-height: 140px; }
+.chart { min-height: 96px; }
 .empty {
   display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
   min-height: 40px; padding: 8px 12px; border: 1px dashed var(--control); border-radius: var(--radius-card); color: var(--muted);
 }
-#chartEmpty { min-height: 140px; justify-content: center; text-align: center; }
+#chartEmpty { min-height: 96px; justify-content: center; text-align: center; }
 .link { color: var(--text); text-decoration: underline; }
 
-.plan-rows { display: grid; gap: 12px; }
+.plan-rows { display: grid; gap: 10px; }
 .plan-row .top { display: flex; justify-content: space-between; gap: 8px; }
 .plan-row .top b { font-weight: 500; font-variant-numeric: tabular-nums; }
 .plan-row .bar-track { position: relative; height: 8px; margin-top: 6px; border-radius: 4px; background: var(--raised); }
 .plan-row .bar-track i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--text); }
 .plan-row.down .bar-track i { background: var(--data); }
 .plan-row .bar-track .target { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text); }
-.plan-row .sub { margin-top: 4px; color: var(--muted); font-size: var(--fs-small); }
-.plan-row .sub.is-low { color: var(--negative); }
+.plan-row .share { margin-left: 6px; }
+.plan-row .share.is-low { color: var(--negative); }
 
 .results { width: 100%; border-collapse: collapse; }
 .results th { text-align: left; color: var(--muted); font-size: var(--fs-small); font-weight: 400; padding: 0 0 6px; }
@@ -59,7 +58,8 @@
 .results td.when { width: 100%; }
 .results td.when { color: var(--muted); }
 .results td.down { color: var(--data); font-weight: 500; }
-.status { min-height: 20px; color: var(--muted); font-size: var(--fs-small); }
+/* Status sits in the Results header, between the title and Export, so it never needs its own row. */
+.card-head .status { flex: 1; min-width: 0; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: var(--fs-small); }
 .status.is-error { color: var(--negative); }
 .card-head .menu { right: 0; top: calc(100% + 4px); }
 
@@ -71,10 +71,10 @@
 }
 
 /* Fit the window: everything stays in place and only the results list scrolls, under pinned column names.
-   Short windows (under 720px) fall back to scrolling the whole page. */
-@media (min-height: 720px) {
+   Short windows (under 740px) fall back to scrolling the whole page. */
+@media (min-height: 740px) {
   .panel .wrap { height: 100vh; display: flex; flex-direction: column; padding-bottom: 12px; }
-  .panel main { flex: 1; min-height: 0; gap: 10px; grid-template-rows: auto auto auto auto minmax(150px, 1fr) auto; }
+  .panel main { flex: 1; min-height: 0; gap: 10px; grid-template-rows: auto auto auto auto minmax(132px, 1fr); }
   .results-card { display: flex; flex-direction: column; min-height: 0; }
   .results-body { flex: 1; min-height: 0; overflow-y: auto; padding-top: 0; margin-top: 10px; }
   .results thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
@@ -93,3 +93,12 @@
 .live-track i { display: block; height: 100%; width: 0; background: var(--data); }
 .panel.is-running .live-track { visibility: visible; }
 .panel.is-running .strip { border-color: var(--data); }
+
+/* Short panels: tighter cards so the results list keeps a few rows in view. */
+@media (max-height: 900px) {
+  .panel main { gap: 8px; }
+  .panel .card-head { padding-top: 10px; }
+  .panel .card-body { padding: 8px var(--pad) 10px; }
+  .panel .strip .lead { font-size: 24px; line-height: 28px; }
+  .panel .strip dd { min-height: 28px; }
+}
