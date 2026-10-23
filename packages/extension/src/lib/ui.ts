@@ -37,9 +37,9 @@ export function setFigure(el: HTMLElement, value: string): void {
 }
 
 export const USE_CASES: Array<{ key: keyof UseCaseScores; label: string; words: Record<UseCaseScore, string> }> = [
-    { key: 'calls', label: 'Video calls', words: { good: 'Works well', okay: 'May stutter', poor: 'Not enough' } },
-    { key: 'stream', label: 'Streaming', words: { good: '4K', okay: 'HD only', poor: 'Not enough' } },
-    { key: 'gaming', label: 'Gaming', words: { good: 'Works well', okay: 'May lag', poor: 'Too laggy' } },
+    { key: 'calls', label: 'Video calls', words: { good: 'Smooth', okay: 'Choppy', poor: 'Too slow' } },
+    { key: 'stream', label: 'Streaming', words: { good: '4K', okay: 'HD only', poor: 'Too slow' } },
+    { key: 'gaming', label: 'Gaming', words: { good: 'Smooth', okay: 'May lag', poor: 'Laggy' } },
     { key: 'upload', label: 'Uploads', words: { good: 'Fast', okay: 'Slow', poor: 'Very slow' } },
 ];
 

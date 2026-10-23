@@ -3,9 +3,10 @@
 .panel .wrap { max-width: 880px; margin: 0 auto; padding: 4px 16px 24px; }
 .panel .bar { position: sticky; top: 0; z-index: 5; background: var(--ground); }
 .panel .bar .btn { height: 32px; }
-.panel main { display: grid; gap: var(--gap); }
+.panel main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap); }
 
 .title-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.title-row > div { flex: 1 1 240px; min-width: 0; }
 .title-row h1 { font-size: var(--fs-title); line-height: 26px; font-weight: 600; letter-spacing: -0.01em; }
 .finding { margin-top: 4px; min-height: 40px; max-width: 60ch; }
 
@@ -22,7 +23,7 @@
 .strip .lead { font-size: 28px; line-height: 32px; color: var(--data); letter-spacing: -0.01em; }
 .strip .lead.dash { color: var(--muted); }
 .strip dd { display: flex; align-items: baseline; min-height: 32px; }
-@media (max-width: 420px) {
+@media (max-width: 600px) {
   .strip { grid-template-columns: 1fr 1fr; }
   .strip > div:nth-child(3) { border-left: 0; }
   .strip > div:nth-child(n + 3) { border-top: 1px solid var(--rule); }
@@ -59,3 +60,10 @@
 .status { min-height: 20px; color: var(--muted); font-size: var(--fs-small); }
 .status.is-error { color: var(--negative); }
 .card-head .menu { right: 0; top: calc(100% + 4px); }
+
+/* Narrowest panel (320px): tighter columns, and the table scrolls inside its card, never the page. */
+.card-body:has(> .results) { overflow-x: auto; }
+@media (max-width: 360px) {
+  .results th + th, .results td + td { padding-left: 6px; }
+  .results td.when { font-size: var(--fs-small); }
+}

@@ -26,7 +26,6 @@ const PHASE_PLAN: Partial<Record<Phase, { from: number; to: number; ms: number }
     download: { from: 12, to: 56, ms: 8600 },
     upload: { from: 56, to: 100, ms: 8600 },
 };
-const PHASE_ORDER: Phase[] = ['latency', 'download', 'upload'];
 
 const els = {
     scope: $('scope'), download: $('download'), upload: $('upload'), ping: $('ping'), jitter: $('jitter'), loss: $('loss'),
@@ -71,11 +70,6 @@ function setPhase(p: Phase): void {
     if (p === phase) return;
     phase = p;
     const plan = PHASE_PLAN[p];
-    const idx = PHASE_ORDER.indexOf(p);
-    els.progress.querySelectorAll<HTMLElement>('.phases li').forEach((li, i) => {
-        li.classList.toggle('is-active', i === idx);
-        li.classList.toggle('is-done', idx > i || p === 'done');
-    });
     if (!plan) return;
     const fill = els.fill;
     fill.style.transition = 'none';

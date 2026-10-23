@@ -198,30 +198,28 @@ ${envParts.length > 0 ? `<div class="env">${envParts.join(' &middot; ')}</div>` 
 
 </body></html>`;
 
-    const container = document.createElement('div');
-    container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;visibility:visible;';
-    container.innerHTML = html.replace(/<!DOCTYPE html>[\s\S]*?<body[^>]*>/, '').replace(/<\/body>[\s\S]*/, '');
-
-    const styleMatch = html.match(/<style>([\s\S]*?)<\/style>/);
-    if (styleMatch) {
-        const styleEl = document.createElement('style');
-        styleEl.textContent = styleMatch[1];
-        container.prepend(styleEl);
-    }
-    container.style.background = '#0c0c14';
-    container.style.padding = '30px 40px';
-    container.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-    container.style.fontSize = '11px';
-    container.style.lineHeight = '1.5';
-    container.style.color = '#e8e8e8';
-
-    document.body.appendChild(container);
+    // Render in an off-screen iframe: the report's global CSS must not restyle the page that exports it.
+    const frame = document.createElement('iframe');
+    frame.setAttribute('aria-hidden', 'true');
+    frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:794px;height:1px;border:0;visibility:hidden;';
+    const loaded = new Promise(resolve => frame.addEventListener('load', resolve, { once: true }));
+    frame.srcdoc = html;
+    document.body.appendChild(frame);
 
     try {
+        await loaded;
+        const container = frame.contentDocument!.body;
+        container.style.padding = '30px 40px';
+        container.style.minHeight = '0';
+
         const { default: html2canvas } = await import('html2canvas');
         const { jsPDF } = await import('jspdf');
 
+        // The frame is 1px tall so the body measures its content, not a page-sized viewport.
+        const height = container.scrollHeight;
         const canvas = await html2canvas(container, {
+            height,
+            windowHeight: height,
             backgroundColor: '#0c0c14',
             scale: 2,
             useCORS: true,
@@ -293,6 +291,6 @@ ${envParts.length > 0 ? `<div class="env">${envParts.join(' &middot; ')}</div>` 
 
         doc.save(`MeterX-Report-${now.toLocaleDateString('en-CA')}.pdf`);
     } finally {
-        document.body.removeChild(container);
+        frame.remove();
     }
 }

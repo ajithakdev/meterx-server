@@ -9,6 +9,11 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 - New look for the popup, side panel and settings page: one design system (`styles/app.css`), Geist font, light and dark themes
 - Self-host server streams test files from memory instead of writing them to disk, and drains uploads without buffering them
 - Extension build clears `dist/` first, so deleted files no longer ship in the zip
+
+### Fixed
+- Exporting a PDF no longer restyles the popup while the report renders, and the report no longer ends with a blank page
+- Popup fits Chrome's 600px height limit with no scrollbar; upload, ping and loss figures no longer spill into the next cell, and "Good enough for" labels are no longer cut off
+- Side panel averages switch to a 2×2 grid on narrow panels instead of overlapping, and the panel never scrolls sideways at 320px
 - CHANGELOG moved to Keep a Changelog format and past releases tagged as `v2026.0.0`, `v2026.1.0` and `v2026.2.0` (#91)
 
 ## [2026.2.0] - 2026-04-23
