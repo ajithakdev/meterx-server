@@ -1,6 +1,6 @@
 # MeterX working state
 
-Last updated: 2026-10-25, on `release/v2027.0.0` at `b4e5b7c` (not pushed, no PR yet).
+Last updated: 2026-10-24, on `release/v2027.0.0` at `b4e5b7c` (not pushed, no PR yet).
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
@@ -22,7 +22,7 @@ Next, in order:
 
 ## Releases
 
-Weekly on Sunday, like toolglass (decided 2026-10-25): patch for fixes only, minor if a feature landed; same-day patch for a broken test or security issue. Nothing deploys on merge here anyway: the worker deploys by hand with `wrangler deploy` and the stores take manual uploads, so a release is the tag, the CHANGELOG section, the GitHub release, then the worker deploy and store uploads.
+Weekly on Sunday, like toolglass (decided 2026-10-24): patch for fixes only, minor if a feature landed; same-day patch for a broken test or security issue. Nothing deploys on merge here anyway: the worker deploys by hand with `wrangler deploy` and the stores take manual uploads, so a release is the tag, the CHANGELOG section, the GitHub release, then the worker deploy and store uploads.
 
 ## Open pull requests
 
