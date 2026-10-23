@@ -3,8 +3,9 @@
  * @license AGPL-3.0
  */
 
-import type { HistoryEntry } from '@meterx/shared';
+import { VERSION, type HistoryEntry } from '@meterx/shared';
 import { getQuality } from './quality';
+import { consistency, trendPercent } from './report-stats';
 
 interface ConnInfo { type?: string; effectiveType?: string }
 
@@ -14,7 +15,6 @@ export async function exportPdfReport(hist: HistoryEntry[]): Promise<void> {
     const avg = (a: number[]) => a.length ? a.reduce((s, v) => s + v, 0) / a.length : 0;
     const mn = (a: number[]) => a.length ? Math.min(...a) : 0;
     const mx = (a: number[]) => a.length ? Math.max(...a) : 0;
-    const sd = (a: number[]) => { const m = avg(a); return Math.sqrt(avg(a.map(v => (v - m) ** 2))); };
 
     const dlV = hist.filter(e => e.downloadSpeed !== undefined).map(e => e.downloadSpeed!);
     const ulV = hist.filter(e => e.uploadSpeed !== undefined).map(e => e.uploadSpeed!);
@@ -24,13 +24,13 @@ export async function exportPdfReport(hist: HistoryEntry[]): Promise<void> {
 
     const aDl = avg(dlV), aUl = avg(ulV), aPi = avg(piV), aJi = avg(jiV), aLo = avg(loV);
     const qual = getQuality(aDl, aUl, aPi);
-    const cons = dlV.length > 1 ? Math.max(0, Math.min(100, 100 - (sd(dlV) / aDl) * 100)) : 100;
+    const cons = consistency(dlV);
     const consLabel = cons >= 85 ? 'Stable' : cons >= 70 ? 'Moderate' : cons >= 50 ? 'Unstable' : 'Very unstable';
     const anomThresh = aDl * 0.5;
     const anomCount = dlV.filter(v => v < anomThresh).length;
-    const halfIdx = Math.floor(dlV.length / 2);
-    const trendPct = avg(dlV.slice(halfIdx)) > 0 ? ((avg(dlV.slice(0, halfIdx)) - avg(dlV.slice(halfIdx))) / avg(dlV.slice(halfIdx))) * 100 : 0;
-    const trendLabel = Math.abs(trendPct) < 5 ? 'Stable' : trendPct > 0 ? `Improving (+${trendPct.toFixed(0)}%)` : `Declining (${trendPct.toFixed(0)}%)`;
+    const trend = trendPercent(dlV);
+    const trendPct = trend ?? 0;
+    const trendLabel = trend === null ? 'Not enough data' : Math.abs(trend) < 5 ? 'Stable' : trend > 0 ? `Improving (+${trend.toFixed(0)}%)` : `Declining (${trend.toFixed(0)}%)`;
 
     const now = new Date();
     const oldest = new Date(hist[hist.length - 1].timestamp);
@@ -279,7 +279,7 @@ ${envParts.length > 0 ? `<div class="env">${envParts.join(' &middot; ')}</div>` 
             doc.line(margin, footerY - 4, pdfW - margin, footerY - 4);
             doc.setFontSize(7);
             doc.setTextColor('#555570');
-            doc.text('github.com/ajithakdev/meterx-server  |  v2026.0.319  |  AGPL-3.0', pdfW / 2, footerY, { align: 'center' });
+            doc.text(`github.com/ajithakdev/meterx-server  |  v${VERSION}  |  AGPL-3.0`, pdfW / 2, footerY, { align: 'center' });
             doc.setTextColor('#8888a0');
             doc.text(`${p} / ${totalPages}`, pdfW - margin, footerY, { align: 'right' });
             if (p > 1) {

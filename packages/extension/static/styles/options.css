@@ -1,0 +1,41 @@
+/* Settings page (opened in a tab). Toggling a choice never moves anything outside it. */
+
+.settings .wrap { max-width: 1040px; margin: 0 auto; padding: 4px 16px 32px; }
+.settings main { display: grid; gap: var(--gap); }
+.settings .bar h1.name { font-size: var(--fs-section); }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--gap); align-items: start; }
+.hint { margin-bottom: 10px; }
+.choices { display: grid; gap: 2px; margin: 0 -12px; }
+.choice.selected .t { color: var(--text); }
+.choice.check { margin: 8px -12px 0; align-items: center; }
+.choice.check input { margin-top: 0; }
+
+/* Custom URL stays in the layout when off (dimmed and inert) so the cards below never jump. */
+.custom-url { margin-top: 10px; transition: opacity 120ms var(--ease); }
+.custom-url.hidden { opacity: .45; }
+.input-row { display: flex; gap: 8px; }
+.input-row .btn { height: 40px; }
+.test-status { min-height: 20px; margin-top: 6px; font-size: var(--fs-small); line-height: 20px; color: var(--muted); }
+.test-status.success { color: var(--positive); }
+.test-status.error { color: var(--negative); }
+
+.isp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.isp-grid .wide { grid-column: 1 / -1; }
+.row-end { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+.status-card { display: flex; align-items: center; gap: 12px; padding: 12px var(--pad); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--muted); }
+.status-dot.online { background: var(--positive); }
+.status-dot.offline { background: var(--negative); }
+.status-dot.checking { background: var(--warning); animation: mx-pulse 1s ease-in-out infinite; }
+.status-info { flex: 1; min-width: 0; }
+.status-label, .status-detail { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status-label { font-weight: 500; }
+.status-detail { font-size: var(--fs-small); line-height: 16px; min-height: 16px; }
+.status-ping { color: var(--muted); }
+@keyframes mx-pulse { 50% { opacity: .35; } }
+
+.save-row { display: flex; justify-content: flex-end; }
+.save-row .btn { min-width: 96px; }
+.foot { display: grid; gap: 2px; font-size: var(--fs-small); line-height: 16px; margin-top: 8px; }

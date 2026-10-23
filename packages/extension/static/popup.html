@@ -1,142 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>MeterX</title>
-    <link rel="stylesheet" href="popup.css">
     <meta charset="UTF-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <title>MeterX</title>
+    <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/popup.css">
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="brand">
-                <span class="logo">MX</span>
-                <span class="brand-name">MeterX</span>
-            </div>
-            <div class="header-right">
-                <div id="quality-badge" class="badge hidden" aria-live="polite" data-tip="quality"></div>
-                <button id="settingsBtn" class="icon-btn" aria-label="Settings" title="Settings"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
-                <button id="closeBtn" class="close-btn" aria-label="Close popup"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg></button>
-            </div>
-        </header>
-
-        <!-- Speed Display — compact horizontal -->
-        <div class="speed-display">
-            <div class="speed-main" id="heroSection">
-                <div class="speed-number" id="heroSpeed">--</div>
-                <div class="speed-meta">
-                    <span class="speed-unit">Mbps</span>
-                    <span class="speed-label" id="heroLabel">download</span>
-                </div>
-            </div>
-            <!-- Mini bars -->
-            <div class="speed-bars">
-                <div class="bar-row">
-                    <span class="bar-icon dl-icon"></span>
-                    <div class="bar-track"><div class="bar-fill dl-fill" id="dlBar"></div></div>
-                    <span class="bar-val" id="downloadSpeed">--</span>
-                </div>
-                <div class="bar-row">
-                    <span class="bar-icon ul-icon"></span>
-                    <div class="bar-track"><div class="bar-fill ul-fill" id="ulBar"></div></div>
-                    <span class="bar-val" id="uploadSpeed">--</span>
-                </div>
-            </div>
+<body class="popup">
+    <header class="bar">
+        <span id="mark"></span>
+        <div class="who">
+            <div class="name">MeterX</div>
+            <div class="scope" id="scope">Testing via Cloudflare edge</div>
         </div>
-
-        <!-- Progress Steps -->
-        <div id="progress-bar" class="steps hidden" role="progressbar" aria-label="Test progress">
-            <div class="step" id="seg-download"><span class="step-dot"></span>DL</div>
-            <div class="step-line"><div class="step-line-fill" id="line-dl-ul"></div></div>
-            <div class="step" id="seg-upload"><span class="step-dot"></span>UL</div>
-            <div class="step-line"><div class="step-line-fill" id="line-ul-ping"></div></div>
-            <div class="step" id="seg-ping"><span class="step-dot"></span>Ping</div>
+        <div class="tools">
+            <button id="panelBtn" class="icon-btn" type="button" aria-label="Open history in the side panel" title="History and trend">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+            </button>
+            <button id="settingsBtn" class="icon-btn" type="button" aria-label="Settings" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+            </button>
         </div>
+    </header>
 
-        <!-- Use-Case Readiness -->
-        <div id="use-cases" class="use-cases hidden" data-tip="use-cases">
-            <div class="uc" id="uc-calls"><span class="uc-dot"></span>Calls</div>
-            <div class="uc" id="uc-stream"><span class="uc-dot"></span>Streaming</div>
-            <div class="uc" id="uc-gaming"><span class="uc-dot"></span>Gaming</div>
-            <div class="uc" id="uc-upload"><span class="uc-dot"></span>Uploads</div>
+    <main>
+        <section class="answer card" aria-labelledby="dlLabel">
+            <div class="answer-top">
+                <h1 id="dlLabel" class="label" data-tip="download">Download</h1>
+                <span id="quality" class="pill is-empty">Quality</span>
+            </div>
+            <div class="figure-row" aria-live="polite">
+                <span id="download" class="figure num dash">—</span><span class="unit">Mbps</span>
+            </div>
+            <p id="finding" class="finding">Run a test to see what this connection can handle.</p>
+        </section>
+
+        <dl class="strip card" aria-label="Other results">
+            <div data-tip="upload"><dt>Upload</dt><dd><span id="upload" class="dash">—</span><span class="unit">Mbps</span></dd></div>
+            <div data-tip="ping"><dt>Ping</dt><dd><span id="ping" class="dash">—</span><span class="unit">ms</span></dd></div>
+            <div data-tip="jitter"><dt>Jitter</dt><dd><span id="jitter" class="dash">—</span><span class="unit">ms</span></dd></div>
+            <div data-tip="packet-loss"><dt>Loss</dt><dd><span id="loss" class="dash">—</span><span class="unit">%</span></dd></div>
+        </dl>
+
+        <section class="card" aria-labelledby="loadTitle">
+            <div class="card-head">
+                <h2 id="loadTitle" data-tip="bufferbloat">Latency under load</h2>
+                <span id="grade" class="pill is-empty">Grade</span>
+            </div>
+            <div class="card-body load-rows" id="loadRows">
+                <div class="load-row idle"><span class="k">Idle</span><span class="track"><i></i></span><span class="v dash">—</span></div>
+                <div class="load-row"><span class="k">Downloading</span><span class="track"><i></i></span><span class="v dash">—</span></div>
+                <div class="load-row"><span class="k">Uploading</span><span class="track"><i></i></span><span class="v dash">—</span></div>
+            </div>
+        </section>
+
+        <section class="card" aria-labelledby="readyTitle">
+            <div class="card-head"><h2 id="readyTitle">Good enough for</h2></div>
+            <ul class="card-body ready" id="ready"></ul>
+        </section>
+    </main>
+
+    <footer class="actions">
+        <div class="progress" id="progress" role="progressbar" aria-label="Test progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <ol class="phases" aria-hidden="true">
+                <li data-phase="latency">Latency</li>
+                <li data-phase="download">Download</li>
+                <li data-phase="upload">Upload</li>
+            </ol>
+            <span class="progress-track"><i id="progressFill"></i></span>
         </div>
-
-        <!-- ISP plan comparison (hidden until plan configured in options) -->
-        <div id="ispCompare" class="isp-compare hidden" aria-live="polite"></div>
-
-        <!-- Sparkline trend -->
-        <div id="sparkline" class="sparkline hidden" aria-hidden="true"></div>
-
-        <!-- Stats — compact row -->
-        <div class="stats">
-            <div class="stat-item" data-tip="ping">
-                <span class="stat-val" id="ping">--</span>
-                <span class="stat-lbl">Ping <span class="stat-u">ms</span></span>
-            </div>
-            <div class="stat-sep"></div>
-            <div class="stat-item" data-tip="jitter">
-                <span class="stat-val" id="jitter">--</span>
-                <span class="stat-lbl">Jitter <span class="stat-u">ms</span></span>
-            </div>
-            <div class="stat-sep"></div>
-            <div class="stat-item" data-tip="packet-loss">
-                <span class="stat-val" id="packetLoss">--</span>
-                <span class="stat-lbl">Loss <span class="stat-u">%</span></span>
-            </div>
-        </div>
-
-        <!-- Status + Action -->
-        <div class="action-area">
-            <p id="status" aria-live="polite">Ready to test</p>
-            <div class="action-row">
-                <button id="startButton" aria-label="Start speed test">
-                    <span class="btn-text">Start Test</span>
-                    <span class="btn-spinner hidden" id="btnSpinner"></span>
-                </button>
-                <button id="cancelButton" class="cancel-btn hidden" aria-label="Cancel">Stop</button>
-            </div>
-        </div>
-
-        <!-- History -->
-        <div class="history-section" id="historySection">
-            <div class="history-header">
-                <button id="historyToggle" class="ghost-btn" aria-label="Toggle test history">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span id="historyLabel">History</span>
-                </button>
-                <div class="history-actions">
-                    <button id="shareBtn" class="ghost-btn" aria-label="Copy shareable result link" title="Copy share link">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-                        Share
-                    </button>
-                    <div class="export-wrap">
-                        <button id="exportBtn" class="ghost-btn" aria-label="Export results" aria-haspopup="menu">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Export
-                        </button>
-                        <div id="exportBackdrop" class="export-backdrop hidden"></div>
-                        <div id="exportMenu" class="export-menu hidden" role="menu" aria-label="Export format">
-                            <div class="export-menu-title">Export results</div>
-                            <button type="button" role="menuitem" data-export="pdf">PDF report<span class="export-sub">Styled dashboard for sharing</span></button>
-                            <button type="button" role="menuitem" data-export="json">JSON<span class="export-sub">Machine-readable, full fields</span></button>
-                            <button type="button" role="menuitem" data-export="csv">CSV<span class="export-sub">Spreadsheet friendly</span></button>
-                        </div>
+        <button id="runBtn" class="btn btn-primary btn-wide" type="button">Run test</button>
+        <div class="foot">
+            <p id="status" class="status" role="status">No tests yet</p>
+            <div class="foot-tools">
+                <button id="shareBtn" class="btn btn-text" type="button">Share</button>
+                <div class="menu-wrap">
+                    <button id="exportBtn" class="btn btn-text" type="button" aria-haspopup="menu" aria-expanded="false">Export</button>
+                    <div id="exportMenu" class="menu" role="menu" hidden>
+                        <button type="button" role="menuitem" data-value="pdf">PDF report<small>Summary, trend and every result</small></button>
+                        <button type="button" role="menuitem" data-value="csv">CSV<small>For spreadsheets</small></button>
+                        <button type="button" role="menuitem" data-value="json">JSON<small>Every field</small></button>
                     </div>
                 </div>
             </div>
-            <div id="historyList" class="history-list hidden"></div>
         </div>
-
-        <!-- Footer -->
-        <footer>
-            <span>MeterX v2026.0.319</span>
-            <span class="dot"></span>
-            <a href="https://github.com/ajithakdev" class="footer-link">ajithakdev</a><span class="heart">&#9829;</span>
-        </footer>
-    </div>
+    </footer>
     <script src="popup.js"></script>
 </body>
 </html>

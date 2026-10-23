@@ -1,45 +1,57 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
-import app from './app.js';
+import { VERSION } from '@meterx/shared';
+import app from './app';
 
-describe('GET /ping', () => {
-    it('returns 200 with Pong', async () => {
+const EXT = 'chrome-extension://abcdefghijklmnop';
+
+describe('GET/HEAD /ping', () => {
+    it('GET returns Pong', async () => {
         const res = await request(app).get('/ping');
         expect(res.status).toBe(200);
         expect(res.text).toBe('Pong!');
     });
-});
 
-describe('HEAD /ping', () => {
-    it('returns 200', async () => {
-        const res = await request(app).head('/ping');
-        expect(res.status).toBe(200);
+    it('HEAD returns 200', async () => {
+        expect((await request(app).head('/ping')).status).toBe(200);
     });
 });
 
 describe('GET /health', () => {
-    it('returns ok status', async () => {
+    it('matches the shared HealthResponse shape', async () => {
         const res = await request(app).get('/health');
         expect(res.status).toBe(200);
-        expect(res.body).toEqual({ status: 'ok', version: '2026.0.319-MR1.0' });
+        expect(res.body).toMatchObject({ status: 'ok', server: 'express', version: VERSION });
+        expect(typeof res.body.timestamp).toBe('number');
     });
 });
 
 describe('GET /test-file/:filename', () => {
-    it('serves 1MB.bin', async () => {
-        const res = await request(app).get('/test-file/1MB.bin');
+    it('streams 1MB.bin', async () => {
+        const res = await request(app).get('/test-file/1MB.bin').buffer(true).parse((r, cb) => {
+            let n = 0; r.on('data', (c: Buffer) => { n += c.length; }); r.on('end', () => cb(null, n));
+        });
         expect(res.status).toBe(200);
         expect(res.headers['content-type']).toMatch(/octet-stream/);
+        expect(res.body).toBe(1024 * 1024);
     });
 
-    it('rejects invalid filename', async () => {
-        const res = await request(app).get('/test-file/foo.txt');
-        expect(res.status).toBe(400);
+    it.each(['foo.txt', '99MB.bin', '025MB.bin'])('rejects %s with 400', async (f) => {
+        expect((await request(app).get(`/test-file/${f}`)).status).toBe(400);
+    });
+});
+
+describe('CORS', () => {
+    it('allows extension origins and sends Timing-Allow-Origin', async () => {
+        const res = await request(app).get('/ping').set('Origin', EXT);
+        expect(res.headers['access-control-allow-origin']).toBe(EXT);
+        expect(res.headers['timing-allow-origin']).toBe(EXT);
     });
 
-    it('rejects disallowed size', async () => {
-        const res = await request(app).get('/test-file/99MB.bin');
-        expect(res.status).toBe(400);
+    it.each(['https://evil.example', 'null'])('blocks %s without a 500', async (origin) => {
+        const res = await request(app).get('/ping').set('Origin', origin);
+        expect(res.status).toBe(200);
+        expect(res.headers['access-control-allow-origin']).toBeUndefined();
     });
 });
 
@@ -47,30 +59,18 @@ describe('GET /ip', () => {
     it('returns connecting IP and family', async () => {
         const res = await request(app).get('/ip');
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('family');
         expect(['ipv4', 'ipv6', 'unknown']).toContain(res.body.family);
-    });
-
-    it('sets Timing-Allow-Origin', async () => {
-        const res = await request(app).get('/ip');
-        expect(res.headers['timing-allow-origin']).toBe('*');
     });
 });
 
 describe('POST /upload', () => {
     it('accepts octet-stream upload', async () => {
-        const res = await request(app)
-            .post('/upload')
-            .set('Content-Type', 'application/octet-stream')
-            .send(Buffer.alloc(1024));
+        const res = await request(app).post('/upload').set('Content-Type', 'application/octet-stream').send(Buffer.alloc(1024));
         expect(res.status).toBe(200);
     });
 
     it('rejects wrong content type', async () => {
-        const res = await request(app)
-            .post('/upload')
-            .set('Content-Type', 'text/plain')
-            .send('hello');
+        const res = await request(app).post('/upload').set('Content-Type', 'text/plain').send('hello');
         expect(res.status).toBe(415);
     });
 });

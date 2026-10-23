@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         urlInput.value = currentUrl;
         (document.querySelector('input[value="custom"]') as HTMLInputElement).checked = true;
         customSection.classList.remove('hidden');
+        customSection.inert = false;
     }
 
     // Highlight selected radio
@@ -94,6 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         radio.addEventListener('change', () => {
             const isCustom = radio.value === 'custom';
             customSection.classList.toggle('hidden', !isCustom);
+            customSection.inert = !isCustom;
             updateRadioStyles();
         });
     });

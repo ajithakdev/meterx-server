@@ -1,6 +1,6 @@
 {
   "name": "@meterx/shared",
-  "version": "1.0.0",
+  "version": "2027.0.0",
   "private": true,
   "license": "AGPL-3.0",
   "type": "module",
@@ -8,5 +8,8 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
   }
 }

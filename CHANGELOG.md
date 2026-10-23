@@ -5,6 +5,10 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 ## [Unreleased]
 
 ### Changed
+- Extension source split into `background/`, `lib/` and `pages/`; API constants, version and share links now live in `@meterx/shared`
+- New look for the popup, side panel and settings page: one design system (`styles/app.css`), Geist font, light and dark themes
+- Self-host server streams test files from memory instead of writing them to disk, and drains uploads without buffering them
+- Extension build clears `dist/` first, so deleted files no longer ship in the zip
 - CHANGELOG moved to Keep a Changelog format and past releases tagged as `v2026.0.0`, `v2026.1.0` and `v2026.2.0` (#91)
 
 ## [2026.2.0] - 2026-04-23

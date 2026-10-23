@@ -1,9 +1,9 @@
 /**
- * Quality scoring — shared between popup + PDF export
+ * Quality grade and use-case readiness. The one copy of these rules (#67).
  * @license AGPL-3.0
  */
 
-import type { Quality } from '@meterx/shared';
+import type { HistoryEntry, Quality } from '@meterx/shared';
 
 export interface QualityLabel {
     label: string;
@@ -17,10 +17,19 @@ export function getQuality(dl: number, ul: number, ping: number): QualityLabel {
     return { label: 'Poor', cls: 'poor' };
 }
 
-export function getQualityClass(dl?: number, ul?: number, ping?: number): string {
-    if (dl === undefined || ul === undefined || ping === undefined) return 'q-fair';
-    return 'q-' + getQuality(dl, ul, ping).cls;
+/** Grade of a stored result, or null when it is missing a measurement. */
+export function qualityOf(e: Pick<HistoryEntry, 'downloadSpeed' | 'uploadSpeed' | 'ping'> | undefined): QualityLabel | null {
+    if (!e || e.downloadSpeed === undefined || e.uploadSpeed === undefined || e.ping === undefined) return null;
+    return getQuality(e.downloadSpeed, e.uploadSpeed, e.ping);
 }
+
+/** Toolbar badge colours. Kept in sync with the --q-* tokens in static/styles/tokens.css. */
+export const QUALITY_COLORS: Record<Quality, string> = {
+    excellent: '#0f9f6e',
+    good: '#2f7de1',
+    fair: '#c27c0e',
+    poor: '#d64545',
+};
 
 export type UseCaseScore = 'good' | 'okay' | 'poor';
 

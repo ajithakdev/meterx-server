@@ -1,99 +1,81 @@
 /**
- * MeterX Speed Test Server
+ * MeterX self-host speed test server (same API contract as the Worker).
  * @author ajithakdev (https://github.com/ajithakdev)
  * @license AGPL-3.0
- * @version 2026.0.319-MR1.0
  */
 
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import fs from 'fs';
-import path from 'path';
+import { Readable } from 'stream';
+import {
+    VERSION, TEST_FILE_RE, MAX_UPLOAD_BYTES, isExtensionOrigin, ipFamily,
+    type HealthResponse, type IpInfo,
+} from '@meterx/shared';
 
 const app = express();
 
-// Trust proxy (required behind Render/Cloudflare/nginx reverse proxies)
+// Trust one proxy hop (Render, Cloudflare, nginx) so req.ip is the client.
 app.set('trust proxy', 1);
 
-// --- CORS ---
-const ALLOWED_ORIGINS = process.env.CORS_ORIGINS
-    ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
-    : ['http://localhost:3000'];
+const ALLOWED_ORIGINS = (process.env.CORS_ORIGINS || 'http://localhost:3000').split(',').map(o => o.trim());
 
-app.use(cors({
-    origin(origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-        if (!origin) return callback(null, true);
-        if (origin.startsWith('chrome-extension://') || origin.startsWith('moz-extension://')) {
-            return callback(null, true);
-        }
-        if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
-        callback(new Error('Not allowed by CORS'));
-    }
-}));
+// Disallowed origins get no CORS headers (the browser blocks them), not a 500 (#81).
+app.use(cors({ origin: (origin, cb) => cb(null, !origin || isExtensionOrigin(origin) || ALLOWED_ORIGINS.includes(origin)) }));
 
-// --- Rate limiting ---
-// Higher buckets to allow multi-stream duration-based tests (4 parallel x ~8s window
-// can emit 8-16 requests per test). Ping probes the loaded-ping probe needs room too.
-const pingLimiter = rateLimit({ windowMs: 60000, max: 240, standardHeaders: true, legacyHeaders: false, message: 'Too many ping requests.' });
-const downloadLimiter = rateLimit({ windowMs: 60000, max: 120, standardHeaders: true, legacyHeaders: false, message: 'Too many download requests.' });
-const uploadLimiter = rateLimit({ windowMs: 60000, max: 120, standardHeaders: true, legacyHeaders: false, message: 'Too many upload requests.' });
-
-app.use(express.raw({ type: 'application/octet-stream', limit: '10mb' }));
-
-// --- Test files ---
-const ALLOWED_FILE_SIZES = [1, 5, 10, 25];
-const testFileDir = path.join(__dirname, '..', 'test-files');
-if (!fs.existsSync(testFileDir)) fs.mkdirSync(testFileDir, { recursive: true });
-
-function ensureTestFile(sizeMB: number): void {
-    const filePath = path.join(testFileDir, `${sizeMB}MB.bin`);
-    if (!fs.existsSync(filePath)) {
-        try {
-            fs.writeFileSync(filePath, Buffer.alloc(sizeMB * 1024 * 1024));
-        } catch (e) {
-            console.error(`File generation failed for ${sizeMB}MB:`, e);
-        }
-    }
-}
-
-// Pre-generate default
-ensureTestFile(parseInt(process.env.DOWNLOAD_FILE_MB || '1', 10));
-
-// --- Endpoints ---
-
-app.get('/test-file/:filename', downloadLimiter, (req: Request, res: Response) => {
-    const filename = req.params.filename as string;
-    const match = filename.match(/^(\d+)MB\.bin$/);
-    if (!match) { res.status(400).send('Invalid file name. Use format: {size}MB.bin'); return; }
-    const sizeMB = parseInt(match[1], 10);
-    if (!ALLOWED_FILE_SIZES.includes(sizeMB)) { res.status(400).send(`Invalid size. Allowed: ${ALLOWED_FILE_SIZES.join(', ')}MB`); return; }
-
-    const filePath = path.join(testFileDir, String(filename));
-    if (!fs.existsSync(filePath)) ensureTestFile(sizeMB);
-    if (fs.existsSync(filePath)) { res.sendFile(filePath); }
-    else { res.status(500).send('Failed to generate test file.'); }
+// Lets the extension read DNS timing on every route (#82).
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const origin = req.headers.origin;
+    if (origin && res.getHeader('Access-Control-Allow-Origin') === origin) res.setHeader('Timing-Allow-Origin', origin);
+    res.setHeader('Cache-Control', 'no-store');
+    next();
 });
 
+// Sized for one test (about 150 requests) plus a retry within the minute.
+const limiter = (max: number) => rateLimit({ windowMs: 60_000, limit: max, standardHeaders: true, legacyHeaders: false, message: 'Too many requests.' });
+const pingLimiter = limiter(240);
+const downloadLimiter = limiter(120);
+const uploadLimiter = limiter(600);
+
+const CHUNK = Buffer.alloc(64 * 1024);
+
+app.get('/test-file/:filename', downloadLimiter, (req: Request, res: Response) => {
+    const name = String(req.params.filename);
+    if (!TEST_FILE_RE.test(name)) { res.status(400).send('Invalid file. Use 1MB.bin, 5MB.bin, 10MB.bin or 25MB.bin.'); return; }
+    let left = parseInt(name, 10) * 1024 * 1024;
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Length', String(left));
+    Readable.from((function* () {
+        while (left > 0) { const n = Math.min(CHUNK.length, left); left -= n; yield n === CHUNK.length ? CHUNK : CHUNK.subarray(0, n); }
+    })()).pipe(res);
+});
+
+// Drain the body without buffering it (#85).
 app.post('/upload', uploadLimiter, (req: Request, res: Response) => {
-    const contentType = req.headers['content-type'];
-    if (!contentType || !contentType.includes('application/octet-stream')) {
+    if (!(req.headers['content-type'] || '').includes('application/octet-stream')) {
         res.status(415).send('Unsupported Media Type. Expected application/octet-stream.');
         return;
     }
-    res.status(200).send('Upload received.');
+    let received = 0;
+    req.on('data', (chunk: Buffer) => {
+        received += chunk.length;
+        if (received > MAX_UPLOAD_BYTES && !res.headersSent) { res.status(413).send('Payload too large'); req.destroy(); }
+    });
+    req.on('end', () => { if (!res.headersSent) res.status(200).send('Upload received.'); });
 });
 
 app.head('/ping', pingLimiter, (_req: Request, res: Response) => { res.status(200).end(); });
 app.get('/ping', pingLimiter, (_req: Request, res: Response) => { res.status(200).send('Pong!'); });
-app.get('/health', (_req: Request, res: Response) => { res.status(200).json({ status: 'ok', version: '2026.0.319-MR1.0' }); });
+
+app.get('/health', (_req: Request, res: Response) => {
+    const body: HealthResponse = { status: 'ok', server: 'express', version: VERSION, timestamp: Date.now() };
+    res.json(body);
+});
 
 app.get('/ip', pingLimiter, (req: Request, res: Response) => {
     const ip = String(req.ip || '');
-    const family: 'ipv4' | 'ipv6' | 'unknown' = ip.includes(':') ? 'ipv6' : ip.match(/^\d+\.\d+\.\d+\.\d+$/) ? 'ipv4' : 'unknown';
-    res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('Timing-Allow-Origin', '*');
-    res.status(200).json({ ip, family });
+    const info: IpInfo = { ip, family: ipFamily(ip) };
+    res.json(info);
 });
 
 export default app;

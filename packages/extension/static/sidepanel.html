@@ -2,57 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MeterX — Network Dashboard</title>
-    <link rel="stylesheet" href="popup.css">
-    <link rel="stylesheet" href="sidepanel.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MeterX history</title>
+    <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/panel.css">
 </head>
-<body class="sidepanel">
-    <div class="sp-container">
-        <header class="sp-header">
-            <div class="brand">
-                <span class="logo">MX</span>
-                <span class="brand-name">MeterX Dashboard</span>
+<body class="panel">
+    <div class="wrap">
+        <header class="bar">
+            <span id="mark"></span>
+            <div class="who">
+                <div class="name">MeterX</div>
+                <div class="scope" id="scope">Testing via Cloudflare edge</div>
             </div>
-            <div id="quality-badge" class="badge hidden" aria-live="polite" data-tip="quality"></div>
+            <button id="settingsBtn" class="icon-btn" type="button" aria-label="Settings" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+            </button>
+            <button id="runBtn" class="btn btn-primary" type="button">Run test</button>
         </header>
 
-        <section class="sp-hero">
-            <div class="sp-hero-main">
-                <span class="sp-hero-num" id="heroNum">--</span>
-                <span class="sp-hero-unit">Mbps ↓</span>
+        <main>
+            <div class="title-row">
+                <div>
+                    <h1>Connection history</h1>
+                    <p id="finding" class="finding">No tests yet. Run one to start the history.</p>
+                </div>
+                <div class="tabs" role="tablist" aria-label="Time range" id="range">
+                    <button role="tab" type="button" data-days="1">24 h</button>
+                    <button role="tab" type="button" data-days="7" aria-selected="true">7 days</button>
+                    <button role="tab" type="button" data-days="30">30 days</button>
+                    <button role="tab" type="button" data-days="0">All</button>
+                </div>
             </div>
-            <div class="sp-hero-side">
-                <div class="sp-sub"><span id="heroUp">--</span> Mbps ↑</div>
-                <div class="sp-sub"><span id="heroPing">--</span> ms ping</div>
-                <div class="sp-sub"><span id="heroBB">--</span> bufferbloat</div>
-            </div>
-        </section>
 
-        <section>
-            <h2 class="sp-h2">Trend</h2>
-            <div id="chart" class="sp-chart" aria-label="Download speed over time"></div>
-        </section>
+            <dl class="strip card" aria-label="Averages for this range">
+                <div data-tip="download"><dt>Download, average</dt><dd><span id="avgDown" class="lead dash">—</span><span class="unit">Mbps</span></dd></div>
+                <div data-tip="upload"><dt>Upload, average</dt><dd><span id="avgUp" class="dash">—</span><span class="unit">Mbps</span></dd></div>
+                <div data-tip="ping"><dt>Ping, median</dt><dd><span id="medPing" class="dash">—</span><span class="unit">ms</span></dd></div>
+                <div><dt>Tests</dt><dd><span id="count">0</span></dd></div>
+            </dl>
 
-        <section>
-            <h2 class="sp-h2">ISP Plan</h2>
-            <div id="ispCompare" class="isp-compare hidden" aria-live="polite"></div>
-            <p id="ispEmpty" class="sp-empty">Set your ISP plan in Settings to see how much of what you pay for you are getting.</p>
-        </section>
+            <section class="card" aria-labelledby="trendTitle">
+                <div class="card-head">
+                    <h2 id="trendTitle">Speed over time</h2>
+                    <span id="legend" class="legend"></span>
+                </div>
+                <div class="card-body">
+                    <div id="chart" class="chart"></div>
+                    <p id="chartEmpty" class="empty" hidden>Run two tests in this range to draw the trend.</p>
+                </div>
+            </section>
 
-        <section>
-            <h2 class="sp-h2">Recent Tests</h2>
-            <div id="historyList" class="history-list"></div>
-        </section>
+            <section class="card" aria-labelledby="planTitle">
+                <div class="card-head">
+                    <h2 id="planTitle">Against your plan</h2>
+                    <span id="planName" class="muted"></span>
+                </div>
+                <div class="card-body">
+                    <div id="planRows" class="plan-rows"></div>
+                    <p id="planEmpty" class="empty" hidden>Add your plan's advertised speeds to see how much of what you pay for arrives. <button id="planSetup" class="btn btn-text link" type="button">Add plan</button></p>
+                </div>
+            </section>
 
-        <div class="sp-actions">
-            <button id="startButton" class="sp-primary">Run test</button>
-            <button id="openOptions" class="sp-secondary">Settings</button>
-        </div>
-
-        <footer class="sp-footer">
-            MeterX &middot; <a href="https://github.com/ajithakdev/meterx-server" target="_blank">source</a>
-        </footer>
+            <section class="card" aria-labelledby="resultsTitle">
+                <div class="card-head">
+                    <h2 id="resultsTitle">Results</h2>
+                    <div class="menu-wrap">
+                        <button id="exportBtn" class="btn btn-text" type="button" aria-haspopup="menu" aria-expanded="false">Export</button>
+                        <div id="exportMenu" class="menu" role="menu" hidden>
+                            <button type="button" role="menuitem" data-value="pdf">PDF report<small>Summary, trend and every result</small></button>
+                            <button type="button" role="menuitem" data-value="csv">CSV<small>For spreadsheets</small></button>
+                            <button type="button" role="menuitem" data-value="json">JSON<small>Every field</small></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="results">
+                        <thead><tr><th scope="col">When</th><th scope="col" class="num">Down</th><th scope="col" class="num">Up</th><th scope="col" class="num">Ping</th><th scope="col">Quality</th></tr></thead>
+                        <tbody id="rows"></tbody>
+                    </table>
+                    <p id="rowsEmpty" class="empty" hidden>No results in this range.</p>
+                    <button id="moreBtn" class="btn btn-text more" type="button" hidden>Show all</button>
+                </div>
+            </section>
+            <p id="status" class="status" role="status"></p>
+        </main>
     </div>
+    <script src="vendor/charts.js"></script>
     <script src="sidepanel.js"></script>
 </body>
 </html>

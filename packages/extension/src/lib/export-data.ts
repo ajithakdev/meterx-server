@@ -3,7 +3,7 @@
  * @license AGPL-3.0
  */
 
-import type { HistoryEntry } from '@meterx/shared';
+import { VERSION, type HistoryEntry } from '@meterx/shared';
 
 function triggerDownload(blob: Blob, filename: string): void {
     const url = URL.createObjectURL(blob);
@@ -20,7 +20,7 @@ export function exportJson(history: HistoryEntry[]): void {
     const payload = {
         exportedAt: new Date().toISOString(),
         tool: 'MeterX',
-        version: '2026.0.319-MR1.0',
+        version: VERSION,
         count: history.length,
         results: history.map(e => ({
             timestamp: e.timestamp,
@@ -35,7 +35,10 @@ export function exportJson(history: HistoryEntry[]): void {
             dnsLookupMs: e.dnsLookupMs,
             ipv4Ok: e.ipv4Ok,
             ipv6Ok: e.ipv6Ok,
+            loadedPingDownMs: e.loadedPingDown,
+            loadedPingUpMs: e.loadedPingUp,
             edge: e.edge,
+            isp: e.isp,
         })),
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -43,7 +46,7 @@ export function exportJson(history: HistoryEntry[]): void {
 }
 
 export function exportCsv(history: HistoryEntry[]): void {
-    const cols = ['timestamp', 'isoTime', 'downloadMbps', 'uploadMbps', 'pingMs', 'jitterMs', 'packetLossPct', 'bufferbloatDeltaMs', 'bufferbloatGrade', 'dnsLookupMs', 'ipv4Ok', 'ipv6Ok', 'edge'];
+    const cols = ['timestamp', 'isoTime', 'downloadMbps', 'uploadMbps', 'pingMs', 'jitterMs', 'packetLossPct', 'bufferbloatDeltaMs', 'bufferbloatGrade', 'dnsLookupMs', 'ipv4Ok', 'ipv6Ok', 'edge', 'isp'];
     const rows = history.map(e => [
         e.timestamp,
         new Date(e.timestamp).toISOString(),
@@ -58,15 +61,17 @@ export function exportCsv(history: HistoryEntry[]): void {
         e.ipv4Ok ?? '',
         e.ipv6Ok ?? '',
         e.edge ?? '',
+        e.isp ?? '',
     ]);
-    const csv = [cols.join(','), ...rows.map(r => r.map(escapeCsv).join(','))].join('\n');
+    const csv = [cols.join(','), ...rows.map(r => r.map(escapeCsv).join(','))].join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     triggerDownload(blob, `meterx-export-${new Date().toLocaleDateString('en-CA')}.csv`);
 }
 
-function escapeCsv(v: unknown): string {
+/** RFC 4180 quoting, plus a leading ' on text that a spreadsheet would run as a formula (#78). */
+export function escapeCsv(v: unknown): string {
     if (v === null || v === undefined) return '';
-    const s = String(v);
-    if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-    return s;
+    let s = String(v);
+    if (typeof v === 'string' && /^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+    return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }

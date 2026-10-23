@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildShareUrl, parseShareUrl } from './share';
+import { buildShareUrl, parseShareUrl, SHARE_VIEWER } from './share';
 
 describe('share URL round-trip', () => {
     it('encodes and decodes a full result', () => {
@@ -12,6 +12,7 @@ describe('share URL round-trip', () => {
             packetLoss: 0,
             bufferbloatGrade: 'B' as const,
             edge: 'BOM',
+            isp: 'Reliance Jio',
         };
         const url = buildShareUrl(entry);
         expect(url).toContain('#r=');
@@ -21,11 +22,20 @@ describe('share URL round-trip', () => {
         expect(decoded!.downloadSpeed).toBeCloseTo(123.5, 1);
         expect(decoded!.bufferbloatGrade).toBe('B');
         expect(decoded!.edge).toBe('BOM');
+        expect(decoded!.isp).toBe('Reliance Jio');
+        expect(url.startsWith(SHARE_VIEWER)).toBe(true);
+    });
+
+    it('drops fields that fail validation', () => {
+        const evil = { t: 1, dl: 'x', ul: -5, p: 1e9, bb: 'Z', e: '<script>', i: '<img onerror=1>' };
+        const b64 = btoa(JSON.stringify(evil)).replace(/=+$/, '');
+        const decoded = parseShareUrl(`${SHARE_VIEWER}#r=${b64}`);
+        expect(decoded).toEqual({ timestamp: 1, downloadSpeed: undefined, uploadSpeed: undefined, ping: undefined, jitter: undefined, packetLoss: undefined, bufferbloatGrade: undefined, edge: undefined, isp: undefined });
     });
 
     it('returns null for malformed URL', () => {
-        expect(parseShareUrl('https://meterx.dev/share')).toBeNull();
-        expect(parseShareUrl('https://meterx.dev/share#r=!!!')).toBeNull();
+        expect(parseShareUrl('https://meterx.ajithakdev.com/r/')).toBeNull();
+        expect(parseShareUrl('https://meterx.ajithakdev.com/r/#r=!!!')).toBeNull();
     });
 
     it('handles entries with missing fields', () => {

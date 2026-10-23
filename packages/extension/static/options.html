@@ -2,113 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MeterX Settings</title>
-    <link rel="stylesheet" href="options.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MeterX settings</title>
+    <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/options.css">
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">MX</div>
-            <div class="header-text">
-                <h1>MeterX Settings</h1>
-                <p class="sub">Configure your speed test server</p>
+<body class="settings">
+    <div class="wrap">
+        <header class="bar">
+            <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5.6 18.4a9 9 0 1 1 12.8 0"/><path d="M12 13.5l4.2-4.7"/><circle cx="12" cy="13.5" r="1.4" fill="currentColor" stroke="none"/></svg>
+            <div class="who">
+                <h1 class="name">MeterX settings</h1>
+                <div class="scope">Server, ISP plan and scheduled tests</div>
             </div>
-            <button id="closeBtn" class="close-btn" aria-label="Close" title="Close"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg></button>
-        </div>
+            <div class="tools">
+                <button id="closeBtn" class="icon-btn" type="button" aria-label="Close" title="Close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                </button>
+            </div>
+        </header>
 
-        <!-- Server Status -->
-        <div class="card status-card">
-            <div class="status-row">
-                <div class="status-dot" id="statusDot"></div>
+        <main>
+            <section class="card status-card" aria-live="polite">
+                <span class="status-dot checking" id="statusDot" aria-hidden="true"></span>
                 <div class="status-info">
                     <div class="status-label" id="statusLabel">Checking connection...</div>
-                    <div class="status-detail" id="statusDetail"></div>
+                    <div class="status-detail muted" id="statusDetail"></div>
                 </div>
-                <div class="status-ping" id="statusPing"></div>
-            </div>
-        </div>
+                <div class="status-ping num" id="statusPing"></div>
+            </section>
 
-        <div class="options-grid">
-        <!-- Server Selection -->
-        <div class="card">
-            <label>Server</label>
-            <div class="radio-group">
-                <label class="radio-option" id="optDefault">
-                    <input type="radio" name="serverType" value="default" checked>
-                    <div class="radio-content">
-                        <span class="radio-label">Cloudflare Edge</span>
-                        <span class="radio-desc">Auto-routes to nearest location. Zero cold starts.</span>
+            <div class="grid">
+                <section class="card">
+                    <div class="card-head"><h2>Server</h2></div>
+                    <div class="card-body">
+                        <div class="choices" role="radiogroup" aria-label="Server">
+                            <label class="choice radio-option" id="optDefault">
+                                <input type="radio" name="serverType" value="default" checked>
+                                <span><span class="t">Cloudflare edge</span><span class="d">Routes to the nearest location.</span></span>
+                            </label>
+                            <label class="choice radio-option" id="optCustom">
+                                <input type="radio" name="serverType" value="custom">
+                                <span><span class="t">Custom server</span><span class="d">Your own self-hosted MeterX server.</span></span>
+                            </label>
+                        </div>
+                        <div id="customUrlSection" class="custom-url hidden" inert>
+                            <div class="input-row">
+                                <input class="input" type="url" id="serverUrl" aria-label="Custom server URL" placeholder="https://your-server.example.com" spellcheck="false" autocomplete="off">
+                                <button id="testBtn" class="btn" type="button">Test</button>
+                            </div>
+                            <div id="testStatus" class="test-status" role="status"></div>
+                        </div>
                     </div>
-                </label>
-                <label class="radio-option" id="optCustom">
-                    <input type="radio" name="serverType" value="custom">
-                    <div class="radio-content">
-                        <span class="radio-label">Custom Server</span>
-                        <span class="radio-desc">Use your own self-hosted MeterX server.</span>
+                </section>
+
+                <section class="card">
+                    <div class="card-head"><h2>Your ISP plan</h2><span class="muted">Optional</span></div>
+                    <div class="card-body">
+                        <p class="muted hint">Enter your advertised speeds to see how much of what you pay for you actually get.</p>
+                        <div class="isp-grid">
+                            <div class="field">
+                                <label for="ispDown">Download (Mbps)</label>
+                                <input class="input num" type="number" min="0" step="1" id="ispDown" placeholder="e.g. 300">
+                            </div>
+                            <div class="field">
+                                <label for="ispUp">Upload (Mbps)</label>
+                                <input class="input num" type="number" min="0" step="1" id="ispUp" placeholder="e.g. 100">
+                            </div>
+                            <div class="field wide">
+                                <label for="ispProvider">Provider</label>
+                                <input class="input" type="text" id="ispProvider" placeholder="e.g. Airtel" maxlength="40">
+                            </div>
+                        </div>
+                        <div class="row-end">
+                            <button id="ispClearBtn" type="button" class="btn btn-text">Clear</button>
+                        </div>
                     </div>
-                </label>
+                </section>
+
+                <section class="card">
+                    <div class="card-head"><h2>Scheduled tests</h2></div>
+                    <div class="card-body">
+                        <p class="muted hint">Run a quick check on a timer and get notified if quality drops.</p>
+                        <div class="choices" role="radiogroup" aria-label="Schedule">
+                            <label class="choice"><input type="radio" name="schedule" value="off" checked><span><span class="t">Off</span><span class="d">Only when I click.</span></span></label>
+                            <label class="choice"><input type="radio" name="schedule" value="30"><span><span class="t">Every 30 minutes</span><span class="d">For troubleshooting a flaky connection.</span></span></label>
+                            <label class="choice"><input type="radio" name="schedule" value="120"><span><span class="t">Every 2 hours</span><span class="d">A balanced default.</span></span></label>
+                            <label class="choice"><input type="radio" name="schedule" value="1440"><span><span class="t">Once a day</span><span class="d">Low overhead trend data.</span></span></label>
+                        </div>
+                        <label class="choice check">
+                            <input type="checkbox" id="notifyOnDrop">
+                            <span class="t">Notify me when quality drops to Poor</span>
+                        </label>
+                    </div>
+                </section>
             </div>
 
-            <div id="customUrlSection" class="custom-url hidden">
-                <div class="input-row">
-                    <input type="url" id="serverUrl" placeholder="https://your-server.example.com" spellcheck="false" autocomplete="off">
-                    <button id="testBtn" class="btn btn-secondary">Test</button>
-                </div>
-                <div id="testStatus" class="test-status hidden"></div>
+            <div class="save-row">
+                <button id="saveBtn" class="btn btn-primary" type="button">Save</button>
             </div>
-        </div>
 
-        <!-- ISP Plan -->
-        <div class="card">
-            <label>Your ISP plan (optional)</label>
-            <p class="radio-desc" style="margin-bottom:10px">Enter your advertised speeds to see how much of what you pay for you actually get.</p>
-            <div class="isp-grid">
-                <div class="isp-field">
-                    <label for="ispDown" class="isp-fl">Download (Mbps)</label>
-                    <input type="number" min="0" step="1" id="ispDown" placeholder="e.g. 300">
-                </div>
-                <div class="isp-field">
-                    <label for="ispUp" class="isp-fl">Upload (Mbps)</label>
-                    <input type="number" min="0" step="1" id="ispUp" placeholder="e.g. 100">
-                </div>
-                <div class="isp-field isp-field-wide">
-                    <label for="ispProvider" class="isp-fl">Provider (optional)</label>
-                    <input type="text" id="ispProvider" placeholder="e.g. Airtel" maxlength="40">
-                </div>
-            </div>
-            <div class="isp-actions">
-                <button id="ispClearBtn" type="button" class="btn btn-secondary">Clear</button>
-            </div>
-        </div>
-
-        <!-- Scheduled background tests -->
-        <div class="card">
-            <label>Scheduled background tests</label>
-            <p class="radio-desc" style="margin-bottom:10px">Run a quick check on a timer. Get a notification if quality drops.</p>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="schedule" value="off" checked><div class="radio-content"><span class="radio-label">Off</span><span class="radio-desc">Only run tests when I click.</span></div></label>
-                <label class="radio-option"><input type="radio" name="schedule" value="30"><div class="radio-content"><span class="radio-label">Every 30 min</span><span class="radio-desc">Frequent &mdash; best for troubleshooting a flaky connection.</span></div></label>
-                <label class="radio-option"><input type="radio" name="schedule" value="120"><div class="radio-content"><span class="radio-label">Every 2 hours</span><span class="radio-desc">Balanced default.</span></div></label>
-                <label class="radio-option"><input type="radio" name="schedule" value="1440"><div class="radio-content"><span class="radio-label">Once a day</span><span class="radio-desc">Low overhead trend data.</span></div></label>
-            </div>
-            <label class="isp-fl" style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                <input type="checkbox" id="notifyOnDrop"> Notify when quality drops to Poor
-            </label>
-        </div>
-        </div>
-
-        <div class="actions">
-            <button id="saveBtn" class="btn btn-primary">Save</button>
-        </div>
-
-        <div class="info">
-            <p>Self-host the MeterX server for LAN testing or maximum privacy.</p>
-            <p>See <a href="https://github.com/ajithakdev/meterx-server" target="_blank">github.com/ajithakdev/meterx-server</a> for setup instructions.</p>
-        </div>
-
-        <div class="footer">
-            MeterX v2026.0.319 &middot; AGPL-3.0 &middot; <a href="https://github.com/ajithakdev/meterx-server" target="_blank">About</a>
-        </div>
+            <footer class="foot muted">
+                <p>Self-host the server for LAN testing or more privacy: <a href="https://github.com/ajithakdev/meterx-server" target="_blank" rel="noopener">github.com/ajithakdev/meterx-server</a></p>
+                <p>MeterX v2026.0.319 &middot; AGPL-3.0</p>
+            </footer>
+        </main>
     </div>
     <script src="options.js"></script>
 </body>

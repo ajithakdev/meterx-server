@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getQuality, getQualityClass, scoreUseCases } from './quality';
+import { getQuality, qualityOf, scoreUseCases } from './quality';
 
 describe('getQuality', () => {
     it('grades excellent for 100/50/10ms', () => {
@@ -19,12 +19,13 @@ describe('getQuality', () => {
     });
 });
 
-describe('getQualityClass', () => {
-    it('returns q-fair for undefined inputs', () => {
-        expect(getQualityClass(undefined, undefined, undefined)).toBe('q-fair');
+describe('qualityOf', () => {
+    it('returns null when a measurement is missing', () => {
+        expect(qualityOf({ downloadSpeed: 100, uploadSpeed: undefined, ping: 10 })).toBeNull();
+        expect(qualityOf(undefined)).toBeNull();
     });
-    it('prefixes q-', () => {
-        expect(getQualityClass(100, 50, 10)).toBe('q-excellent');
+    it('grades a complete entry', () => {
+        expect(qualityOf({ downloadSpeed: 100, uploadSpeed: 50, ping: 10 })?.cls).toBe('excellent');
     });
 });
 
