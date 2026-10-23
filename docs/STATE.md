@@ -17,8 +17,10 @@ Next, in order:
 1. Owner tests `packages/extension/dist/` unpacked in Chrome.
 2. Check the remaining bugs from the scan: #61, #62 (history), #63 (cancel), #80 (CORS null), #87 (tests).
 3. Firefox-compatible build (`lib/browser.ts` is the start).
-4. Site at `meterx.ajithakdev.com` with the share viewer (#74).
-5. Privacy policy (#92), version bump to 2027.0.0, open the PR.
+4. Site at `meterx.ajithakdev.com` with the share viewer (#74): plan in `docs/SITE-PLAN.md`.
+5. Privacy policy (#92), open the PR. The version is already 2027.0.0 in the root `package.json`.
+
+Logo: five options were shown on 2026-10-24; waiting for the owner's pick. Then icons, store banners and the site, in the order in `docs/SITE-PLAN.md`.
 
 ## Releases
 
