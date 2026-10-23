@@ -5,7 +5,9 @@
 
 import type { Grade, HistoryEntry, IspPlan, Phase } from '@meterx/shared';
 import { NONE, fmt } from './format';
-import { qualityOf, scoreUseCases, type UseCaseScore, type UseCaseScores } from './quality';
+import { USE_CASES, qualityOf, scoreUseCases, type UseCaseScores } from './quality';
+
+export { USE_CASES };
 
 // Where each phase starts on a progress bar and how long it usually takes.
 const PHASE_PLAN: Partial<Record<Phase, { from: number; to: number; ms: number }>> = {
@@ -56,12 +58,6 @@ export function setFigure(el: HTMLElement, value: string): void {
     el.classList.toggle('dash', value === NONE);
 }
 
-export const USE_CASES: Array<{ key: keyof UseCaseScores; label: string; words: Record<UseCaseScore, string> }> = [
-    { key: 'calls', label: 'Video calls', words: { good: 'Smooth', okay: 'Choppy', poor: 'Too slow' } },
-    { key: 'stream', label: 'Streaming', words: { good: '4K', okay: 'HD only', poor: 'Too slow' } },
-    { key: 'gaming', label: 'Gaming', words: { good: 'Smooth', okay: 'May lag', poor: 'Laggy' } },
-    { key: 'upload', label: 'Uploads', words: { good: 'Fast', okay: 'Slow', poor: 'Very slow' } },
-];
 
 export function useCasesOf(e: HistoryEntry | undefined): UseCaseScores | null {
     if (!e || e.downloadSpeed === undefined || e.uploadSpeed === undefined || e.ping === undefined) return null;

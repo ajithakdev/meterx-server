@@ -6,7 +6,7 @@
 
 import type { Grade, HistoryEntry } from './index';
 
-export const SHARE_VIEWER = 'https://meterx.ajithakdev.com/r/';
+export const SHARE_VIEWER = 'https://meterx.ajithakdev.com/r/'; // SITE_ORIGIN + '/r/'
 
 type Shared = Pick<HistoryEntry, 'timestamp' | 'downloadSpeed' | 'uploadSpeed' | 'ping' | 'jitter' | 'packetLoss' | 'bufferbloatGrade' | 'edge' | 'isp'>;
 

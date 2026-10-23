@@ -6,7 +6,7 @@
  */
 
 import {
-    VERSION, TEST_FILE_RE, MAX_UPLOAD_BYTES, isExtensionOrigin, ipFamily,
+    VERSION, TEST_FILE_RE, MAX_UPLOAD_BYTES, isAllowedOrigin, ipFamily,
     type HealthResponse, type IpInfo,
 } from '@meterx/shared';
 
@@ -30,7 +30,7 @@ function corsHeaders(request: Request): Record<string, string> {
         'Cache-Control': 'no-store',
         Vary: 'Origin',
     };
-    if (isExtensionOrigin(origin)) {
+    if (isAllowedOrigin(origin)) {
         headers['Access-Control-Allow-Origin'] = origin!;
         // Lets the extension read DNS and connect timings (Resource Timing API).
         headers['Timing-Allow-Origin'] = origin!;

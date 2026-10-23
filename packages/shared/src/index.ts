@@ -16,6 +16,14 @@ export const TEST_FILE_RE = /^(1|5|10|25)MB\.bin$/;
 /** Bodies above this are cut off by both backends; the extension never sends more than 8 MB. */
 export const MAX_UPLOAD_BYTES = 16 * 1024 * 1024;
 
+/** The product site, which runs a short in-page test against the worker. */
+export const SITE_ORIGIN = 'https://meterx.ajithakdev.com';
+
+/** Origins the backends answer with CORS: extensions, the site, and the site's local dev server. */
+export function isAllowedOrigin(origin: string | null | undefined): boolean {
+    return isExtensionOrigin(origin) || origin === SITE_ORIGIN || /^http:\/\/localhost:\d+$/.test(origin ?? '');
+}
+
 /** Browser extension origins (Chrome, Edge, Opera, Firefox, Safari). Never `null`. */
 export function isExtensionOrigin(origin: string | null | undefined): boolean {
     return !!origin && /^(chrome|moz|safari-web)-extension:\/\/[\w.-]+$/.test(origin);
@@ -95,3 +103,4 @@ export type BroadcastMessage =
     | { action: 'testError'; error: string; cancelled?: boolean };
 
 export { SHARE_VIEWER, buildShareUrl, parseShareUrl } from './share';
+export { getQuality, qualityOf, scoreUseCases, USE_CASES, type QualityLabel, type UseCaseScore, type UseCaseScores } from './quality';
