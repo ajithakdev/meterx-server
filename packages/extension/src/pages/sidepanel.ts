@@ -6,15 +6,15 @@
 
 /// <reference types="chrome" />
 
-import type { BroadcastMessage, HistoryEntry, IspPlan } from '@meterx/shared';
+import type { BroadcastMessage, HistoryEntry, IspPlan, TestProgress } from '@meterx/shared';
 import { exportCsv, exportJson } from '../lib/export-data';
 import { exportPdfReport } from '../lib/export-pdf';
-import { fmt, fmtSpeed, fmtWhen } from '../lib/format';
+import { NONE, fmt, fmtSpeed, fmtWhen } from '../lib/format';
 import { loadHistory } from '../lib/history';
 import { loadIspPlan, planShare } from '../lib/isp';
 import { qualityOf } from '../lib/quality';
 import { bindTooltips } from '../lib/tooltips';
-import { MARK_SVG, bindMenu, scopeLine, setFigure } from '../lib/ui';
+import { MARK_SVG, animatePhase, bindMenu, scopeLine, setFigure } from '../lib/ui';
 import { median } from '../background/measure';
 
 interface ChartsApi {
@@ -64,10 +64,12 @@ function renderChart(rows: HistoryEntry[], plan: IspPlan | null): void {
     $('chartEmpty').hidden = !empty;
     $('legend').replaceChildren();
     if (empty) return;
-    const short = days === 1;
+    // Times when the points span one day, dates otherwise; both in the browser's own format.
+    const dayOf = (t: number) => new Date(t).toDateString();
+    const short = days === 1 || dayOf(pts[0].timestamp) === dayOf(pts[pts.length - 1].timestamp);
     const labels = pts.map(e => {
         const d = new Date(e.timestamp);
-        return short ? d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: false })
+        return short ? d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
             : d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
     });
     const { legend } = Charts.line(chart, {
@@ -112,12 +114,13 @@ function renderRows(rows: HistoryEntry[]): void {
         const q = qualityOf(e);
         return `<tr><td class="when">${fmtWhen(e.timestamp)}</td><td class="num down">${fmtSpeed(e.downloadSpeed)}</td>` +
             `<td class="num">${fmtSpeed(e.uploadSpeed)}</td><td class="num">${fmt(e.ping, 0)}</td>` +
-            `<td>${q ? `<span class="pill q-${q.cls}">${q.label}</span>` : '<span class="dash">—</span>'}</td></tr>`;
+            `<td>${q ? `<span class="pill q-${q.cls}">${q.label}</span>` : `<span class="dash">${NONE}</span>`}</td></tr>`;
     }).join('');
     $('rowsEmpty').hidden = rows.length > 0;
 }
 
 async function refresh(): Promise<void> {
+    if (running) return; // the live view owns the summary until the test ends
     const [all, plan, { serverUrl }] = await Promise.all([loadHistory(), loadIspPlan(), chrome.storage.sync.get('serverUrl')]);
     const rows = inRange(all);
     $('scope').textContent = scopeLine(all[0], !!serverUrl);
@@ -125,8 +128,14 @@ async function refresh(): Promise<void> {
     setFigure($('avgDown'), fmtSpeed(avg(values(rows, 'downloadSpeed'))));
     setFigure($('avgUp'), fmtSpeed(avg(values(rows, 'uploadSpeed'))));
     const pings = values(rows, 'ping');
-    setFigure($('medPing'), pings.length ? fmt(median(pings), 0) : '—');
+    setFigure($('medPing'), pings.length ? fmt(median(pings), 0) : NONE);
     $('count').textContent = String(rows.length);
+    $('countUnit').textContent = '';
+    $('title').textContent = 'Connection history';
+    $('lDown').textContent = 'Download, average';
+    $('lUp').textContent = 'Upload, average';
+    $('lPing').textContent = 'Ping, median';
+    $('lCount').textContent = 'Tests';
     renderChart(rows, plan);
     renderPlan(rows, plan);
     renderRows(rows);
@@ -137,9 +146,52 @@ function setStatus(text: string, error = false): void {
     $('status').classList.toggle('is-error', error);
 }
 
+const PHASE_WORDS: Record<string, string> = {
+    connect: 'Connecting to the server…', latency: 'Measuring ping and jitter…',
+    download: 'Measuring download speed…', upload: 'Measuring upload speed…',
+};
+let phase: string | undefined;
+let started = 0;
+let ticker: number | undefined;
+
+/** Switches the summary card between range averages and the running test, keeping every block in place. */
 function setRunning(on: boolean): void {
+    if (on === running) return;
     running = on;
+    document.body.classList.toggle('is-running', on);
     $('runBtn').textContent = on ? 'Stop test' : 'Run test';
+    clearInterval(ticker);
+    phase = undefined;
+    if (on) {
+        started = Date.now();
+        $('title').textContent = 'Testing your connection';
+        $('finding').textContent = 'Starting the test. It takes about 20 seconds.';
+        $('lDown').textContent = 'Download, now';
+        $('lUp').textContent = 'Upload, now';
+        $('lPing').textContent = 'Ping';
+        $('lCount').textContent = 'Elapsed';
+        for (const id of ['avgDown', 'avgUp', 'medPing']) setFigure($(id), NONE);
+        const tick = () => { $('count').textContent = String(Math.round((Date.now() - started) / 1000)); $('countUnit').textContent = 's'; };
+        tick();
+        ticker = window.setInterval(tick, 500);
+    } else {
+        const fill = $('progressFill');
+        fill.style.transition = 'none';
+        fill.style.width = '0';
+        refresh();
+    }
+}
+
+function applyProgress(p: TestProgress): void {
+    if (p.phase && p.phase !== phase) {
+        phase = p.phase;
+        if (PHASE_WORDS[p.phase]) $('finding').textContent = PHASE_WORDS[p.phase];
+        const from = animatePhase($('progressFill'), p.phase);
+        if (from !== undefined) $('progress').setAttribute('aria-valuenow', String(from));
+    }
+    if (p.downloadSpeed !== undefined) setFigure($('avgDown'), fmtSpeed(p.downloadSpeed));
+    if (p.uploadSpeed !== undefined) setFigure($('avgUp'), fmtSpeed(p.uploadSpeed));
+    if (p.ping !== undefined) setFigure($('medPing'), fmt(p.ping, 0));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -147,12 +199,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     bindTooltips(document);
     await refresh();
 
-    const state = await chrome.runtime.sendMessage({ action: 'getState' }).catch(() => null) as { running: boolean } | null;
-    setRunning(!!state?.running);
+    const state = await chrome.runtime.sendMessage({ action: 'getState' }).catch(() => null) as { running: boolean; progress: TestProgress } | null;
+    if (state?.running) { setRunning(true); applyProgress(state.progress); }
 
     $('runBtn').addEventListener('click', () => {
         chrome.runtime.sendMessage({ action: running ? 'cancelTest' : 'startTest' });
-        if (!running) { setRunning(true); setStatus('Testing… about 20 seconds'); }
+        if (!running) { setStatus(''); setRunning(true); }
     });
     $('settingsBtn').addEventListener('click', () => chrome.runtime.openOptionsPage());
     $('planSetup').addEventListener('click', () => chrome.runtime.openOptionsPage());
@@ -179,8 +231,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     chrome.runtime.onMessage.addListener((msg: BroadcastMessage) => {
-        if (msg.action === 'testProgress' && !running) setRunning(true);
-        if (msg.action === 'testComplete') { setRunning(false); setStatus(''); }
+        if (msg.action === 'testProgress') { setRunning(true); applyProgress(msg.data); }
+        if (msg.action === 'testComplete') { setRunning(false); setStatus('Test complete'); }
         if (msg.action === 'testError') { setRunning(false); setStatus(msg.cancelled ? '' : msg.error, !msg.cancelled); }
     });
     chrome.storage.onChanged.addListener((changes, area) => {

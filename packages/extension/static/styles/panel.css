@@ -54,6 +54,9 @@
 .results td { padding: 9px 0; border-top: 1px solid var(--rule); white-space: nowrap; }
 .results th + th, .results td + td { padding-left: 10px; }
 .results .num { text-align: right; font-variant-numeric: tabular-nums; }
+/* Equal number columns so the gaps between Down, Up and Ping match; When takes the rest. */
+.results th.num, .results td.num { width: 3.6em; }
+.results td.when { width: 100%; }
 .results td.when { color: var(--muted); }
 .results td.down { color: var(--data); font-weight: 500; }
 .status { min-height: 20px; color: var(--muted); font-size: var(--fs-small); }
@@ -83,3 +86,10 @@
 /* Compact cells so the results list keeps room in a typical side panel. */
 .panel .strip > div { padding: 8px 12px; }
 .panel .card-head .btn { height: 28px; margin: -4px -8px -4px 0; }
+
+/* Live test: the header gets a progress line and the summary card shows the running figures in place. */
+.panel .bar { position: sticky; }
+.live-track { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--raised); visibility: hidden; overflow: hidden; }
+.live-track i { display: block; height: 100%; width: 0; background: var(--data); }
+.panel.is-running .live-track { visibility: visible; }
+.panel.is-running .strip { border-color: var(--data); }

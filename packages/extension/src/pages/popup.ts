@@ -11,21 +11,13 @@ import { buildShareUrl, type BroadcastMessage, type HistoryEntry, type Phase, ty
 import { openPanel, panelSupported } from '../lib/browser';
 import { exportCsv, exportJson } from '../lib/export-data';
 import { exportPdfReport } from '../lib/export-pdf';
-import { fmt, fmtSpeed, getTimeAgo } from '../lib/format';
+import { NONE, fmt, fmtSpeed, getTimeAgo } from '../lib/format';
 import { loadHistory } from '../lib/history';
 import { loadIspPlan } from '../lib/isp';
 import { bindTooltips } from '../lib/tooltips';
-import { MARK_SVG, bindMenu, findingFor, renderLoad, renderReady, scopeLine, setFigure, setQualityPill } from '../lib/ui';
+import { MARK_SVG, animatePhase, bindMenu, findingFor, renderLoad, renderReady, scopeLine, setFigure, setQualityPill } from '../lib/ui';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
-
-// Where each phase starts on the progress bar and how long it usually takes.
-const PHASE_PLAN: Partial<Record<Phase, { from: number; to: number; ms: number }>> = {
-    connect: { from: 0, to: 4, ms: 600 },
-    latency: { from: 4, to: 12, ms: 2000 },
-    download: { from: 12, to: 56, ms: 8600 },
-    upload: { from: 56, to: 100, ms: 8600 },
-};
 
 const els = {
     scope: $('scope'), download: $('download'), upload: $('upload'), ping: $('ping'), jitter: $('jitter'), loss: $('loss'),
@@ -69,15 +61,8 @@ async function renderResult(e: HistoryEntry | undefined): Promise<void> {
 function setPhase(p: Phase): void {
     if (p === phase) return;
     phase = p;
-    const plan = PHASE_PLAN[p];
-    if (!plan) return;
-    const fill = els.fill;
-    fill.style.transition = 'none';
-    fill.style.width = `${plan.from}%`;
-    void fill.offsetWidth; // restart the transition from this phase's start
-    fill.style.transition = `width ${plan.ms}ms linear`;
-    fill.style.width = `${plan.to}%`;
-    els.progress.setAttribute('aria-valuenow', String(plan.from));
+    const from = animatePhase(els.fill, p);
+    if (from !== undefined) els.progress.setAttribute('aria-valuenow', String(from));
 }
 
 function setRunning(on: boolean): void {
@@ -99,7 +84,7 @@ function applyProgress(p: TestProgress): void {
 
 /** Clears figures at the start of a run, keeping every block where it is. */
 function startView(): void {
-    for (const el of [els.download, els.upload, els.ping, els.jitter, els.loss]) setFigure(el, '—');
+    for (const el of [els.download, els.upload, els.ping, els.jitter, els.loss]) setFigure(el, NONE);
     setQualityPill(els.quality, undefined);
     renderLoad(els.loadRows, els.grade, undefined);
     renderReady(els.ready, undefined);

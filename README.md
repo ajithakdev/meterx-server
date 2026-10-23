@@ -5,20 +5,20 @@ Every link and how-to is in [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md).
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![CI](https://github.com/ajithakdev/meterx-server/actions/workflows/ci.yml/badge.svg?branch=add/dev/2026.0.MAR.1)](https://github.com/ajithakdev/meterx-server/actions)
 
-Open-source speed test browser extension. Measures download, upload, ping, jitter, and packet loss from your toolbar — powered by Cloudflare's edge network.
+Open-source speed test browser extension. Measures download, upload, ping, jitter, and packet loss from your toolbar, powered by Cloudflare's edge network.
 
 ## Features
 
-- **Full speed test** — download, upload, ping, jitter, packet loss
-- **Use-case readiness** — labels for Calls, Streaming, Gaming, Uploads
-- **Connection quality badge** — live rating on the extension icon
-- **PDF health report** — export a full network report as PDF
-- **Test history** — last 7 displayed, 200 stored locally
-- **Cloudflare edge** — serverless backend at 300+ PoPs worldwide
-- **Self-hostable server** — Express.js fallback for LAN or self-hosting
-- **Settings page** — configure custom server URL
-- **Animated UI** — progress steps, speed bars, smooth transitions
-- **No tracking, no accounts** — everything stays in your browser
+- **Full speed test**: download, upload, ping, jitter, packet loss
+- **Use-case readiness**: labels for Calls, Streaming, Gaming, Uploads
+- **Connection quality badge**: live rating on the extension icon
+- **PDF health report**: export a full network report as PDF
+- **Test history**: last 7 displayed, 200 stored locally
+- **Cloudflare edge**: serverless backend at 300+ PoPs worldwide
+- **Self-hostable server**: Express.js fallback for LAN or self-hosting
+- **Settings page**: configure custom server URL
+- **Animated UI**: progress steps, speed bars, smooth transitions
+- **No tracking, no accounts**: everything stays in your browser
 
 ## Install from Source
 
@@ -46,16 +46,16 @@ meterx-server/
   packages/
     extension/        # Browser extension (TypeScript, Manifest V3, esbuild)
       src/
-        background.ts     # Service worker — test orchestration
+        background.ts     # Service worker: test orchestration
         popup.ts          # Popup UI, history, PDF export
       static/             # HTML, CSS, manifest, icons
       build.mjs           # esbuild bundler
 
-    worker/           # Cloudflare Worker — primary backend (serverless)
-      src/index.ts        # Edge handler — download, upload, ping, health
+    worker/           # Cloudflare Worker: primary backend (serverless)
+      src/index.ts        # Edge handler: download, upload, ping, health
       wrangler.toml       # Wrangler config
 
-    server/           # Express.js server — self-host fallback
+    server/           # Express.js server: self-host fallback
       src/
         app.ts            # Express app (routes, middleware)
         server.ts         # Entry point
@@ -107,7 +107,7 @@ MeterX collects zero personal data. All results are stored locally in your brows
 
 ## License
 
-[AGPL-3.0](LICENSE) — see [TRADEMARK.md](TRADEMARK.md) for brand usage policy.
+[AGPL-3.0](LICENSE). See [TRADEMARK.md](TRADEMARK.md) for brand usage policy.
 
 ## Author
 

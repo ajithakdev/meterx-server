@@ -18,7 +18,12 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 - One version for everything, read from the root `package.json` and stamped into the manifest at build time (#89)
 - Export file names use the browser's own date; every time shown in the extension follows the browser's locale and time zone
 
+- Running a test from the side panel shows it live: the summary card switches to the current download, upload, ping and elapsed time, the heading names the phase, and a progress line runs under the header
+- Extension name is now "MeterX by ajithakdev", and empty values show a plain hyphen
+
 ### Fixed
+- Down, Up and Ping columns in the side panel results have even spacing
+- Same-day charts label the axis with times instead of repeating the date, in the browser's own 12 or 24 hour format
 - Exporting a PDF no longer restyles the popup while the report renders, and the report no longer ends with a blank page
 - Popup fits Chrome's 600px height limit with no scrollbar; upload, ping and loss figures no longer spill into the next cell, and "Good enough for" labels are no longer cut off
 - Side panel averages switch to a 2×2 grid on narrow panels instead of overlapping, and the panel never scrolls sideways at 320px
@@ -53,14 +58,14 @@ Released on GitHub only. It never went to a store; stores stay on 2026.3.20.1 un
 Shipped to Firefox Add-ons, Edge Add-ons and Opera as store version 2026.3.20.1 ("Edge Migration").
 
 ### Added
-- Cloudflare Worker (`packages/worker/`) — serverless edge speed test server
+- Cloudflare Worker (`packages/worker/`): serverless edge speed test server
   - Streaming download via ReadableStream (1/5/10/25 MB)
   - Upload endpoint (drains body, no storage)
   - Ping endpoint (HEAD/GET) for latency
   - Health endpoint with edge location from cf-ray header
   - CORS support for browser extensions
   - Deployed at 300+ edge locations globally, zero cold starts
-- Use-case readiness labels — Calls, Streaming, Gaming, Uploads with color indicators
+- Use-case readiness labels: Calls, Streaming, Gaming, Uploads with color indicators
 - PDF health report export (html2canvas + jsPDF)
   - Dark theme matching the extension UI
   - Quality assessment, trend analysis, anomaly detection

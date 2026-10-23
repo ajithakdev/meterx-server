@@ -7,7 +7,7 @@
 
 import { VERSION, type Grade, type HistoryEntry, type IspPlan } from '@meterx/shared';
 import type { jsPDF as JsPdf } from 'jspdf';
-import { fmt, fmtSpeed, localDate } from './format';
+import { NONE, fmt, fmtSpeed, localDate } from './format';
 import { loadIspPlan, planShare } from './isp';
 import { qualityOf, type UseCaseScore } from './quality';
 import { summarize, type Spread, type Summary } from './report-stats';
@@ -26,9 +26,6 @@ const gradeTone = (g: Grade): Tone => (g === 'A' || g === 'B' ? 'positive' : g =
 const qualityTone = (cls: string): Tone => (cls === 'excellent' || cls === 'good' ? 'positive' : cls === 'fair' ? 'warning' : 'negative');
 
 const PAGE_W = 210, PAGE_H = 297, M = 16, W = PAGE_W - 2 * M, FOOT_Y = PAGE_H - 10, BOTTOM = FOOT_Y - 8;
-// Helvetica in jsPDF has no em dash glyph, so missing values print as a hyphen.
-const NONE = '-';
-const cell = (t: string) => (t === '—' ? NONE : t);
 
 const day = (ts: number) => new Date(ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 const when = (ts: number) => `${new Date(ts).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} ${new Date(ts).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
@@ -330,7 +327,7 @@ function results(d: Draw, hist: HistoryEntry[], y: number): void {
         let x = M;
         cells.forEach((t, i) => {
             const c = COLS[i];
-            d.text(cell(t), c.right ? x + c.w : x, by, { size: 8, color: i === 0 ? C.muted : i === 1 ? C.data : C.text, bold: i === 1, align: c.right ? 'right' : 'left' });
+            d.text(t, c.right ? x + c.w : x, by, { size: 8, color: i === 0 ? C.muted : i === 1 ? C.data : C.text, bold: i === 1, align: c.right ? 'right' : 'left' });
             x += c.w;
         });
         if (q) d.pill(q.label, M + W, by, qualityTone(q.cls), true);

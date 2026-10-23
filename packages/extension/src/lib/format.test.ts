@@ -6,8 +6,8 @@ describe('fmt', () => {
         expect(fmt(3.14159, 2)).toBe('3.14');
     });
     it('returns an em dash for missing or NaN', () => {
-        expect(fmt(undefined, 1)).toBe('—');
-        expect(fmt(NaN, 1)).toBe('—');
+        expect(fmt(undefined, 1)).toBe('-');
+        expect(fmt(NaN, 1)).toBe('-');
     });
     it('handles zero', () => {
         expect(fmt(0, 1)).toBe('0.0');

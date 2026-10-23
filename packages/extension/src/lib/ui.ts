@@ -3,9 +3,29 @@
  * @license AGPL-3.0
  */
 
-import type { Grade, HistoryEntry, IspPlan } from '@meterx/shared';
-import { fmt } from './format';
+import type { Grade, HistoryEntry, IspPlan, Phase } from '@meterx/shared';
+import { NONE, fmt } from './format';
 import { qualityOf, scoreUseCases, type UseCaseScore, type UseCaseScores } from './quality';
+
+// Where each phase starts on a progress bar and how long it usually takes.
+const PHASE_PLAN: Partial<Record<Phase, { from: number; to: number; ms: number }>> = {
+    connect: { from: 0, to: 4, ms: 600 },
+    latency: { from: 4, to: 12, ms: 2000 },
+    download: { from: 12, to: 56, ms: 8600 },
+    upload: { from: 56, to: 100, ms: 8600 },
+};
+
+/** Glides a progress fill across a phase's share of the bar. Returns the phase's start percent. */
+export function animatePhase(fill: HTMLElement, p: Phase): number | undefined {
+    const plan = PHASE_PLAN[p];
+    if (!plan) return undefined;
+    fill.style.transition = 'none';
+    fill.style.width = `${plan.from}%`;
+    void fill.offsetWidth; // restart the transition from this phase's start
+    fill.style.transition = `width ${plan.ms}ms linear`;
+    fill.style.width = `${plan.to}%`;
+    return plan.from;
+}
 
 /** A gauge: three-quarter dial with the needle past the middle. Drawn in currentColor. */
 export const MARK_SVG = `<svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5.6 18.4a9 9 0 1 1 12.8 0"/><path d="M12 13.5l4.2-4.7"/><circle cx="12" cy="13.5" r="1.4" fill="currentColor" stroke="none"/></svg>`;
@@ -33,7 +53,7 @@ export function scopeLine(e: HistoryEntry | undefined, custom: boolean): string 
 /** Sets a figure, or a grey dash at the same size when it is missing. */
 export function setFigure(el: HTMLElement, value: string): void {
     el.textContent = value;
-    el.classList.toggle('dash', value === '—');
+    el.classList.toggle('dash', value === NONE);
 }
 
 export const USE_CASES: Array<{ key: keyof UseCaseScores; label: string; words: Record<UseCaseScore, string> }> = [
@@ -53,7 +73,7 @@ export function renderReady(list: HTMLElement, e: HistoryEntry | undefined): voi
     const s = useCasesOf(e);
     list.innerHTML = USE_CASES.map(u => {
         const score = s?.[u.key];
-        return `<li><span class="k">${u.label}</span><span class="pill ${score ? `s-${score}` : ''}">${score ? u.words[score] : '—'}</span></li>`;
+        return `<li><span class="k">${u.label}</span><span class="pill ${score ? `s-${score}` : ''}">${score ? u.words[score] : NONE}</span></li>`;
     }).join('');
 }
 
@@ -86,7 +106,7 @@ export function renderLoad(rows: HTMLElement, gradeEl: HTMLElement, e: Partial<H
     rows.querySelectorAll<HTMLElement>('.load-row').forEach((row, i) => {
         const v = vals[i];
         (row.querySelector('.track > i') as HTMLElement).style.width = v === undefined ? '0%' : `${Math.max(2, (v / max) * 100)}%`;
-        setFigure(row.querySelector('.v') as HTMLElement, v === undefined ? '—' : `${fmt(v, 0)} ms`);
+        setFigure(row.querySelector('.v') as HTMLElement, v === undefined ? NONE : `${fmt(v, 0)} ms`);
     });
     const g = e?.bufferbloatGrade;
     gradeEl.className = `pill ${g ? gradeClass(g) : 'is-empty'}`;

@@ -3,9 +3,12 @@
  * @license AGPL-3.0
  */
 
-/** Fixed decimals, or an em dash for a missing value. */
+/** Shown for a missing value. A plain hyphen: the product never uses em or en dashes. */
+export const NONE = '-';
+
+/** Fixed decimals, or NONE for a missing value. */
 export function fmt(v: number | undefined, d: number): string {
-    return v !== undefined && Number.isFinite(v) ? v.toFixed(d) : '—';
+    return v !== undefined && Number.isFinite(v) ? v.toFixed(d) : NONE;
 }
 
 /** Speeds: one decimal under 100 Mbps, whole numbers above, so the figure stays short. */

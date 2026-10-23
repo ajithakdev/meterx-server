@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "MeterX — by ajithakdev",
+  "name": "MeterX by ajithakdev",
   "author": "ajithakdev (https://github.com/ajithakdev)",
   "description": "Open-source speed test. Measure download, upload, ping, jitter, packet loss with readiness labels and PDF reports.",
   "permissions": [

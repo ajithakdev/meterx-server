@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ? `Connected to Cloudflare${edgeName ? ` (${edgeName})` : ''}`
                 : `Connected to custom server`;
             statusDetail.textContent = isDefault && edgeName
-                ? `Edge: ${result.edge} — auto-routed to nearest location`
+                ? `Edge ${result.edge}, routed to the nearest location`
                 : url.replace(/^https?:\/\//, '');
             statusPing.textContent = `${result.ping}ms`;
         } else {
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const result = await testConnection(url);
         if (result.ok) {
-            testStatus.textContent = `Connected (${result.ping}ms)${result.edge ? ` — edge: ${result.edge}` : ''}`;
+            testStatus.textContent = `Connected in ${result.ping} ms${result.edge ? `, edge ${result.edge}` : ''}`;
             testStatus.className = 'test-status success';
         } else {
             testStatus.textContent = result.error || 'Connection failed';
