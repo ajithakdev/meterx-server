@@ -24,6 +24,7 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 ### Fixed
 - Empty figures show a short muted bar with the unit hidden, instead of a stray hyphen next to "Mbps"
 - The side panel no longer scrolls when an ISP plan is set: plan rows show the percentage on one line, the status moved into the Results header, and the chart shrinks on shorter panels
+- Rows no longer show above the pinned column names while the results list scrolls
 - Down, Up and Ping columns in the side panel results have even spacing
 - Same-day charts label the axis with times instead of repeating the date, in the browser's own 12 or 24 hour format
 - Exporting a PDF no longer restyles the popup while the report renders, and the report no longer ends with a blank page
