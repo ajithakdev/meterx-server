@@ -4,23 +4,27 @@ Last updated: 2026-10-24, on `release/v2027.0.0` at `b4e5b7c` (not pushed, no PR
 
 Update this file at the end of each work session. Keep it short. Delete entries once they are done and merged.
 
-## In progress
+## In progress (handoff, 2026-10-24 night)
 
-Major release 2027.0.0 on branch `release/v2027.0.0`: one branch, one PR, merged only on the owner's word. The owner tests locally before the PR is opened.
+Major release 2027.0.0 on branch `release/v2027.0.0`, planned for Sunday. Not pushed, no PR yet. The owner tests locally before the PR is opened, and merges only on their word.
 
 Done on the branch:
-- Re-architecture: `extension/src/{background,lib,pages}`, version and API contract in `@meterx/shared`.
-- Redesign of popup, side panel and settings (`static/styles/`). Settings checked for layout shift at 1280 and 390 px.
-- Code comments cite fixes for #60, #64-#70, #73, #76-#79, #81, #82, #85. Verify each against its issue before closing it.
+- Re-architecture, full redesign (popup, side panel, settings), live test view in the side panel, side panel fits the window (results list scrolls under pinned headers).
+- Exports redesigned: vector PDF (watermark, Report ID), CSV and JSON with units and a summary.
+- One version source (root `package.json`, stamped into the manifest at build). No em or en dashes anywhere.
+- Logo chosen: option 8, "X on a dial". `brand/build.mjs` makes every asset (icons, maskable, Edge 300 logo, 440x280 tile, 1400x560 marquee, OG and GitHub cards, five 1280x800 store screenshots) and copies icons into the extension and site. Alternates kept in `brand/alternates/` (rising bars, up/down X).
+- Site `packages/site` (plan in `docs/SITE-PLAN.md`): home with live quick test, "What can X Mbps do", features with real screenshots, pinned test phases, install, FAQ; plus `/about`, `/privacy` (rewritten for #92), `/r/` share viewer (#74), `/get`, 404. Taste-skill inspector: 0 FAIL at 1440, 768, 390 (warnings: font-size count, no video).
+- Worker CORS allows the site origin; quality rules moved to `@meterx/shared`.
 
 Next, in order:
-1. Owner tests `packages/extension/dist/` unpacked in Chrome.
-2. Check the remaining bugs from the scan: #61, #62 (history), #63 (cancel), #80 (CORS null), #87 (tests).
-3. Firefox-compatible build (`lib/browser.ts` is the start).
-4. Site at `meterx.ajithakdev.com` with the share viewer (#74): plan in `docs/SITE-PLAN.md`.
-5. Privacy policy (#92), open the PR. The version is already 2027.0.0 in the root `package.json`.
+1. Owner checks the site locally: `cd packages/site && node build.mjs && npx wrangler pages dev dist` (or any static server on `dist`).
+2. Fill the Edge and Opera listing URLs in `packages/site/src/stores.ts` (and the names on the home page).
+3. Look at the phone renders of the site once more (`.taste-skill/inspect/mobile-*.jpg`, rerun the inspector from `packages/site/dist`); add a motion pass if needed.
+4. Cloudflare Pages: create project `meterx-site` (free), `npm run deploy -w @meterx/site`, add custom domain `meterx.ajithakdev.com`. Write `docs/SEO.md`, add site rows to `RESOURCES-AND-GUIDE.md`.
+5. Verify the scan's bug fixes against their issues (#60, #64 to #70, #73, #76 to #79, #81, #82, #85) and close them; check #61, #62, #63, #80, #87.
+6. Firefox build check, README refresh (it is stale), open the PR, then on Sunday: merge on the owner's word, tag `v2027.0.0`, `wrangler deploy` the worker, upload to the stores with the `brand/png/store/` images, deploy the site, add MeterX to the portfolio.
 
-Logo: five options were shown on 2026-10-24; waiting for the owner's pick. Then icons, store banners and the site, in the order in `docs/SITE-PLAN.md`.
+Brand regeneration: `PLAYWRIGHT=<playwright index.mjs> CHROMIUM=<chromium> REPORT_PNG=<a PDF page png> node brand/build.mjs` after `npm run build`.
 
 ## Releases
 

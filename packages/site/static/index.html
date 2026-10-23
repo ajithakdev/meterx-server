@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeterX: internet speed test in your browser toolbar</title>
+<meta name="description" content="MeterX is a free, open-source browser extension that measures download, upload, ping, jitter and bufferbloat from your toolbar. No account, nothing tracked.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MeterX: internet speed test in your browser toolbar">
+<meta property="og:description" content="Download, upload, ping, jitter and bufferbloat from your toolbar. Free and open source.">
+<meta property="og:url" content="https://meterx.ajithakdev.com/">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <a class="brand" href="/"><img src="/img/mark.svg" alt="" width="30" height="30">MeterX</a>
+  <a class="hide-sm" href="#how">How it works</a>
+  <a class="hide-sm" href="#questions">Questions</a>
+  <a href="/about/">About</a>
+  <a class="cta small-cta" href="#install" data-install="short">Get MeterX</a>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <h1><span class="half a">Your connection,</span> <span class="half b">honestly measured.</span></h1>
+    <div class="frame card" data-ui aria-label="Quick speed test">
+      <div class="row"><span class="label">Download</span><span class="pill">Quick test</span></div>
+      <div class="big">
+        <span><span class="fig dash" id="qtFig">-</span><span class="unit">Mbps</span></span>
+        <span class="label">Ping <b id="qtPing" class="dash">-</b><span class="unit">ms</span></span>
+      </div>
+      <button id="qtRun" class="btn btn-primary" type="button">Run a quick test</button>
+      <p class="note" id="qtNote">About 5 seconds from this page, up to 25 MB of data.</p>
+    </div>
+    <div class="foot">
+      <p>MeterX is a free, open-source browser extension that measures download, upload, ping, jitter and bufferbloat from your toolbar. No account, nothing tracked. <span class="slot" id="heroSpeed"></span></p>
+      <a class="cta" href="#install" data-install>Get MeterX, free</a>
+    </div>
+  </section>
+
+  <section class="explorer" data-enter>
+    <h2><span>What can</span> <input id="speedInput" inputmode="decimal" value="300" aria-label="Download speed in Mbps" data-ui> <span>Mbps do?</span></h2>
+    <div class="answer">
+      <ul class="list card" id="explain" data-ui aria-live="polite"></ul>
+      <div class="aside">
+        <p>Counts use the extension's own rules: 25 Mbps for each 4K stream and 5 Mbps for HD. Calls and gaming depend on upload and ping too, which MeterX measures.</p>
+        <div class="tries" aria-label="Try another speed">
+          <button type="button" data-speed="25">25 Mbps</button>
+          <button type="button" data-speed="100">100 Mbps</button>
+          <button type="button" data-speed="1000">1 Gbps</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="axis wrap">
+      <h2 data-enter><span>More than one number</span></h2>
+      <article class="feature" data-enter>
+        <div><h3>Speed under load, not just at rest</h3><p>A line can look fast and still stutter on a call while something downloads. MeterX pings during the download and upload, shows how far the delay climbs, and grades it from A to F.</p></div>
+        <picture class="shot"><source srcset="/img/shot-load-dark.png" media="(prefers-color-scheme: dark)"><img src="/img/shot-load-light.png" alt="MeterX popup showing ping at idle, while downloading and while uploading, with a load grade" width="720" height="288" loading="lazy"></picture>
+      </article>
+      <article class="feature" data-enter>
+        <div><h3>Every test, kept on your device</h3><p>The side panel keeps up to 200 results with a trend chart, so a slow evening stands out from a slow line. Run tests on a timer and get a notice when quality drops.</p></div>
+        <picture class="shot wide"><source srcset="/img/shot-history-dark.png" media="(prefers-color-scheme: dark)"><img src="/img/shot-history-light.png" alt="MeterX side panel with averages for the last 7 days and a speed chart" width="824" height="738" loading="lazy"></picture>
+      </article>
+      <article class="feature" data-enter>
+        <div><h3>Against the plan you pay for</h3><p>Enter the speeds your provider advertises and see what share of them actually arrives, for download and upload, over any range.</p></div>
+        <picture class="shot narrow"><source srcset="/img/shot-plan-dark.png" media="(prefers-color-scheme: dark)"><img src="/img/shot-plan-light.png" alt="MeterX comparing average speeds with a 500 Mbps plan" width="824" height="328" loading="lazy"></picture>
+      </article>
+      <article class="feature" data-enter>
+        <div><h3>A report you can hand to your provider</h3><p>Export a PDF with averages, ranges, a trend chart and every result, or CSV and JSON with units in every column. Each report carries an ID that changes if any figure is edited.</p></div>
+        <div class="shot"><img src="/img/shot-report.png" alt="First page of a MeterX connection report" width="993" height="1404" loading="lazy"></div>
+      </article>
+      <article class="feature" data-enter>
+        <div><h3>Private, open and yours</h3><p>No account and no analytics. Results stay in your browser. The test server keeps no logs, the code is open under AGPL-3.0, and you can point MeterX at your own server instead.</p></div>
+        <picture class="shot narrow"><source srcset="/img/shot-settings-dark.png" media="(prefers-color-scheme: dark)"><img src="/img/shot-settings-light.png" alt="MeterX settings with a choice between the Cloudflare edge and a custom server" width="764" height="712" loading="lazy"></picture>
+      </article>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="sticky">
+        <h2>Twenty seconds, start to finish</h2>
+        <div class="phase-bar" data-ui aria-label="The four phases of a test, sized by how long each takes">
+          <div data-seg="connect" style="flex:0.9 1 0"><span class="dur">Under a second</span><span class="what">Connect</span></div>
+          <div data-seg="latency" style="flex:2 1 0"><span class="dur">2 seconds</span><span class="what">Ping and jitter</span></div>
+          <div data-seg="download" style="flex:8.6 1 0"><span class="dur">About 9 seconds</span><span class="what">Download</span></div>
+          <div data-seg="upload" style="flex:8.6 1 0"><span class="dur">About 9 seconds</span><span class="what">Upload</span></div>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step" data-step="connect"><p>First, MeterX opens a connection to the nearest Cloudflare location, or to your own server.</p></div>
+        <div class="step" data-step="latency"><p>Then a run of small pings measures the delay and how much it wobbles from one ping to the next.</p></div>
+        <div class="step" data-step="download"><p>Four parallel streams fill your line for a fixed time. The slow start and the tail are trimmed, so the figure is the steady speed.</p></div>
+        <div class="step" data-step="upload"><p>Three streams do the same upward, while pings keep running to catch the delay that builds under load.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="where" id="install">
+    <div class="wrap" data-enter>
+    <p class="names">Install MeterX in <a class="name lit" href="https://addons.mozilla.org/firefox/addon/meterx-by-ajithakdev/">Firefox</a>, <span class="name">Microsoft Edge</span>, <span class="name">Opera</span>, <span class="soon">and soon Chrome.</span></p>
+    <div class="side">
+      <p>One link for any browser, ready to share: <a class="textlink" href="/get/">meterx.ajithakdev.com/get</a></p>
+      <a class="cta" href="/get/" data-install>Get MeterX, free</a>
+    </div>
+    </div>
+  </section>
+
+  <section class="faq" id="questions">
+    <div class="wrap">
+      <h2 data-enter><span>Questions, answered</span></h2>
+      <div class="qs">
+        <details><summary>Is it free?</summary><p>Yes, with no paid tier, no account and no ads. The code is open source under AGPL-3.0.</p></details>
+        <details><summary>What leaves my browser?</summary><p>Only the test traffic itself: bytes downloaded from and uploaded to the test server, and the pings. Results are stored in your browser and nowhere else. The server keeps no logs. The privacy page has the details.</p></details>
+        <details><summary>Why is my result different from other speed tests?</summary><p>Each test uses its own servers, number of streams and length. MeterX tests against the nearest Cloudflare location with several streams for a fixed time and trims the slow start, which is close to how your browser loads real pages and downloads.</p></details>
+        <details><summary>What is bufferbloat?</summary><p>When a line is busy, routers can queue too much data, so every ping waits in line. Speed looks fine but calls and games lag. MeterX measures ping while the line is full and grades how much it rises.</p></details>
+        <details><summary>Can I use my own test server?</summary><p>Yes. The repository includes a small server you can run on your own machine or network, and the settings page lets you point MeterX at it.</p></details>
+        <details><summary>When is it coming to Chrome?</summary><p>The Chrome Web Store listing is planned. Until then MeterX is available for Firefox, Edge and Opera.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="close">
+    <h2>Test from your toolbar.</h2>
+    <div class="row">
+      <p>Click the icon, read the answer, and keep every result. Free, open source, no account.</p>
+      <a class="cta" href="#install" data-install>Get MeterX, free</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="top">
+    <p>MeterX by Ajith Kumar K, an open-source internet speed test for the browser.</p>
+    <a class="textlink" href="#main">Back to top</a>
+  </div>
+  <a class="big" href="https://github.com/ajithakdev/meterx-server">github.com/<wbr>ajithakdev/<wbr>meterx-server</a>
+  <div class="meta">
+    <nav><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="https://github.com/ajithakdev/meterx-server/blob/main/CHANGELOG.md">Changelog</a><a href="https://ajithakdev.com">ajithakdev.com</a></nav>
+    <span>AGPL-3.0</span>
+    <span>© <span id="year">2026</span> Ajith Kumar K</span>
+  </div>
+</footer>
+<script type="module" src="/js/common.js"></script>
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>

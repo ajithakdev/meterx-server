@@ -53,7 +53,7 @@ async function maybeNotifyDrop(entry: HistoryEntry, previous?: HistoryEntry): Pr
     if (grade(entry) !== 'poor' || (previous && grade(previous) === 'poor')) return;
     await chrome.notifications.create(DROP_NOTIFICATION, {
         type: 'basic',
-        iconUrl: chrome.runtime.getURL('images/icons128.png'),
+        iconUrl: chrome.runtime.getURL('images/icon-128.png'),
         title: 'Your connection dropped to Poor',
         message: `${entry.downloadSpeed.toFixed(1)} Mbps down, ${(entry.ping ?? 0).toFixed(0)} ms ping. Open MeterX for details.`,
     });

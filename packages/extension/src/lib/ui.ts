@@ -29,8 +29,8 @@ export function animatePhase(fill: HTMLElement, p: Phase): number | undefined {
     return plan.from;
 }
 
-/** A gauge: three-quarter dial with the needle past the middle. Drawn in currentColor. */
-export const MARK_SVG = `<svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5.6 18.4a9 9 0 1 1 12.8 0"/><path d="M12 13.5l4.2-4.7"/><circle cx="12" cy="13.5" r="1.4" fill="currentColor" stroke="none"/></svg>`;
+/** The MeterX mark: a dial with download (blue) and upload arrows crossing into an X. Uses the theme's tokens. */
+export const MARK_SVG = `<svg class="mark" viewBox="0 0 128 128" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><mask id="mx-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128"><rect width="128" height="128" fill="#fff"/><path d="M48 80L80 48" stroke="#000" stroke-width="22"/></mask></defs><path d="M33.6 94.4A43 43 0 1 1 94.4 94.4" stroke-width="10" style="stroke:var(--control)"/><g mask="url(#mx-cut)" stroke-width="12" style="stroke:var(--data)"><path d="M46 46L78 78"/><path d="M84 64V84H64"/></g><g stroke-width="12" stroke="currentColor"><path d="M48 80L80 48"/><path d="M62 46H82V66"/></g></svg>`;
 
 const EDGE_NAMES: Record<string, string> = {
     BOM: 'Mumbai', MAA: 'Chennai', DEL: 'Delhi', BLR: 'Bengaluru', HYD: 'Hyderabad', CCU: 'Kolkata',

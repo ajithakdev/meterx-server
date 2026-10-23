@@ -114,20 +114,25 @@ class Draw {
         this.text(value, x, y, { size, bold: true, color });
         this.text(unit, x + this.width(value, size, true) + 1, y, { size: Math.max(7, size * 0.42), color: C.muted });
     }
-    /** The MeterX mark: a gauge arc with a needle, drawn from line segments. */
+    /** The MeterX mark: a dial with download and upload arrows crossing into an X, centred on (x, y), dial radius r. */
     mark(x: number, y: number, r: number): void {
-        const doc = this.doc;
-        doc.setDrawColor(C.text);
-        doc.setLineWidth(0.55);
-        doc.setLineCap('round');
-        const from = (135 * Math.PI) / 180, to = (405 * Math.PI) / 180, steps = 24;
-        for (let i = 0; i < steps; i++) {
-            const a = from + ((to - from) * i) / steps, b = from + ((to - from) * (i + 1)) / steps;
-            doc.line(x + r * Math.cos(a), y + r * Math.sin(a), x + r * Math.cos(b), y + r * Math.sin(b));
-        }
-        doc.line(x, y + r * 0.15, x + r * 0.55, y - r * 0.45);
-        doc.setFillColor(C.text);
-        doc.circle(x, y + r * 0.15, r * 0.17, 'F');
+        const doc = this.doc, k = r / 43;
+        const P = (gx: number, gy: number): [number, number] => [x + (gx - 64) * k, y + (gy - 64) * k];
+        const path = (pts: Array<[number, number]>, color: string, w: number) => {
+            doc.setDrawColor(color).setLineWidth(w * k);
+            for (let i = 1; i < pts.length; i++) doc.line(...P(...pts[i - 1]), ...P(...pts[i]));
+        };
+        doc.setLineCap('round').setLineJoin('round');
+        const from = (135 * Math.PI) / 180, to = (405 * Math.PI) / 180, steps = 28;
+        path(Array.from({ length: steps + 1 }, (_, i) => {
+            const a = from + ((to - from) * i) / steps;
+            return [64 + 43 * Math.cos(a), 64 + 43 * Math.sin(a)] as [number, number];
+        }), '#cdd2d8', 8);
+        path([[46, 46], [78, 78]], C.data, 10);
+        path([[84, 64], [84, 84], [64, 84]], C.data, 10);
+        path([[48, 80], [80, 48]], '#ffffff', 20); // the gap where upload crosses download
+        path([[48, 80], [80, 48]], C.text, 10);
+        path([[62, 46], [82, 46], [82, 66]], C.text, 10);
     }
 }
 

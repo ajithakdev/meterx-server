@@ -32,3 +32,4 @@ graphify-out/
 
 # taste-skill working files (local)
 .taste-skill/
+packages/site/dist/
