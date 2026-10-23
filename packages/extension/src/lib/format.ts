@@ -13,6 +13,12 @@ export function fmtSpeed(v: number | undefined): string {
     return fmt(v, v !== undefined && v >= 100 ? 0 : 1);
 }
 
+/** YYYY-MM-DD in the browser's own time zone, for file names. */
+export function localDate(d = new Date()): string {
+    const p = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
 export function getTimeAgo(date: Date): string {
     const mins = Math.floor((Date.now() - date.getTime()) / 60000);
     if (mins < 1) return 'just now';

@@ -58,14 +58,15 @@
                 <div class="card-head">
                     <h2 id="planTitle">Against your plan</h2>
                     <span id="planName" class="muted"></span>
+                    <button id="planSetup" class="btn btn-text link" type="button" hidden>Add plan</button>
                 </div>
                 <div class="card-body">
                     <div id="planRows" class="plan-rows"></div>
-                    <p id="planEmpty" class="empty" hidden>Add your plan's advertised speeds to see how much of what you pay for arrives. <button id="planSetup" class="btn btn-text link" type="button">Add plan</button></p>
+                    <p id="planEmpty" class="muted" hidden>Compare results with the speeds you pay for.</p>
                 </div>
             </section>
 
-            <section class="card" aria-labelledby="resultsTitle">
+            <section class="card results-card" aria-labelledby="resultsTitle">
                 <div class="card-head">
                     <h2 id="resultsTitle">Results</h2>
                     <div class="menu-wrap">
@@ -77,13 +78,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body results-body">
                     <table class="results">
                         <thead><tr><th scope="col">When</th><th scope="col" class="num">Down</th><th scope="col" class="num">Up</th><th scope="col" class="num">Ping</th><th scope="col">Quality</th></tr></thead>
                         <tbody id="rows"></tbody>
                     </table>
                     <p id="rowsEmpty" class="empty" hidden>No results in this range.</p>
-                    <button id="moreBtn" class="btn btn-text more" type="button" hidden>Show all</button>
                 </div>
             </section>
             <p id="status" class="status" role="status"></p>

@@ -1,5 +1,5 @@
 import { build } from 'esbuild';
-import { cpSync, mkdirSync, rmSync } from 'fs';
+import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -30,4 +30,11 @@ await build({
 mkdirSync(resolve(__dirname, 'dist/images'), { recursive: true });
 cpSync(resolve(__dirname, 'static'), resolve(__dirname, 'dist'), { recursive: true });
 
-console.log('Extension built to dist/');
+// The root package.json is the only place the version lives; stamp it into the manifest.
+const { version } = JSON.parse(readFileSync(resolve(__dirname, '../../package.json'), 'utf8'));
+if (!/^\d+(\.\d+){0,3}$/.test(version)) throw new Error(`Version ${version} is not valid for a browser manifest (use 1 to 4 numbers)`);
+const manifestPath = resolve(__dirname, 'dist/manifest.json');
+const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+writeFileSync(manifestPath, JSON.stringify({ ...manifest, version }, null, 2) + '\n');
+
+console.log(`Extension ${version} built to dist/`);

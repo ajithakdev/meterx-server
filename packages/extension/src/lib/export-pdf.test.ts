@@ -31,3 +31,15 @@ describe('niceMax', () => {
         expect(niceMax(0)).toBe(10);
     });
 });
+
+import { reportId } from './export-pdf';
+
+describe('reportId', () => {
+    it('is stable for the same results and changes when any figure changes', async () => {
+        const a = await reportId(rows(3));
+        expect(a).toMatch(/^[0-9A-F]{4}(-[0-9A-F]{4}){3}$/);
+        expect(await reportId(rows(3))).toBe(a);
+        const edited = rows(3); edited[1].downloadSpeed = 500;
+        expect(await reportId(edited)).not.toBe(a);
+    });
+});

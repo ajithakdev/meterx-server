@@ -13,6 +13,11 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 - PDF report redesigned to match the app: light page, vector text you can select and search, download trend chart, plan comparison and a results table that continues across pages. It is also much smaller, and html2canvas is gone
 - CSV and JSON exports redesigned: column names carry units, local time sits next to UTC, numbers are rounded, each row has its quality, and the JSON has a versioned `format` and a summary. Files are now named `meterx-results-<date>`
 
+- The PDF report has a faint MeterX watermark, and every page shows a Report ID: a fingerprint of the results, so an edited copy no longer matches a fresh export of the same tests
+- The side panel fits the window: the summary, chart and plan stay in view and only the results list scrolls, with its column names pinned. "Show all" is gone because every result is in the list
+- One version for everything, read from the root `package.json` and stamped into the manifest at build time (#89)
+- Export file names use the browser's own date; every time shown in the extension follows the browser's locale and time zone
+
 ### Fixed
 - Exporting a PDF no longer restyles the popup while the report renders, and the report no longer ends with a blank page
 - Popup fits Chrome's 600px height limit with no scrollbar; upload, ping and loss figures no longer spill into the next cell, and "Good enough for" labels are no longer cut off

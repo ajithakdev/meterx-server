@@ -6,7 +6,7 @@
 
 /// <reference types="chrome" />
 
-import type { IspPlan } from '@meterx/shared';
+import { VERSION, type IspPlan } from '@meterx/shared';
 
 const DEFAULT_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
 const ISP_KEY = 'ispPlan';
@@ -25,6 +25,7 @@ const EDGE_NAMES: Record<string, string> = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+    (document.getElementById('version') as HTMLElement).textContent = VERSION;
     const statusDot = document.getElementById('statusDot') as HTMLElement;
     const statusLabel = document.getElementById('statusLabel') as HTMLElement;
     const statusDetail = document.getElementById('statusDetail') as HTMLElement;

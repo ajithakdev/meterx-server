@@ -53,7 +53,7 @@ Custom server URLs need a runtime host-permission grant (`optional_host_permissi
 
 ## Gotchas
 
-- Version strings are hard-coded in several places (root and package `package.json`s, file headers, the settings page footer, `/health` in `app.ts` and its assertion in `app.test.ts`). `manifest.json` uses its own Chrome-compatible version. Grep for the old version when bumping.
+- The version lives only in the root `package.json`. `@meterx/shared` exports it as `VERSION` (used by `/health`, the exports and the settings footer), and `build.mjs` stamps it into `dist/manifest.json`, so it must be 1 to 4 dot-separated numbers. Bump that one line to release.
 - `manifest.json` description must stay within the store's 132-character limit.
 - `.junie/guidelines.md` describes the old pre-monorepo JS layout and a Render URL; it is stale, trust the code.
 - License is AGPL-3.0; see `TRADEMARK.md` before touching branding.

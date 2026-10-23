@@ -31,12 +31,12 @@
 
 .legend { display: flex; gap: 12px; color: var(--muted); font-size: var(--fs-small); }
 .legend > * { display: inline-flex; align-items: center; gap: 6px; }
-.chart { min-height: 200px; }
+.chart { min-height: 140px; }
 .empty {
   display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
   min-height: 40px; padding: 8px 12px; border: 1px dashed var(--control); border-radius: var(--radius-card); color: var(--muted);
 }
-#chartEmpty { min-height: 200px; justify-content: center; text-align: center; }
+#chartEmpty { min-height: 140px; justify-content: center; text-align: center; }
 .link { color: var(--text); text-decoration: underline; }
 
 .plan-rows { display: grid; gap: 12px; }
@@ -56,14 +56,30 @@
 .results .num { text-align: right; font-variant-numeric: tabular-nums; }
 .results td.when { color: var(--muted); }
 .results td.down { color: var(--data); font-weight: 500; }
-.more { margin-top: 6px; }
 .status { min-height: 20px; color: var(--muted); font-size: var(--fs-small); }
 .status.is-error { color: var(--negative); }
 .card-head .menu { right: 0; top: calc(100% + 4px); }
 
 /* Narrowest panel (320px): tighter columns, and the table scrolls inside its card, never the page. */
-.card-body:has(> .results) { overflow-x: auto; }
+.results-body { overflow-x: auto; }
 @media (max-width: 360px) {
   .results th + th, .results td + td { padding-left: 6px; }
   .results td.when { font-size: var(--fs-small); }
 }
+
+/* Fit the window: everything stays in place and only the results list scrolls, under pinned column names.
+   Short windows (under 720px) fall back to scrolling the whole page. */
+@media (min-height: 720px) {
+  .panel .wrap { height: 100vh; display: flex; flex-direction: column; padding-bottom: 12px; }
+  .panel main { flex: 1; min-height: 0; gap: 10px; grid-template-rows: auto auto auto auto minmax(150px, 1fr) auto; }
+  .results-card { display: flex; flex-direction: column; min-height: 0; }
+  .results-body { flex: 1; min-height: 0; overflow-y: auto; padding-top: 0; margin-top: 10px; }
+  .results thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+}
+
+/* Thin scrollbars in the theme's colours instead of the platform's grey bars. */
+* { scrollbar-width: thin; scrollbar-color: var(--control) transparent; }
+
+/* Compact cells so the results list keeps room in a typical side panel. */
+.panel .strip > div { padding: 8px 12px; }
+.panel .card-head .btn { height: 28px; margin: -4px -8px -4px 0; }

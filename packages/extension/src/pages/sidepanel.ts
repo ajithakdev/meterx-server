@@ -24,10 +24,8 @@ interface ChartsApi {
 declare const Charts: ChartsApi;
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
-const ROWS_COLLAPSED = 8;
 
 let days = 7;
-let showAll = false;
 let running = false;
 
 const avg = (a: number[]) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : undefined);
@@ -80,7 +78,7 @@ function renderChart(rows: HistoryEntry[], plan: IspPlan | null): void {
         ],
         format: (v: number) => `${fmtSpeed(v)} Mbps`,
         tickFormat: (v: number) => String(Math.round(v)),
-        height: 200,
+        height: 140,
         reference: plan && plan.downloadMbps > 0 ? { value: plan.downloadMbps, label: `Plan ${plan.downloadMbps}` } : undefined,
     });
     if (legend) $('legend').append(legend);
@@ -88,6 +86,7 @@ function renderChart(rows: HistoryEntry[], plan: IspPlan | null): void {
 
 function renderPlan(rows: HistoryEntry[], plan: IspPlan | null): void {
     $('planEmpty').hidden = !!plan;
+    $('planSetup').hidden = !!plan;
     $('planName').textContent = plan?.providerName ?? '';
     const box = $('planRows');
     box.hidden = !plan;
@@ -109,17 +108,13 @@ function renderPlan(rows: HistoryEntry[], plan: IspPlan | null): void {
 }
 
 function renderRows(rows: HistoryEntry[]): void {
-    const shown = showAll ? rows : rows.slice(0, ROWS_COLLAPSED);
-    $('rows').innerHTML = shown.map(e => {
+    $('rows').innerHTML = rows.map(e => {
         const q = qualityOf(e);
         return `<tr><td class="when">${fmtWhen(e.timestamp)}</td><td class="num down">${fmtSpeed(e.downloadSpeed)}</td>` +
             `<td class="num">${fmtSpeed(e.uploadSpeed)}</td><td class="num">${fmt(e.ping, 0)}</td>` +
             `<td>${q ? `<span class="pill q-${q.cls}">${q.label}</span>` : '<span class="dash">—</span>'}</td></tr>`;
     }).join('');
     $('rowsEmpty').hidden = rows.length > 0;
-    const more = $<HTMLButtonElement>('moreBtn');
-    more.hidden = rows.length <= ROWS_COLLAPSED;
-    more.textContent = showAll ? 'Show fewer' : `Show all ${rows.length}`;
 }
 
 async function refresh(): Promise<void> {
@@ -166,11 +161,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const tab = (ev.target as HTMLElement).closest<HTMLButtonElement>('button[data-days]');
         if (!tab) return;
         days = Number(tab.dataset.days);
-        showAll = false;
         $('range').querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b === tab)));
         refresh();
     });
-    $('moreBtn').addEventListener('click', () => { showAll = !showAll; refresh(); });
 
     bindMenu($<HTMLButtonElement>('exportBtn'), $('exportMenu'), async (kind) => {
         const all = await loadHistory();

@@ -7,7 +7,7 @@
 
 import { VERSION, type Grade, type HistoryEntry, type IspPlan } from '@meterx/shared';
 import type { jsPDF as JsPdf } from 'jspdf';
-import { fmt, fmtSpeed } from './format';
+import { fmt, fmtSpeed, localDate } from './format';
 import { loadIspPlan, planShare } from './isp';
 import { qualityOf, type UseCaseScore } from './quality';
 import { summarize, type Spread, type Summary } from './report-stats';
@@ -38,14 +38,15 @@ export async function exportPdfReport(hist: HistoryEntry[]): Promise<void> {
     if (hist.length === 0) throw new Error('No data to export');
     const plan = await loadIspPlan().catch(() => null);
     const doc = await buildReport(hist, plan);
-    doc.save(`meterx-report-${new Date().toLocaleDateString('en-CA')}.pdf`);
+    doc.save(`meterx-report-${localDate()}.pdf`);
 }
 
 /** Builds the report (history newest first, as stored). Split from the download so it can be tested. */
 export async function buildReport(hist: HistoryEntry[], plan: IspPlan | null, now = Date.now()): Promise<JsPdf> {
-    const { jsPDF } = await import('jspdf');
+    const { jsPDF, GState } = await import('jspdf');
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    doc.setProperties({ title: 'MeterX connection report', creator: `MeterX ${VERSION}` });
+    const id = await reportId(hist);
+    doc.setProperties({ title: 'MeterX connection report', subject: `Report ID ${id}`, creator: `MeterX ${VERSION}`, keywords: `meterx ${id}` });
     const s = summarize(hist);
     const d = new Draw(doc);
 
@@ -57,8 +58,20 @@ export async function buildReport(hist: HistoryEntry[], plan: IspPlan | null, no
     if (plan && (plan.downloadMbps > 0 || plan.uploadMbps > 0)) y = planCard(d, s, plan, y);
     y = chart(d, hist, y);
     results(d, hist, y);
-    footers(d);
+    footers(d, id, new GState({ opacity: 0.045 }), new GState({ opacity: 1 }));
     return doc;
+}
+
+/**
+ * Short fingerprint of the measurements (time and every figure), shown on each page.
+ * The same results always give the same ID, so a figure changed in an edited copy no longer matches
+ * a fresh export. shortcut: not a signature, anyone can recompute it; sign server-side if reports need proof.
+ */
+export async function reportId(hist: HistoryEntry[]): Promise<string> {
+    const data = JSON.stringify(hist.map(e => [e.timestamp, e.downloadSpeed, e.uploadSpeed, e.ping, e.jitter, e.packetLoss, e.bufferbloatDelta]));
+    const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data)));
+    const hex = [...hash.slice(0, 8)].map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    return hex.match(/.{4}/g)!.join('-');
 }
 
 /** Thin wrapper so every call sets font, size and colour together. */
@@ -326,12 +339,18 @@ function results(d: Draw, hist: HistoryEntry[], y: number): void {
     }
 }
 
-function footers(d: Draw): void {
+/** Footer and a faint diagonal brand mark on every page. */
+function footers(d: Draw, id: string, faint: unknown, solid: unknown): void {
     const n = d.doc.getNumberOfPages();
+    const gs = (g: unknown) => d.doc.setGState(g as Parameters<JsPdf['setGState']>[0]);
     for (let p = 1; p <= n; p++) {
         d.doc.setPage(p);
+        gs(faint);
+        d.doc.setFont('helvetica', 'bold').setFontSize(96).setTextColor(C.text);
+        d.doc.text('MeterX', PAGE_W / 2 - 52, PAGE_H / 2 + 34, { angle: 35 });
+        gs(solid);
         d.rule(M, FOOT_Y - 4, M + W, C.border);
-        d.text(`MeterX v${VERSION} · github.com/ajithakdev/meterx-server`, M, FOOT_Y, { size: 7, color: C.muted });
+        d.text(`MeterX v${VERSION} · Report ID ${id} · github.com/ajithakdev/meterx-server`, M, FOOT_Y, { size: 7, color: C.muted });
         d.text(`Page ${p} of ${n}`, M + W, FOOT_Y, { size: 7, color: C.muted, align: 'right' });
     }
 }

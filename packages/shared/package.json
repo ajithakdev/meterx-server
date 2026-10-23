@@ -1,6 +1,5 @@
 {
   "name": "@meterx/shared",
-  "version": "2027.0.0",
   "private": true,
   "license": "AGPL-3.0",
   "type": "module",

@@ -5,6 +5,7 @@
 
 import { VERSION, type HistoryEntry } from '@meterx/shared';
 import { gradeBufferbloat } from '../background/measure';
+import { localDate } from './format';
 import { qualityOf } from './quality';
 import { summarize, type Spread } from './report-stats';
 
@@ -22,8 +23,8 @@ function triggerDownload(blob: Blob, filename: string): void {
 const round = (v: number | undefined, d: number) => (v === undefined || !Number.isFinite(v) ? undefined : Number(v.toFixed(d)));
 const yesNo = (v: boolean | undefined) => (v === undefined ? undefined : v ? 'yes' : 'no');
 const localTime = (ts: number) => {
-    const d = new Date(ts), p = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    const d = new Date(ts);
+    return `${localDate(d)} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 };
 
 type Value = string | number | undefined;
@@ -49,7 +50,6 @@ export const COLUMNS: Array<{ key: string; header: string; get: (e: HistoryEntry
     { key: 'isp', header: 'ISP', get: e => e.isp },
 ];
 
-const stamp = () => new Date().toLocaleDateString('en-CA');
 
 /** Rows newest first, as stored. */
 export function toCsv(history: HistoryEntry[]): string {
@@ -60,7 +60,7 @@ export function toCsv(history: HistoryEntry[]): string {
 
 export function exportCsv(history: HistoryEntry[]): void {
     // The BOM makes Excel read the file as UTF-8.
-    triggerDownload(new Blob(['﻿', toCsv(history)], { type: 'text/csv;charset=utf-8' }), `meterx-results-${stamp()}.csv`);
+    triggerDownload(new Blob(['﻿', toCsv(history)], { type: 'text/csv;charset=utf-8' }), `meterx-results-${localDate()}.csv`);
 }
 
 const typical = (s: Spread | null, k: 'avg' | 'median', d: number) => (s ? round(s[k], d) : undefined);
@@ -88,7 +88,7 @@ export function toJson(history: HistoryEntry[], now = Date.now()): object {
 }
 
 export function exportJson(history: HistoryEntry[]): void {
-    triggerDownload(new Blob([JSON.stringify(toJson(history), null, 2)], { type: 'application/json' }), `meterx-results-${stamp()}.json`);
+    triggerDownload(new Blob([JSON.stringify(toJson(history), null, 2)], { type: 'application/json' }), `meterx-results-${localDate()}.json`);
 }
 
 /** RFC 4180 quoting, plus a leading ' on text that a spreadsheet would run as a formula (#78). */
