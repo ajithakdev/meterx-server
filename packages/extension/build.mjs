@@ -17,6 +17,8 @@ await build({
         sidepanel: resolve(__dirname, 'src/pages/sidepanel.ts'),
     },
     bundle: true,
+    // jsPDF's optional extras (doc.html, SVG, sanitising); the report draws natively and never loads them.
+    external: ['html2canvas', 'dompurify', 'canvg'],
     outdir: resolve(__dirname, 'dist'),
     target: 'chrome110',
     format: 'esm',

@@ -53,7 +53,7 @@ Custom server URLs need a runtime host-permission grant (`optional_host_permissi
 
 ## Gotchas
 
-- Version strings are hard-coded in several places (root and package `package.json`s, file headers, `export-data.ts`, `/health` in `app.ts` and its assertion in `app.test.ts`). `manifest.json` uses its own Chrome-compatible version. Grep for the old version when bumping.
+- Version strings are hard-coded in several places (root and package `package.json`s, file headers, the settings page footer, `/health` in `app.ts` and its assertion in `app.test.ts`). `manifest.json` uses its own Chrome-compatible version. Grep for the old version when bumping.
 - `manifest.json` description must stay within the store's 132-character limit.
 - `.junie/guidelines.md` describes the old pre-monorepo JS layout and a Render URL; it is stale, trust the code.
 - License is AGPL-3.0; see `TRADEMARK.md` before touching branding.

@@ -1,7 +1,11 @@
 /**
- * Pure stats for the PDF report, split out so the edge cases are tested.
+ * Pure stats for the exports (PDF report and JSON summary), split out so the edge cases are tested.
  * @license AGPL-3.0
  */
+
+import type { Grade, HistoryEntry } from '@meterx/shared';
+import { gradeBufferbloat, median } from '../background/measure';
+import { getQuality, scoreUseCases, type QualityLabel, type UseCaseScores } from './quality';
 
 const avg = (a: number[]) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : 0);
 
@@ -23,4 +27,55 @@ export function trendPercent(newestFirst: number[]): number | null {
     const newer = avg(newestFirst.slice(0, half));
     const older = avg(newestFirst.slice(half));
     return older > 0 ? ((newer - older) / older) * 100 : null;
+}
+
+export interface Spread { avg: number; median: number; min: number; max: number; n: number }
+
+function spread(values: Array<number | undefined>): Spread | null {
+    const v = values.filter((x): x is number => x !== undefined && Number.isFinite(x));
+    return v.length ? { avg: avg(v), median: median(v), min: Math.min(...v), max: Math.max(...v), n: v.length } : null;
+}
+
+export interface Summary {
+    count: number;
+    from: number;
+    to: number;
+    download: Spread | null;
+    upload: Spread | null;
+    ping: Spread | null;
+    jitter: Spread | null;
+    loss: Spread | null;
+    loadedPingDown: Spread | null;
+    loadedPingUp: Spread | null;
+    /** Bufferbloat grade of the median loaded-minus-idle delay. */
+    grade: Grade | null;
+    quality: QualityLabel | null;
+    useCases: UseCaseScores | null;
+    /** Download steadiness, 0 to 100. */
+    steadiness: number;
+    /** Download change, newer half vs older half, in percent. */
+    trend: number | null;
+}
+
+/** Summary of a history (newest first, as stored). Typical values use the average for speeds and the median for delays. */
+export function summarize(hist: HistoryEntry[]): Summary {
+    const s = (k: keyof HistoryEntry) => spread(hist.map(e => e[k] as number | undefined));
+    const download = s('downloadSpeed'), upload = s('uploadSpeed'), ping = s('ping');
+    const jitter = s('jitter'), loss = s('packetLoss');
+    const delta = spread(hist.map(e => e.bufferbloatDelta));
+    const times = hist.map(e => e.timestamp);
+    const ready = download && upload && ping;
+    return {
+        count: hist.length,
+        from: times.length ? Math.min(...times) : 0,
+        to: times.length ? Math.max(...times) : 0,
+        download, upload, ping, jitter, loss,
+        loadedPingDown: s('loadedPingDown'),
+        loadedPingUp: s('loadedPingUp'),
+        grade: delta ? gradeBufferbloat(delta.median) : null,
+        quality: ready ? getQuality(download.avg, upload.avg, ping.median) : null,
+        useCases: ready ? scoreUseCases(download.avg, upload.avg, ping.median, jitter?.median, loss?.avg) : null,
+        steadiness: consistency(hist.map(e => e.downloadSpeed).filter((v): v is number => v !== undefined)),
+        trend: trendPercent(hist.map(e => e.downloadSpeed).filter((v): v is number => v !== undefined)),
+    };
 }

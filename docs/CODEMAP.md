@@ -63,8 +63,9 @@ popup.html / sidepanel.html / options.html      (extension pages)
 | `src/quality.ts` (49) | `getQuality`, `getQualityClass`, `scoreUseCases`, `QualityLabel` | Has tests. `background.ts` keeps its own copy of the grading (#67). |
 | `src/isp.ts` (64) | `loadIspPlan`, `saveIspPlan`, `renderIspComparison` | `chrome.storage.sync` key `ispPlan`. |
 | `src/share.ts` (61) | `buildShareUrl`, `parseShareUrl` | Encodes a result into the URL fragment of `https://meterx.dev/share`, which does not exist yet (#74). Has tests. |
-| `src/export-pdf.ts` (298) | `exportPdfReport` | html2canvas + jsPDF. Stats, trend, anomalies, history table. |
-| `src/export-data.ts` (72) | `exportJson`, `exportCsv` | Download via Blob. |
+| `src/lib/export-pdf.ts` | `exportPdfReport`, `buildReport` | Vector PDF drawn with jsPDF in the app's light design: summary, load, readiness, plan, trend chart, paginated results. |
+| `src/lib/export-data.ts` | `exportJson`, `exportCsv`, `COLUMNS` | One column list (units in the names) feeds CSV and JSON; JSON adds a versioned `format` and a summary. |
+| `src/lib/report-stats.ts` | `summarize`, `consistency`, `trendPercent` | Pure stats shared by the PDF and JSON. |
 | `src/chart.ts` (72), `src/sparkline.ts` (59) | `renderChart`, `renderSparkline` | Inline SVG strings. |
 | `src/tooltips.ts` (67) | `TOOLTIP_COPY`, `bindTooltips` | Binds `[data-tip]` elements. |
 | `src/format.ts` (19) | `fmt`, `getTimeAgo` | Has tests. |

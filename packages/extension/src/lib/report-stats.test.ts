@@ -24,3 +24,28 @@ describe('consistency', () => {
         expect(consistency([10, 90])).toBeLessThan(50);
     });
 });
+
+import { summarize } from './report-stats';
+
+describe('summarize', () => {
+    it('is empty-safe', () => {
+        const s = summarize([]);
+        expect(s.count).toBe(0);
+        expect(s.download).toBeNull();
+        expect(s.quality).toBeNull();
+        expect(s.trend).toBeNull();
+    });
+    it('averages speeds, takes medians of delays and skips missing values', () => {
+        const s = summarize([
+            { timestamp: 3, downloadSpeed: 100, uploadSpeed: 20, ping: 10, bufferbloatDelta: 10 },
+            { timestamp: 2, downloadSpeed: 50, uploadSpeed: 10, ping: 30 },
+            { timestamp: 1, ping: 1000 },
+        ]);
+        expect(s.download).toMatchObject({ avg: 75, min: 50, max: 100, n: 2 });
+        expect(s.ping?.median).toBe(30);
+        expect(s.grade).toBe('B');
+        expect(s.from).toBe(1);
+        expect(s.to).toBe(3);
+        expect(s.quality?.label).toBe('Good');
+    });
+});
