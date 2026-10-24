@@ -44,7 +44,6 @@
   .hero .device.popup { width: 360px; max-width: none; margin: 0; transform: scale(.9); transform-origin: top left; }
   .hero .demo-note { display: none; }
 }
-}
 
 /* The pinned stage already fills the window, so the next section starts without the usual gap. */
 .hero + .section { margin-top: 0; }
