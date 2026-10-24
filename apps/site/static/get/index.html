@@ -22,28 +22,36 @@
 <!-- header -->
 
 <main id="main" class="get">
-  <section class="get-hero">
-    <div class="dial" id="dial" aria-hidden="true">
-      <svg class="dial-arc" viewBox="0 0 200 200"><path d="M50.5 149.5A70 70 0 1 1 149.5 149.5" pathLength="100"/></svg>
-      <span class="needle" id="needle"></span>
+  <div class="get-layout">
+    <div class="dial-col">
+      <div class="get-hero">
+        <div class="dial" id="dial" aria-hidden="true">
+          <svg class="dial-arc" viewBox="0 0 200 200"><path d="M50.5 149.5A70 70 0 1 1 149.5 149.5" pathLength="100"/></svg>
+          <span class="needle" id="needle"></span>
+        </div>
+        <picture class="dial-mark"><source srcset="/img/glyph-on-dark.svg" media="(prefers-color-scheme: dark)"><img src="/img/glyph-on-light.svg" alt="" width="96" height="96"></picture>
+      </div>
     </div>
-    <div class="get-center">
-      <picture><source srcset="/img/glyph-on-dark.svg" media="(prefers-color-scheme: dark)"><img src="/img/glyph-on-light.svg" alt="" width="72" height="72"></picture>
-      <h1>Get MeterX</h1>
-      <p class="lede" id="getLine">Free for every major browser. Pick yours.</p>
-      <a class="cta" id="getMain" href="#stores">Choose your browser</a>
+
+    <div class="get-side">
+      <div class="get-intro">
+        <h1>Get MeterX</h1>
+        <p class="lede" id="getLine">Free for every major browser. Pick yours.</p>
+        <a class="cta" id="getMain" href="#stores">Choose your browser</a>
+      </div>
+
+      <section id="stores" aria-labelledby="nowTitle">
+        <h2 id="nowTitle">Available now</h2>
+        <ul class="stores clean" id="storesNow"></ul>
+      </section>
+
+      <section id="next" aria-labelledby="nextTitle">
+        <h2 id="nextTitle">Coming next</h2>
+        <p class="small">Where MeterX goes after this release. Every listing stays free.</p>
+        <ul class="stores clean soon" id="storesNext"></ul>
+      </section>
     </div>
-  </section>
-
-  <section class="section" id="stores" aria-labelledby="nowTitle">
-    <div class="head"><h2 id="nowTitle">Available now</h2></div>
-    <ul class="stores clean" id="storesNow"></ul>
-  </section>
-
-  <section class="section" aria-labelledby="nextTitle">
-    <div class="head"><h2 id="nextTitle">Coming next</h2><p class="lede">Where MeterX goes after this release. Every listing stays free.</p></div>
-    <ul class="stores clean soon" id="storesNext"></ul>
-  </section>
+  </div>
 </main>
 <!-- footer -->
 <script type="module" src="/js/get.js"></script>

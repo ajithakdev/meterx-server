@@ -53,4 +53,3 @@ const card = (p: (typeof PLACES)[number]) => `<li class="store${p.id === id ? ' 
 </li>`;
 $('storesNow').innerHTML = PLACES.filter(p => p.url).map(card).join('');
 $('storesNext').innerHTML = PLACES.filter(p => !p.url).map(card).join('');
-$('storesNext').closest('section')!.id = 'next';
