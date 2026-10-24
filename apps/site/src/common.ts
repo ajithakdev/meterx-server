@@ -63,8 +63,37 @@ function fitFrames(): void {
     });
 }
 
+/** Long documents get an on-page contents list beside them, built from their section headings. */
+function toc(): void {
+    const doc = document.querySelector('main.doc'), body = doc?.querySelector('.body');
+    const heads = [...(body?.querySelectorAll<HTMLHeadingElement>(':scope > h2') ?? [])];
+    if (!doc || !body || heads.length < 3) return;
+    const nav = document.createElement('nav');
+    nav.className = 'toc';
+    nav.setAttribute('aria-label', 'On this page');
+    nav.innerHTML = '<p>On this page</p>';
+    heads.forEach((h, i) => {
+        h.id ||= `s${i + 1}`;
+        const a = document.createElement('a');
+        a.href = `#${h.id}`;
+        a.textContent = h.textContent;
+        nav.append(a);
+    });
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.append(...body.childNodes);
+    body.append(nav, content);
+    doc.classList.add('has-toc');
+    const links = [...nav.querySelectorAll('a')];
+    const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) links.forEach(a => a.classList.toggle('is-here', a.hash === `#${e.target.id}`));
+    }), { rootMargin: '-20% 0px -70% 0px' });
+    heads.forEach(h => io.observe(h));
+}
+
 wireInstall();
 entrances();
+toc();
 chrome();
 fitFrames();
 const year = document.getElementById('year');
