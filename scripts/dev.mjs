@@ -1,14 +1,13 @@
 /**
  * Local test runs, one command each:
  *   node scripts/dev.mjs site  builds the extension and the site, serves the site on http://localhost:8788
- *   node scripts/dev.mjs ext   builds the extension, runs the worker on http://localhost:8787,
- *                              and opens Chromium with the extension loaded in a separate test profile
+ *   node scripts/dev.mjs ext   builds the extension and runs the worker on http://localhost:8787;
+ *                              load apps/extension/dist yourself with Load unpacked
  * Ctrl+C stops everything it started.
  * @license AGPL-3.0
  */
 
 import { execFileSync, spawn } from 'child_process';
-import { existsSync, mkdirSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -30,14 +29,6 @@ const stop = () => { children.forEach(c => c.kill('SIGTERM')); process.exit(0); 
 process.on('SIGINT', stop);
 process.on('SIGTERM', stop);
 
-/** Chromium first (it still honours --load-extension), then Chrome. CHROME=<path> overrides. */
-function findBrowser() {
-    if (process.env.CHROME) return process.env.CHROME;
-    for (const name of ['chromium-browser', 'chromium', 'google-chrome', 'google-chrome-stable']) {
-        try { return execFileSync('which', [name], { encoding: 'utf8' }).trim(); } catch { /* try the next one */ }
-    }
-    return null;
-}
 
 if (mode === 'site') {
     build('@meterx/extension', '@meterx/site');
@@ -45,26 +36,10 @@ if (mode === 'site') {
     start(wrangler, ['pages', 'dev', 'apps/site/dist', '--port', '8788']);
 } else if (mode === 'ext') {
     build('@meterx/extension');
-    const dist = resolve(root, 'apps/extension/dist');
-    const profile = resolve(root, '.dev/chromium-profile');
-    mkdirSync(profile, { recursive: true });
     start(wrangler, ['dev', '--port', '8787'], { cwd: resolve(root, 'services/worker') });
-    const browser = findBrowser();
-    if (!browser || !existsSync(browser)) {
-        console.log(`\nNo Chromium found. Load ${dist} by hand at chrome://extensions (Developer mode, Load unpacked).\n`);
-    } else {
-        start(browser, [
-            `--user-data-dir=${profile}`,
-            `--load-extension=${dist}`,
-            '--disable-features=DisableLoadExtensionCommandLineSwitch',
-            '--no-first-run',
-            '--no-default-browser-check',
-            'chrome://extensions',
-        ]);
-        console.log(`\nChromium opened with MeterX loaded from ${dist}`);
-    }
+    console.log(`\nLoad unpacked: ${resolve(root, 'apps/extension/dist')}  (chrome://extensions, Developer mode on)`);
     console.log('Local worker: http://localhost:8787. In MeterX settings choose Custom server and enter it to test the new worker.');
-    console.log('After a code change: npm run build -w @meterx/extension, then reload MeterX on chrome://extensions.  Ctrl+C stops everything.\n');
+    console.log('After a code change: npm run build -w @meterx/extension, then reload MeterX on chrome://extensions.  Ctrl+C stops the worker.\n');
 } else {
     console.log('Usage: node scripts/dev.mjs site | ext');
     process.exit(1);

@@ -17,7 +17,7 @@ npm test               # vitest in every workspace, plus scripts/
 npm run lint           # eslint (TS, CSS, Markdown)
 npm run package        # store uploads in release/: one zip for Chrome, Edge and Opera, one for Firefox, and a source zip
 npm run dev:site       # build and serve the site on :8788
-npm run dev:ext        # build the extension, run the worker on :8787, open Chromium with MeterX loaded
+npm run dev:ext        # build the extension and run the worker on :8787; load apps/extension/dist unpacked
 npm start              # self-host Express server on :3000 (needs a prior build)
 
 # One package
