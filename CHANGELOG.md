@@ -35,6 +35,7 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 - Contribute page with live repo stats, issues for newcomers and contributors from GitHub, plus a four step setup
 
 ### Fixed
+- Site: demo frames never scroll at any browser zoom, the side panel demo scales to fit the window height, there is no blank band after the pinned hero, and phones get an un-pinned hero, a menu button and full-height panel demos
 - Empty figures show a short muted bar with the unit hidden, instead of a stray hyphen next to "Mbps"
 - The side panel no longer scrolls when an ISP plan is set: plan rows show the percentage on one line, the status moved into the Results header, and the chart shrinks on shorter panels
 - Rows no longer show above the pinned column names while the results list scrolls
