@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "test": "vitest run",
-    "deploy": "node build.mjs && wrangler pages deploy dist --project-name meterx-site --branch main"
+    "deploy": "npm run build -w @meterx/extension && node build.mjs && wrangler pages deploy dist --project-name meterx-site --branch main"
   },
   "dependencies": {
     "@meterx/shared": "*"
