@@ -159,8 +159,8 @@ First store release, store version 2026.3.19.1 ("Major Rewrite One").
 - Express.js server with test file generation
 - Simple popup UI
 
-[Unreleased]: https://github.com/ajithakdev/meterx-server/compare/v2026.2.0...HEAD
-[2026.2.0]: https://github.com/ajithakdev/meterx-server/compare/v2026.1.0...v2026.2.0
-[2026.1.0]: https://github.com/ajithakdev/meterx-server/compare/v2026.0.0...v2026.1.0
-[2026.0.0]: https://github.com/ajithakdev/meterx-server/compare/v0.2.0...v2026.0.0
-[0.2.0]: https://github.com/ajithakdev/meterx-server/releases/tag/v0.2.0
+[Unreleased]: https://github.com/ajithakdev/meterx/compare/v2026.2.0...HEAD
+[2026.2.0]: https://github.com/ajithakdev/meterx/compare/v2026.1.0...v2026.2.0
+[2026.1.0]: https://github.com/ajithakdev/meterx/compare/v2026.0.0...v2026.1.0
+[2026.0.0]: https://github.com/ajithakdev/meterx/compare/v0.2.0...v2026.0.0
+[0.2.0]: https://github.com/ajithakdev/meterx/releases/tag/v0.2.0

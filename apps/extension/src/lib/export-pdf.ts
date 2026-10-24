@@ -352,7 +352,7 @@ function footers(d: Draw, id: string, faint: unknown, solid: unknown): void {
         d.doc.text('MeterX', PAGE_W / 2 - 52, PAGE_H / 2 + 34, { angle: 35 });
         gs(solid);
         d.rule(M, FOOT_Y - 4, M + W, C.border);
-        d.text(`MeterX v${VERSION} · Report ID ${id} · github.com/ajithakdev/meterx-server`, M, FOOT_Y, { size: 7, color: C.muted });
+        d.text(`MeterX v${VERSION} · Report ID ${id} · github.com/ajithakdev/meterx`, M, FOOT_Y, { size: 7, color: C.muted });
         d.text(`Page ${p} of ${n}`, M + W, FOOT_Y, { size: 7, color: C.muted, align: 'right' });
     }
 }

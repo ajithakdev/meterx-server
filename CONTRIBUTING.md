@@ -5,8 +5,8 @@ Here's how to get set up and contribute.
 ## Dev Setup
 
 ```bash
-git clone https://github.com/ajithakdev/meterx-server.git
-cd meterx-server
+git clone https://github.com/ajithakdev/meterx.git
+cd meterx
 npm install
 npm run build
 ```

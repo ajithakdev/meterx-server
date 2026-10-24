@@ -3,7 +3,7 @@
 Every link and how-to is in [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md).
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![CI](https://github.com/ajithakdev/meterx-server/actions/workflows/ci.yml/badge.svg?branch=add/dev/2026.0.MAR.1)](https://github.com/ajithakdev/meterx-server/actions)
+[![CI](https://github.com/ajithakdev/meterx/actions/workflows/ci.yml/badge.svg?branch=add/dev/2026.0.MAR.1)](https://github.com/ajithakdev/meterx/actions)
 
 Open-source speed test browser extension. Measures download, upload, ping, jitter, and packet loss from your toolbar, powered by Cloudflare's edge network.
 
@@ -23,8 +23,8 @@ Open-source speed test browser extension. Measures download, upload, ping, jitte
 ## Install from Source
 
 ```bash
-git clone https://github.com/ajithakdev/meterx-server.git
-cd meterx-server
+git clone https://github.com/ajithakdev/meterx.git
+cd meterx
 npm install
 npm run build
 ```
@@ -42,7 +42,7 @@ npm start
 ## Architecture
 
 ```text
-meterx-server/
+meterx/
   packages/
     extension/        # Browser extension (TypeScript, Manifest V3, esbuild)
       src/

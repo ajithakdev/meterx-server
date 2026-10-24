@@ -24,9 +24,9 @@ Every link for the speed test extension and server, what it is for, and how to r
 
 | Link | Use it for |
 | --- | --- |
-| https://github.com/ajithakdev/meterx-server | Source code, issues, and pull requests |
-| https://github.com/ajithakdev/meterx-server/actions | GitHub Actions CI workflow runs |
-| https://github.com/ajithakdev/meterx-server/issues | Bug reports and issue tracker |
+| https://github.com/ajithakdev/meterx | Source code, issues, and pull requests |
+| https://github.com/ajithakdev/meterx/actions | GitHub Actions CI workflow runs |
+| https://github.com/ajithakdev/meterx/issues | Bug reports and issue tracker |
 
 ## Accounts
 
