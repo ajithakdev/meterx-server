@@ -4,7 +4,7 @@
  * @license AGPL-3.0
  */
 
-const WORKER = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
+import { WORKER_URL as WORKER } from '@meterx/shared';
 
 async function pingMs(): Promise<number> {
     const t = performance.now();

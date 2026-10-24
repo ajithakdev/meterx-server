@@ -16,6 +16,9 @@ export const TEST_FILE_RE = /^(1|5|10|25)MB\.bin$/;
 /** Bodies above this are cut off by both backends; the extension never sends more than 8 MB. */
 export const MAX_UPLOAD_BYTES = 16 * 1024 * 1024;
 
+/** The default test server. Also listed in the extension's manifest host_permissions and the site's CSP; change all three together. */
+export const WORKER_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
+
 /** The product site, which runs a short in-page test against the worker. */
 export const SITE_ORIGIN = 'https://meterx.ajithakdev.com';
 

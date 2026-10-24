@@ -6,9 +6,9 @@
 
 /// <reference types="chrome" />
 
-import { VERSION, type IspPlan } from '@meterx/shared';
+import { VERSION, WORKER_URL, type IspPlan } from '@meterx/shared';
 
-const DEFAULT_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
+const DEFAULT_URL = WORKER_URL;
 const ISP_KEY = 'ispPlan';
 const SCHEDULE_KEY = 'scheduleMinutes';
 const NOTIFY_KEY = 'notifyOnDrop';

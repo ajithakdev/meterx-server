@@ -25,6 +25,10 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 - Product site in `apps/site` for meterx.ajithakdev.com: home page with an in-page quick test, about, privacy policy (#92), share viewer (#74) and a `/get` link that opens the right store
 - The worker answers the site's origin so its quick test can run
 
+- Repository renamed to `ajithakdev/meterx` and split into `apps/`, `services/` and `packages/`; the PDF, CSV and JSON builders became `@meterx/reports`
+- `npm run package` builds one upload for Chrome, Edge and Opera, one for Firefox, and a source archive
+- The site is now several pages (Home, How it works, Features, Questions, About) and runs the extension's own popup, side panel and settings with sample data; the home page plays a test as you scroll
+
 ### Fixed
 - Empty figures show a short muted bar with the unit hidden, instead of a stray hyphen next to "Mbps"
 - The side panel no longer scrolls when an ISP plan is set: plan rows show the percentage on one line, the status moved into the Results header, and the chart shrinks on shorter panels

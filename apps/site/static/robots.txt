@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /r/
+Disallow: /app/
+Disallow: /get/
 Sitemap: https://meterx.ajithakdev.com/sitemap.xml

@@ -7,7 +7,8 @@
 /// <reference types="chrome" />
 
 /** Default backend. Also in static/manifest.json host_permissions; change both together. */
-export const DEFAULT_SERVER_URL = 'https://meterx-speedtest.meterx-ajithakdev.workers.dev';
+export { WORKER_URL as DEFAULT_SERVER_URL } from '@meterx/shared';
+import { WORKER_URL as DEFAULT_SERVER_URL } from '@meterx/shared';
 export const SITE_URL = 'https://meterx.ajithakdev.com';
 export const REPO_URL = 'https://github.com/ajithakdev/meterx';
 

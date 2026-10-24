@@ -1,6 +1,6 @@
 # MeterX site plan
 
-Status: plan, not built. Written 2026-10-24 for the 2027.0.0 release.
+Status: built on 2026-10-24 (multi-page, with the extension pages in demo mode). Not deployed yet. The plan below is kept for the reasoning; CLAUDE.md describes what exists.
 
 ## Goal
 
