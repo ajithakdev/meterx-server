@@ -9,8 +9,6 @@
 /** Default backend. Also in static/manifest.json host_permissions; change both together. */
 export { WORKER_URL as DEFAULT_SERVER_URL } from '@meterx/shared';
 import { WORKER_URL as DEFAULT_SERVER_URL } from '@meterx/shared';
-export const SITE_URL = 'https://meterx.ajithakdev.com';
-export const REPO_URL = 'https://github.com/ajithakdev/meterx';
 
 /** Returns an error message, or null when the URL is usable (matches optional_host_permissions). */
 export function validateServerUrl(raw: string): string | null {

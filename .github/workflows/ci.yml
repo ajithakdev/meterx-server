@@ -43,7 +43,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test server
+      - name: Test
         run: npm run test
 
       - name: Package extension

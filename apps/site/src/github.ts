@@ -7,7 +7,6 @@ export const REPO = 'ajithakdev/meterx';
 
 export interface Issue { number: number; title: string; url: string; labels: string[] }
 export interface Contributor { login: string; avatar: string; url: string; contributions: number }
-export interface RepoStats { stars: number; forks: number; openIssues: number }
 
 /** The site never shows em or en dashes, even when an issue title has them. */
 const noDashes = (s: string) => s.replace(/\s*[\u2013\u2014]\s*/g, ', ');

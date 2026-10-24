@@ -7,11 +7,10 @@
     "test": "npx vitest run"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.287",
-    "jsdom": "^29.0.2"
+    "@types/chrome": "^0.0.287"
   },
   "dependencies": {
-    "@meterx/shared": "*",
-    "@meterx/reports": "*"
+    "@meterx/reports": "*",
+    "@meterx/shared": "*"
   }
 }
