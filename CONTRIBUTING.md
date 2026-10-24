@@ -40,11 +40,15 @@ Starts the Express.js self-host server. Useful for LAN testing or when you don't
 ## Project Structure
 
 ```text
-packages/
-  extension/    # Browser extension (TypeScript, Manifest V3, esbuild)
-  worker/       # Cloudflare Worker — primary serverless backend
-  server/       # Express.js server — self-host fallback
+apps/extension     Browser extension (TypeScript, Manifest V3, esbuild)
+apps/site          meterx.ajithakdev.com
+services/worker    Cloudflare Worker, the default test server
+services/server    Express server, for self-hosting
+packages/shared    Types, API constants and rules every part shares
+packages/reports   PDF, CSV and JSON builders
 ```
+
+The full map is in [docs/CODEMAP.md](docs/CODEMAP.md).
 
 ## Commands
 

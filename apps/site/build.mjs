@@ -34,7 +34,7 @@ for (const f of walk(dist).filter(p => p.endsWith('.html'))) {
 }
 
 const common = { absWorkingDir: here, bundle: true, target: 'es2022', minify: true };
-await build({ ...common, entryPoints: { home: 'src/home.ts', share: 'src/share.ts', get: 'src/get.ts', faq: 'src/faq.ts', common: 'src/common.ts' }, format: 'esm', outdir: resolve(dist, 'js') });
+await build({ ...common, entryPoints: { home: 'src/home.ts', share: 'src/share.ts', get: 'src/get.ts', faq: 'src/faq.ts', contribute: 'src/contribute.ts', common: 'src/common.ts' }, format: 'esm', outdir: resolve(dist, 'js') });
 await build({ ...common, entryPoints: { 'demo-shim': 'src/demo-shim.ts' }, format: 'iife', outdir: resolve(dist, 'js') });
 
 console.log('Site built to dist/');

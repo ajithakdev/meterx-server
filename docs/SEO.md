@@ -6,7 +6,7 @@ How search and link previews work on `meterx.ajithakdev.com`, what to set up onc
 
 - Every page is plain static HTML in `apps/site/static/`, so crawlers get the full text, title and meta tags without running JavaScript.
 - Each page has its own `<title>`, `<meta name="description">`, `<link rel="canonical">` and Open Graph tags in its `<head>`. The home page also carries `SoftwareApplication` JSON-LD.
-- `apps/site/static/sitemap.xml` lists the six indexable pages. Update it by hand when a page is added or removed.
+- `apps/site/static/sitemap.xml` lists the seven indexable pages. Update it by hand when a page is added or removed.
 - `apps/site/static/robots.txt` allows everything except `/r/` (shared results), `/app/` (the extension's demo pages) and `/get/` (a redirect).
 - The share viewer and 404 pages carry `noindex`.
 - `apps/site/static/img/og.png` (1200x630) is the preview image for shared links. `brand/build.mjs` makes it.

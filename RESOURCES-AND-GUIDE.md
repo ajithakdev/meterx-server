@@ -18,6 +18,7 @@ Every link for MeterX, what it is for, and how to run, package and release it. P
 | --- | --- |
 | https://meterx.ajithakdev.com | Product site: home, how it works, features, questions, about |
 | https://meterx.ajithakdev.com/get/ | Sends each visitor to their own browser's store. Use this link in posts and bios |
+| https://meterx.ajithakdev.com/contribute/ | Contribute: live issues for newcomers and contributors from GitHub |
 | https://meterx.ajithakdev.com/privacy/ | Privacy policy (the stores link here) |
 | https://meterx.ajithakdev.com/r/ | Share viewer: opens links made by the Share button |
 | https://addons.mozilla.org/firefox/addon/meterx-by-ajithakdev/ | Firefox listing (add-on id `meterx@ajithakdev`) |
