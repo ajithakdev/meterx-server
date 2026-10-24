@@ -31,7 +31,7 @@ Load the extension unpacked from `apps/extension/dist/` (rebuild after every cha
 
 ## Architecture
 
-```
+```text
 apps/extension     Manifest V3 extension (popup, side panel, settings, service worker)
 apps/site          meterx.ajithakdev.com: static pages plus the extension's own pages in demo mode under /app/
 services/worker    Cloudflare Worker, the default test server (streams bytes, stores nothing)

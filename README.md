@@ -25,7 +25,7 @@ Website: [meterx.ajithakdev.com](https://meterx.ajithakdev.com)
 
 ## Repository layout
 
-```
+```text
 apps/extension     Manifest V3 extension (popup, side panel, settings, service worker)
 apps/site          meterx.ajithakdev.com, which runs the extension's own pages in demo mode
 services/worker    Cloudflare Worker, the default test server (stores nothing)
