@@ -103,4 +103,6 @@ export type BroadcastMessage =
     | { action: 'testError'; error: string; cancelled?: boolean };
 
 export { SHARE_VIEWER, buildShareUrl, parseShareUrl } from './share';
+export { NONE, fmt, fmtSpeed, localDate, getTimeAgo, fmtWhen } from './format';
+export { median, gradeBufferbloat, planShare } from './stats';
 export { getQuality, qualityOf, scoreUseCases, USE_CASES, type QualityLabel, type UseCaseScore, type UseCaseScores } from './quality';

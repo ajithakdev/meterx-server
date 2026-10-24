@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { escapeCsv } from './export-data';
+import { escapeCsv } from './data';
 
 describe('escapeCsv', () => {
     it('leaves numbers and plain text alone', () => {
@@ -20,7 +20,7 @@ describe('escapeCsv', () => {
 });
 
 import type { HistoryEntry } from '@meterx/shared';
-import { COLUMNS, toCsv, toJson } from './export-data';
+import { COLUMNS, toCsv, toJson } from './data';
 
 const entry: HistoryEntry = {
     timestamp: Date.UTC(2026, 9, 24, 8, 30), downloadSpeed: 96.0381, uploadSpeed: 56.31, ping: 202.64, jitter: 13.2,

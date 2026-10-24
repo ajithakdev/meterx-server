@@ -20,7 +20,5 @@ export async function saveIspPlan(plan: IspPlan | null): Promise<void> {
     else await chrome.storage.sync.remove(KEY);
 }
 
-/** Share of the plan delivered, or null when that side of the plan was left blank (#70). */
-export function planShare(measured: number | undefined, planned: number): number | null {
-    return measured === undefined || !(planned > 0) ? null : (measured / planned) * 100;
-}
+
+export { planShare } from '@meterx/shared';

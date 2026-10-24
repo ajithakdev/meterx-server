@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { HistoryEntry } from '@meterx/shared';
-import { buildReport, niceMax } from './export-pdf';
+import { buildReport, niceMax } from './pdf';
 
 const rows = (n: number): HistoryEntry[] => Array.from({ length: n }, (_, i) => ({
     timestamp: Date.UTC(2026, 9, 24) - i * 3_600_000, downloadSpeed: 90 + i, uploadSpeed: 50, ping: 20, jitter: 2, packetLoss: 0,
@@ -32,7 +32,7 @@ describe('niceMax', () => {
     });
 });
 
-import { reportId } from './export-pdf';
+import { reportId } from './pdf';
 
 describe('reportId', () => {
     it('is stable for the same results and changes when any figure changes', async () => {

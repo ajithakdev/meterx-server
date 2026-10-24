@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "@meterx/shared": "*",
-    "jspdf": "^4.2.1"
+    "@meterx/reports": "*"
   }
 }

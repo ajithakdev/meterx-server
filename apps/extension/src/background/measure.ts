@@ -3,7 +3,9 @@
  * @license AGPL-3.0
  */
 
-import type { Grade } from '@meterx/shared';
+import { gradeBufferbloat, median } from '@meterx/shared';
+
+export { gradeBufferbloat, median };
 
 /** Cumulative bytes received at time t (ms since the phase started). */
 export interface ByteSample { t: number; bytes: number }
@@ -39,12 +41,6 @@ export function steadyMbps(samples: ByteSample[], elapsedMs: number, opts: { ram
     return toMbps(bytesAtTime(samples, end) - bytesAtTime(samples, opts.rampMs), end - opts.rampMs);
 }
 
-export function median(values: number[]): number {
-    if (values.length === 0) return NaN;
-    const s = [...values].sort((a, b) => a - b);
-    const mid = s.length >> 1;
-    return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
-}
 
 /** Median ping, mean absolute change between consecutive pings, and % of probes lost. */
 export function latencyStats(latencies: number[], attempts: number): { ping: number; jitter: number; packetLoss: number } {
@@ -57,14 +53,6 @@ export function latencyStats(latencies: number[], attempts: number): { ping: num
     };
 }
 
-/** How much latency rises under load. Thresholds follow the Waveform bufferbloat test. */
-export function gradeBufferbloat(deltaMs: number): Grade {
-    if (deltaMs <= 5) return 'A';
-    if (deltaMs <= 30) return 'B';
-    if (deltaMs <= 60) return 'C';
-    if (deltaMs <= 200) return 'D';
-    return 'F';
-}
 
 const KB = 1024;
 const MIN_UPLOAD_CHUNK = 256 * KB;

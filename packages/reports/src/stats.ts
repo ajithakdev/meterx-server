@@ -3,9 +3,7 @@
  * @license AGPL-3.0
  */
 
-import type { Grade, HistoryEntry } from '@meterx/shared';
-import { gradeBufferbloat, median } from '../background/measure';
-import { getQuality, scoreUseCases, type QualityLabel, type UseCaseScores } from './quality';
+import { getQuality, gradeBufferbloat, median, scoreUseCases, type Grade, type HistoryEntry, type QualityLabel, type UseCaseScores } from '@meterx/shared';
 
 const avg = (a: number[]) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : 0);
 

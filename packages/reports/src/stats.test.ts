@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { consistency, trendPercent } from './report-stats';
+import { consistency, trendPercent } from './stats';
 
 describe('trendPercent', () => {
     it('has no trend for one result (#76)', () => {
@@ -25,7 +25,7 @@ describe('consistency', () => {
     });
 });
 
-import { summarize } from './report-stats';
+import { summarize } from './stats';
 
 describe('summarize', () => {
     it('is empty-safe', () => {
