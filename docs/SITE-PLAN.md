@@ -27,10 +27,10 @@ It follows the pattern of `toolglass.ajithakdev.com` and `minnoli.ajithakdev.com
 
 ## Hosting and build
 
-- **Hosting:** Cloudflare Pages on the free plan, connected to this repo, building `apps/site`. DNS for `ajithakdev.com` is already on Cloudflare, so the custom domain is one CNAME. It costs nothing and has no bandwidth charge. Vercel Hobby (used by minnoli) works too, but Cloudflare keeps the site next to the worker in one account.
-- **Builds:** only when `apps/site/**` or `packages/shared/**` changes (Pages build watch paths), so extension commits do not use the 500 builds a month.
+- **Hosting:** Cloudflare Pages on the free plan, project `meterx-site`, filled by direct upload (`npm run deploy -w @meterx/site`), not connected to git. DNS for `ajithakdev.com` is already on Cloudflare, so adding the custom domain in the Pages project creates the CNAME. It costs nothing and has no bandwidth charge.
+- **Builds:** none on push or merge. Because the project is not git-connected, docs, CI or code merges never deploy anything; the site only changes when someone runs the deploy command.
 - **Stack:** plain HTML and CSS with a little TypeScript bundled by esbuild, the same tool the extension uses. No framework. The site imports `@meterx/shared` for share links, quality rules and use-case thresholds, so the page and the extension can never disagree.
-- **Releases:** the site deploys from `main` like minnoli. It changes rarely, and a page fix should not wait for Sunday.
+- **Releases:** the site deploys by hand with each Sunday release, after the worker. An urgent page fix can be deployed the same day.
 - **SEO:** `docs/SEO.md` (required for every site repo): titles and descriptions per route, Open Graph card, sitemap, robots, canonical URLs, Search Console and Bing Webmaster Tools set-up, and a release checklist.
 
 ## Art direction

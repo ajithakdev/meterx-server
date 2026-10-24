@@ -65,11 +65,14 @@ Every link for MeterX, what it is for, and how to run, package and release it. P
 | Test the extension | `npm run dev:ext` (builds, runs the worker on http://localhost:8787; load `apps/extension/dist` with Load unpacked) |
 | Package for the stores | `npm run package`: `release/meterx-<version>-chromium.zip` (Chrome, Edge, Opera), `-firefox.zip`, `-source.zip` (upload with the Firefox build) |
 | Deploy the worker | `cd services/worker && npx wrangler deploy` |
-| Deploy the site | `npm run deploy -w @meterx/site` (Cloudflare Pages project `meterx-site`, custom domain `meterx.ajithakdev.com`) |
+| Deploy the site | `npm run deploy -w @meterx/site`: builds the extension and site and uploads to Cloudflare Pages project `meterx-site`. Not connected to git, so merges (docs or code) never deploy |
+| First site deploy (once) | `npx wrangler pages project create meterx-site --production-branch main`, then `npm run deploy -w @meterx/site`, then in the Cloudflare dashboard: Workers and Pages, `meterx-site`, Custom domains, add `meterx.ajithakdev.com` (Cloudflare adds the CNAME itself). Then set the GitHub repo's website to the site |
+| Submit to the stores | `npm run package`, then upload `release/meterx-<version>-chromium.zip` to Edge and Opera, and `-firefox.zip` plus `-source.zip` to Firefox. Images are in `brand/png/store/`. All three stores are free; the Chrome Web Store needs a one-time paid developer fee, so it waits |
 | Bump the version | Edit `version` in the root `package.json` only; the build stamps it everywhere |
-| Release | Move CHANGELOG Unreleased under the version, commit `chore: release vX.Y.Z`, tag, push the tag, `gh release create`, then deploy the worker and site and upload the store zips |
+| Release | Move CHANGELOG Unreleased under the version, commit `chore: release vX.Y.Z`, tag, push the tag, `gh release create`, then deploy the worker, deploy the site and upload the store zips. Merging to `main` deploys nothing |
 | Regenerate brand images | `npm run build`, then `node brand/build.mjs` (see the header of that file for the env vars) |
 | Regenerate the code map | `node scripts/codemap.mjs` |
+| Logo history | `brand/alternates/` keeps the other logo options that were considered (rising bars, up and down arrows) |
 
 ## When something goes wrong
 

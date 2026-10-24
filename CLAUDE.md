@@ -61,4 +61,5 @@ Custom server URLs need a runtime host-permission grant (`optional_host_permissi
 - The version lives only in the root `package.json`. `@meterx/shared` exports it as `VERSION` (used by `/health`, the exports and the settings footer), and `build.mjs` stamps it into `dist/manifest.json`, so it must be 1 to 4 dot-separated numbers. Bump that one line to release.
 - `manifest.json` description must stay within the store's 132-character limit.
 - Store packages: Chromium stores share one zip; Firefox gets a converted manifest (sidebar, background script, id `meterx@ajithakdev`). The default worker URL is `WORKER_URL` in shared, and also sits in `host_permissions` in the extension's `static/manifest.json` and the site's `static/_headers` CSP; change all three together.
+- Nothing deploys on merge. The worker (`wrangler deploy`), the site (Pages direct upload, not git-connected) and the stores are released by hand on Sunday, so docs-only merges are just merges.
 - License is AGPL-3.0; see `TRADEMARK.md` before touching branding.

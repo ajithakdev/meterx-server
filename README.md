@@ -10,7 +10,10 @@ Website: [meterx.ajithakdev.com](https://meterx.ajithakdev.com)
 
 - Firefox: [addons.mozilla.org](https://addons.mozilla.org/firefox/addon/meterx-by-ajithakdev/)
 - Microsoft Edge: [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/glkpolbkpachomgmmhdkmjnghejbhlfc)
-- Opera and Chrome: coming soon
+- Opera: listing link coming soon
+- Chrome, Brave and Vivaldi: planned
+
+Or open [meterx.ajithakdev.com/get](https://meterx.ajithakdev.com/get/), which picks the store for your browser.
 
 ## What it does
 
@@ -33,7 +36,7 @@ services/server    Express server with the same API, for self-hosting
 packages/shared    types, API constants, version, quality rules, formatting, share links
 packages/reports   PDF, CSV and JSON builders
 brand/             logo and the script that makes every icon and store image
-scripts/           store packaging and the code map generator
+scripts/           store packaging, local dev runner and the code map generator
 ```
 
 More detail in [CLAUDE.md](CLAUDE.md) and [docs/CODEMAP.md](docs/CODEMAP.md).
@@ -47,10 +50,14 @@ npm install
 npm run build      # extension, site and server
 npm test
 npm run lint
+npm run dev:ext    # build the extension, run the test server on :8787
+npm run dev:site   # build and serve the site on :8788
 npm run package    # store uploads in release/
 ```
 
-Load the extension unpacked from `apps/extension/dist/`. Preview the site with `npx wrangler pages dev apps/site/dist`. Run the self-host server with `npm start` (port 3000).
+To try the extension, open `chrome://extensions`, turn on Developer mode, choose Load unpacked and pick `apps/extension/dist/`. To test against your local worker, set Custom server to `http://localhost:8787` in MeterX settings. Rebuild with `npm run build -w @meterx/extension` and reload the extension after each change.
+
+To self-host the test server, run `npm start` (port 3000) or deploy `services/worker` to your own Cloudflare account. [CONTRIBUTING.md](CONTRIBUTING.md) has the rest.
 
 ## Privacy
 
