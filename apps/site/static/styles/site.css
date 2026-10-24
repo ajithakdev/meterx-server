@@ -86,6 +86,8 @@ main { display: block; }
 .page-head { padding: 72px var(--m) 0; display: grid; gap: 20px; max-width: calc(var(--page) + 2 * var(--m)); }
 .page-head .lede { max-width: 56ch; }
 .section { padding: 0 var(--m); margin-top: 120px; }
+/* The first section after a page heading follows it closely; the full gap is for section to section. */
+.page-head + .section { margin-top: 64px; }
 .section > .head { display: grid; gap: 12px; margin-bottom: 40px; max-width: 64ch; }
 @media (max-width: 760px) { .page-head { padding-top: 40px; } .section { margin-top: 88px; } }
 
@@ -103,13 +105,10 @@ main { display: block; }
 .split { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 64px; align-items: center; }
 .split.flip { grid-template-columns: auto minmax(0, 1fr); }
 .split .words { display: grid; gap: 20px; align-content: start; }
-/* Desktop: a tall product frame stays pinned beside its text while the text scrolls past it. */
+/* Desktop: like the Reports row, the text sits centred beside the product frame. */
 @media (min-width: 901px) {
-  .split.flip { align-items: start; }
-  .split.flip > .device-wrap { position: sticky; top: calc(var(--bar-h) + 24px); }
-  /* The text starts lower and rises beside the pinned frame; the pin lets go when the text's last line reaches the frame's bottom, so the column never runs empty. */
-  .split.flip > .words { padding: 52vh 0 0; }
-  .split.flip .facts { gap: 64px; }
+  .split.flip { align-items: center; }
+  .split.flip .facts { gap: 28px; }
 }
 @media (max-width: 900px) {
   .split, .split.flip { grid-template-columns: 1fr; gap: 40px; }
