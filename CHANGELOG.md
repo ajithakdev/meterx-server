@@ -29,6 +29,9 @@ All notable changes to MeterX are documented here. The format follows [Keep a Ch
 - `npm run package` builds one upload for Chrome, Edge and Opera, one for Firefox, and a source archive
 - The site is now several pages (Home, How it works, Features, Questions, About) and runs the extension's own popup, side panel and settings with sample data; the home page plays a test as you scroll
 
+- Get MeterX page: every store on the MeterX dial with the needle pointing at the visitor's browser, live and upcoming stores (Chrome Web Store with Brave, Vivaldi and Arc, Firefox for Android, Safari) with their logos. `/get/?go` still jumps straight to the right store
+- Questions show the open answer in a panel beside the list on wide screens; How it works compares ping under load on a grade C line and a grade A line
+
 ### Fixed
 - Empty figures show a short muted bar with the unit hidden, instead of a stray hyphen next to "Mbps"
 - The side panel no longer scrolls when an ISP plan is set: plan rows show the percentage on one line, the status moved into the Results header, and the chart shrinks on shorter panels

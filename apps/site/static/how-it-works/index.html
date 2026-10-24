@@ -27,22 +27,18 @@
   </div>
 
   <section class="section" aria-labelledby="phasesTitle">
-    <div class="head"><h2 id="phasesTitle">Where the twenty seconds go</h2><p class="small">Segments are sized by how long each phase takes.</p></div>
-    <div class="phase-bar" aria-hidden="true">
-      <div style="flex:0.9 1 0"></div>
-      <div style="flex:2 1 0"><span>2 s</span></div>
-      <div class="dl" style="flex:8.6 1 0"><span>Download, about 9 s</span></div>
-      <div class="ul" style="flex:8.6 1 0"><span>Upload, about 9 s</span></div>
-    </div>
+    <div class="head"><h2 id="phasesTitle">Where the twenty seconds go</h2><p class="small">Each bar shows the phase's share of the whole test.</p></div>
     <ul class="steps clean">
-      <li><h3>Connect</h3><p>MeterX opens a connection to the nearest Cloudflare location, or to your own server. Under a second.</p></li>
-      <li><h3>Ping and jitter</h3><p>A run of small requests measures the delay and how much it wobbles from one request to the next. Requests that never return count as loss.</p></li>
-      <li><h3>Download</h3><p>Four parallel streams fill your line for a fixed time. The slow start and the last moments are trimmed, so the figure is the steady speed.</p></li>
-      <li><h3>Upload</h3><p>Three streams do the same upward while pings keep running, to catch the delay that builds under load.</p></li>
+      <li><span class="dur-bar" aria-hidden="true"><i style="width:4.5%"></i></span><span class="dur">Under a second</span><h3>Connect</h3><p>MeterX opens a connection to the nearest Cloudflare location, or to your own server.</p></li>
+      <li><span class="dur-bar" aria-hidden="true"><i style="width:10%"></i></span><span class="dur">2 seconds</span><h3>Ping and jitter</h3><p>A run of small requests measures the delay and how much it wobbles from one request to the next. Requests that never return count as loss.</p></li>
+      <li><span class="dur-bar dl" aria-hidden="true"><i style="width:43%"></i></span><span class="dur">About 9 seconds</span><h3>Download</h3><p>Four parallel streams fill your line for a fixed time. The slow start and the last moments are trimmed, so the figure is the steady speed.</p></li>
+      <li><span class="dur-bar ul" aria-hidden="true"><i style="width:43%"></i></span><span class="dur">About 9 seconds</span><h3>Upload</h3><p>Three streams do the same upward while pings keep running, to catch the delay that builds under load.</p></li>
     </ul>
   </section>
 
-  <section class="section split-text" aria-labelledby="loadTitle">
+  <section class="section" aria-labelledby="loadTitle">
+    <div class="split load-split">
+      <div class="words">
     <div class="head"><h2 id="loadTitle">Latency under load</h2><p class="lede">A line can look fast and still stutter on a call while something downloads. That is bufferbloat: routers queue too much data, so every request waits in line.</p></div>
     <p>MeterX keeps pinging during the download and upload and grades the worst rise above the ping at rest.</p>
     <table class="grades">
@@ -56,6 +52,36 @@
         <tr><td><span class="pill s-poor">F</span></td><td>More than 200 ms</td><td>Everything lags when the line is busy</td></tr>
       </tbody>
     </table>
+        </div>
+      <div class="charts">
+      <figure class="ping-chart">
+        <svg viewBox="0 0 420 260" role="img" aria-labelledby="pcTitle">
+          <title id="pcTitle">Ping during a sample test: about 19 ms at rest, rising to 61 ms while downloading and 46 ms while uploading</title>
+          <rect class="band" x="40" y="20" width="60" height="200"/><rect class="band dl" x="100" y="20" width="160" height="200"/><rect class="band ul" x="260" y="20" width="150" height="200"/>
+          <g class="grid"><line x1="40" y1="220" x2="410" y2="220"/><line x1="40" y1="153" x2="410" y2="153"/><line x1="40" y1="87" x2="410" y2="87"/><line x1="40" y1="20" x2="410" y2="20"/></g>
+          <g class="axis"><text x="34" y="224">0</text><text x="34" y="157">25</text><text x="34" y="91">50</text><text x="34" y="24">75</text></g>
+          <line class="rest" x1="40" y1="169" x2="410" y2="169"/>
+          <polyline class="ping" points="40,170 55,168 70,171 85,169 100,168 115,140 130,118 145,104 160,64 175,74 190,60 205,58 220,66 235,57 250,60 265,92 280,100 295,96 310,104 325,98 340,94 355,101 370,97 385,95 400,99 410,97"/>
+          <g class="labels"><text x="70" y="245">Rest</text><text x="180" y="245">Downloading</text><text x="335" y="245">Uploading</text></g>
+          <text class="note" x="196" y="46">+42 ms under load</text>
+        </svg>
+        <figcaption class="demo-note">Ping in ms during a sample test. The rise of 42 ms gives grade C.</figcaption>
+      </figure>
+      <figure class="ping-chart">
+        <svg viewBox="0 0 420 260" role="img" aria-labelledby="pcTitle2">
+          <title id="pcTitle2">Ping during a sample test on a line with good queue management: about 19 ms at rest and 23 ms under load</title>
+          <rect class="band" x="40" y="20" width="60" height="200"/><rect class="band dl" x="100" y="20" width="160" height="200"/><rect class="band ul" x="260" y="20" width="150" height="200"/>
+          <g class="grid"><line x1="40" y1="220" x2="410" y2="220"/><line x1="40" y1="153" x2="410" y2="153"/><line x1="40" y1="87" x2="410" y2="87"/><line x1="40" y1="20" x2="410" y2="20"/></g>
+          <g class="axis"><text x="34" y="224">0</text><text x="34" y="157">25</text><text x="34" y="91">50</text><text x="34" y="24">75</text></g>
+          <line class="rest" x1="40" y1="169" x2="410" y2="169"/>
+          <polyline class="ping good" points="40,169.3 55,168.3 70,169.9 85,168.8 100,169.3 115,165.3 130,161.9 145,159.7 160,158.4 175,160.3 190,157.6 205,158.9 220,158.1 235,159.5 250,158.7 265,162.4 280,161.6 295,160.5 310,162.1 325,160.8 340,161.9 355,160.3 370,161.6 385,161.1 400,162.1 410,161.3"/>
+          <g class="labels"><text x="70" y="245">Rest</text><text x="180" y="245">Downloading</text><text x="335" y="245">Uploading</text></g>
+          <text class="note" x="196" y="46">+4 ms under load</text>
+        </svg>
+        <figcaption class="demo-note">The same test on a line with good queue management: ping barely moves, grade A.</figcaption>
+      </figure>
+      </div>
+    </div>
   </section>
 
   <section class="section" aria-labelledby="whereTitle">

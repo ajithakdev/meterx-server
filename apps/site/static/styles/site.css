@@ -54,7 +54,8 @@ body.site { font: 400 var(--t-body)/1.6 var(--font); background: var(--ground); 
 .site-bar.is-scrolled { border-bottom-color: var(--border); }
 .site-bar .in { display: flex; align-items: center; gap: 32px; height: 68px; padding: 0 var(--m); }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; color: var(--text); text-decoration: none; }
-.brand img { border-radius: 7px; }
+.brand img { display: block; width: 36px; height: 36px; }
+.site-foot .brand img { width: 28px; height: 28px; }
 .links { display: flex; gap: 4px; margin-right: auto; }
 .links a { padding: 8px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 15px; transition: color 120ms var(--ease), background-color 120ms var(--ease); }
 .links a:hover { color: var(--text); background: var(--raised); }
@@ -87,8 +88,9 @@ main { display: block; }
 .device { border: 0; display: block; background: var(--ground); border-radius: 14px; box-shadow: 0 0 0 1px var(--border), 0 24px 48px -24px rgb(0 0 0 / .35); color-scheme: light dark; }
 .device.popup { width: 360px; height: 594px; }
 .device.panel { width: 420px; height: 760px; }
-.device.options { width: 100%; height: 660px; }
-@media (max-width: 900px) { .device.options { height: 1500px; } }
+.device.options { width: 100%; height: 620px; }
+/* The settings page pads its content by 20px; the caption lines up with that, not with the frame edge. */
+.device.options + .demo-note { padding-left: 20px; }
 .demo-note { margin-top: 12px; font-size: var(--t-small); color: var(--muted); }
 
 /* Split: words on one side, the product on the other. */
@@ -118,15 +120,31 @@ ul.clean { list-style: none; margin: 0; padding: 0; }
 [data-enter] > * { transition: opacity 600ms var(--ease) calc(var(--i, 0) * 70ms), transform 600ms var(--ease) calc(var(--i, 0) * 70ms); }
 @media (prefers-reduced-motion: reduce) { .pre { opacity: 1; transform: none; } }
 
-/* How it works: the progress bar enlarged, segments sized by real phase length. */
-.phase-bar { display: flex; gap: 6px; height: 64px; }
-.phase-bar > div { border-radius: 6px; background: var(--raised); display: flex; align-items: center; padding: 0 16px; min-width: 10px; overflow: hidden; white-space: nowrap; font-size: var(--t-small); }
-.phase-bar > .dl { background: var(--data); color: var(--on-data); }
-.phase-bar > .ul { background: var(--control); }
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 32px; }
+/* How it works: each step carries a bar showing its share of the whole test. */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
 .steps li { display: grid; gap: 8px; align-content: start; }
+.dur-bar { display: block; height: 10px; border-radius: 5px; background: var(--raised); overflow: hidden; margin-bottom: 8px; }
+.dur-bar i { display: block; height: 100%; border-radius: 5px; background: var(--muted); }
+.dur-bar.dl i { background: var(--data); }
+.dur { font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; }
 @media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } .phase-bar span { display: none; } }
+@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+
+/* Latency under load: words and table beside a sample ping chart. */
+.load-split { align-items: start; }
+.charts { display: grid; gap: 32px; width: min(440px, 100%); }
+.ping-chart { margin: 0; }
+.ping-chart svg { display: block; width: 100%; height: auto; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); }
+.ping-chart .band { fill: transparent; }
+.ping-chart .band.dl { fill: color-mix(in srgb, var(--data) 9%, transparent); }
+.ping-chart .band.ul { fill: color-mix(in srgb, var(--muted) 9%, transparent); }
+.ping-chart .grid line { stroke: var(--rule); stroke-width: 1; }
+.ping-chart .axis text { fill: var(--muted); font-size: 11px; text-anchor: end; }
+.ping-chart .labels text { fill: var(--muted); font-size: 12px; text-anchor: middle; }
+.ping-chart .rest { stroke: var(--muted); stroke-dasharray: 4 4; stroke-width: 1; }
+.ping-chart .ping { fill: none; stroke: var(--data); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.ping-chart .ping.good { stroke: var(--positive); }
+.ping-chart .note { fill: var(--text); font-size: 13px; font-weight: 600; }
 
 .grades { width: 100%; max-width: 760px; border-collapse: collapse; margin-top: 32px; }
 .grades caption { text-align: left; padding-bottom: 12px; }
@@ -138,17 +156,38 @@ ul.clean { list-style: none; margin: 0; padding: 0; }
 @media (max-width: 760px) { .facts.two { grid-template-columns: 1fr; } }
 .facts li > span { color: var(--muted); }
 
-/* Questions */
-.faq { display: grid; gap: 8px; max-width: calc(760px + 2 * var(--m)); margin-top: 56px; }
-.faq details { border-radius: 10px; padding: 0 20px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); }
-.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 24px; align-items: center; font-size: 18px; font-weight: 500; padding: 18px 0; }
+/* Questions: list on the left, the open answer beside it on wide screens; an accordion on phones. */
+.faq-layout { display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: 48px; align-items: start; margin-top: 56px; }
+.faq { display: grid; gap: 8px; }
+.faq details { border-radius: 10px; padding: 0 18px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); transition: box-shadow 160ms var(--ease); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 17px; font-weight: 500; padding: 16px 0; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: ""; width: 9px; height: 9px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translateY(-3px); flex: none; transition: transform 160ms var(--ease); }
+.faq summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translateY(-3px); flex: none; transition: transform 160ms var(--ease); }
 .faq details[open] summary::after { transform: rotate(225deg) translateY(-3px); }
-.faq details p { padding: 0 0 20px; color: var(--muted); }
+.faq details p { padding: 0 0 18px; color: var(--muted); }
+.faq-side .faq-answer { display: none; }
+.faq-help { display: grid; gap: 12px; padding: 24px 32px; border-radius: 14px; background: var(--raised); }
+.faq-help h2 { font-size: 20px !important; letter-spacing: -0.01em; }
+.faq-help p { color: var(--muted); }
+.faq-help .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.faq-help .ghost { background: var(--surface); }
+@media (min-width: 900px) {
+  .faq-js .faq details p { display: none; }
+  .faq-js .faq summary::after { transform: rotate(-45deg); }
+  .faq-js .faq details.is-current { box-shadow: 0 0 0 2px var(--data); }
+  .faq-js .faq-side { display: grid; gap: 16px; position: sticky; top: calc(var(--bar-h) + 24px); }
+  .faq-js .faq-answer { display: block; padding: 32px; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); min-height: 240px; }
+  .faq-answer .answer { display: grid; gap: 16px; justify-items: start; }
+  .faq-answer .more { font-size: 15px; }
+  .faq-answer h2 { font-size: 26px; letter-spacing: -0.02em; }
+  .faq-answer p { font-size: var(--t-lede); line-height: 1.6; color: var(--text); }
+}
+@media (max-width: 899px) { .faq-layout { grid-template-columns: 1fr; } }
 
 /* A full report page as a picture: the whole page, never cropped. */
-.device-wrap.report { width: min(440px, 100%); }
+.split.report-split { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+@media (max-width: 900px) { .split.report-split { grid-template-columns: 1fr; } }
+.device-wrap.report { width: 100%; max-width: 440px; }
 .device-wrap.report img { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 0 1px var(--border), 0 24px 48px -24px rgb(0 0 0 / .35); }
 
 /* Share viewer result card */

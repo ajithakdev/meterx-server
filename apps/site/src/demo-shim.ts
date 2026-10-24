@@ -5,7 +5,7 @@
  * @license AGPL-3.0
  */
 
-import type { BroadcastMessage, HistoryEntry } from '@meterx/shared';
+import { VERSION, WORKER_URL, type BroadcastMessage, type HistoryEntry } from '@meterx/shared';
 import { SAMPLE_PLAN, sampleFrame, sampleHistory, sampleResult } from './sample';
 
 type Area = 'local' | 'sync';
@@ -95,4 +95,24 @@ window.addEventListener('message', e => {
     if (e.origin !== location.origin || e.data?.mxDemo !== 'drive' || typeof e.data.p !== 'number') return;
     clearInterval(timer);
     show(e.data.p, false);
+});
+
+// The demo answers the test server itself, so the pages show a connected state without touching the network.
+const realFetch = window.fetch.bind(window);
+window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input instanceof Request ? input.url : input);
+    if (!url.startsWith(WORKER_URL)) return realFetch(input, init);
+    const path = new URL(url).pathname;
+    const body = path === '/health' ? JSON.stringify({ status: 'ok', server: 'cloudflare-worker', version: VERSION, edge: 'MAA', timestamp: Date.now() }) : 'Pong!';
+    return new Promise(resolve => setTimeout(() => resolve(new Response(body, { status: 200, headers: { 'Content-Type': path === '/health' ? 'application/json' : 'text/plain' } })), 18));
+};
+
+// On the site, pages sit inside a frame: tighter padding, and the frame takes the page's height so only the site scrolls.
+document.addEventListener('DOMContentLoaded', () => {
+    const style = document.createElement('style');
+    style.textContent = '.settings .wrap{max-width:none;padding:8px 20px 20px}.settings #closeBtn{visibility:hidden}';
+    document.head.append(style);
+    const report = () => parent.postMessage({ mxDemo: 'height', h: Math.ceil(document.documentElement.scrollHeight) }, location.origin);
+    new ResizeObserver(report).observe(document.body);
+    report();
 });

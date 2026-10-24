@@ -40,8 +40,19 @@ function chrome(): void {
     onScroll();
 }
 
+/** Frames marked data-fit take the height their page reports, so the frame never scrolls on its own. */
+function fitFrames(): void {
+    addEventListener('message', e => {
+        if (e.origin !== location.origin || e.data?.mxDemo !== 'height') return;
+        document.querySelectorAll<HTMLIFrameElement>('iframe[data-fit]').forEach(f => {
+            if (f.contentWindow === e.source) f.style.height = `${e.data.h}px`;
+        });
+    });
+}
+
 wireInstall();
 entrances();
 chrome();
+fitFrames();
 const year = document.getElementById('year');
 if (year) year.textContent = String(new Date().getFullYear());
