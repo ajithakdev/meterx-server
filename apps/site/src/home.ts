@@ -46,6 +46,19 @@ function wireHero(): void {
         frame.addEventListener('load', () => io.observe(frame));
         return;
     }
+    // The pinned stage is a full window tall but its content is shorter; pull the next section up into
+    // that empty space so the page does not show a blank band once the pin lets go.
+    const stage = act.querySelector<HTMLElement>('[data-sc-stage]'), content = act.querySelector<HTMLElement>('.split'), next = act.nextElementSibling as HTMLElement | null;
+    if (stage && content && next) {
+        const close = () => {
+            // The popup's caption can sit below the split's box when the popup is drawn smaller, so take the lowest of both.
+            const bottom = Math.max(...[content, ...content.querySelectorAll('.demo-note, .actions')].map(e => e.getBoundingClientRect().bottom));
+            const empty = stage.clientHeight - (bottom - stage.getBoundingClientRect().top);
+            next.style.marginTop = `${-Math.max(0, Math.round(empty) - 64)}px`;
+        };
+        new ResizeObserver(close).observe(stage);
+        addEventListener('load', close);
+    }
     let ready = false, last = -1;
     frame.addEventListener('load', () => { ready = true; last = -1; });
     const tick = () => {
