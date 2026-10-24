@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeterX features: history, plan comparison, reports and privacy</title>
+<meta name="description" content="Everything MeterX does: history and trends in the side panel, your ISP plan compared, scheduled tests, PDF, CSV and JSON reports, and privacy by design.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/features/">
+<meta property="og:title" content="MeterX features: history, plan comparison, reports and privacy">
+<meta property="og:description" content="Everything MeterX does: history and trends in the side panel, your ISP plan compared, scheduled tests, PDF, CSV and JSON reports, and privacy by design.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<!-- header -->
+<main id="main">
+  <div class="page-head" data-enter>
+    <h1>Everything MeterX does</h1>
+    <p class="lede">These are the real extension pages running on this site with sample data. Click around: nothing here touches your own results.</p>
+  </div>
+
+  <section class="section" id="history" aria-labelledby="historyTitle">
+    <div class="split flip">
+      <figure class="device-wrap"><iframe class="device panel" src="/app/sidepanel.html" title="The MeterX side panel with a week of sample results" loading="lazy"></iframe><figcaption class="demo-note">The side panel, with sample data.</figcaption></figure>
+      <div class="words" data-enter>
+        <h2 id="historyTitle">History, trend and your plan</h2>
+        <p class="lede">The side panel keeps up to 200 results, charts them, and compares the averages with the speeds you pay for.</p>
+        <ul class="facts clean">
+          <li><b>Ranges</b><span>The last 24 hours, 7 days, 30 days or everything.</span></li>
+          <li><b>Against your plan</b><span>What share of the advertised download and upload actually arrives.</span></li>
+          <li><b>Run a test from here</b><span>The panel switches to live figures while a test runs, then back to your history.</span></li>
+          <li><b>Export</b><span>Try it: the PDF, CSV and JSON buttons download real files made from the sample data.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="reports" aria-labelledby="reportsTitle">
+    <div class="split">
+      <div class="words" data-enter>
+        <h2 id="reportsTitle">Reports you can hand to your provider</h2>
+        <p class="lede">A PDF with averages, ranges, a trend chart and every result. Each page carries a report ID that changes if any figure is edited.</p>
+        <ul class="facts clean">
+          <li><b>CSV</b><span>One row per test, units in every column name, local time next to UTC. Opens straight in Excel.</span></li>
+          <li><b>JSON</b><span>The same fields plus a summary, with a versioned format for scripts.</span></li>
+        </ul>
+      </div>
+      <figure class="device-wrap report"><img src="/img/shot-report.png" alt="First page of a MeterX connection report with averages, latency under load, a plan comparison and a speed chart" width="993" height="1404" loading="lazy"><figcaption class="demo-note">Page one of a report, made from sample data.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="section" id="settings" aria-labelledby="settingsTitle">
+    <div class="head" data-enter>
+      <h2 id="settingsTitle">Settings, schedule and your own server</h2>
+      <p class="lede">Choose the test server, enter your plan, and run tests on a timer with a notice when quality drops to Poor.</p>
+    </div>
+    <iframe class="device options" src="/app/options.html" title="The MeterX settings page with sample settings" loading="lazy"></iframe>
+    <p class="demo-note">The settings page, with sample settings. Saving here changes nothing on your device.</p>
+  </section>
+
+  <section class="section" id="privacy" aria-labelledby="privacyTitle">
+    <div class="head" data-enter><h2 id="privacyTitle">Private by design</h2></div>
+    <ul class="facts clean two">
+      <li><b>No account</b><span>Install it and press the icon. There is nothing to sign up for.</span></li>
+      <li><b>Results stay in your browser</b><span>Up to 200 results in the extension's own storage, and nowhere else.</span></li>
+      <li><b>No logs on the server</b><span>The test server sends and receives test bytes and keeps nothing.</span></li>
+      <li><b>Open source</b><span>Every line is public under AGPL-3.0. <a class="textlink" href="https://github.com/ajithakdev/meterx">Read the code</a>.</span></li>
+    </ul>
+    <p style="margin-top:40px"><a class="cta" href="/get/" data-install>Get MeterX, free</a></p>
+  </section>
+</main>
+<!-- footer -->
+</body>
+</html>

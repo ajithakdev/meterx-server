@@ -18,18 +18,11 @@
 <link rel="stylesheet" href="/styles/site.css">
 </head>
 <body class="site">
-<a class="skip" href="#main">Skip to content</a>
-<header class="nav">
-  <a class="brand" href="/"><img src="/img/mark.svg" alt="" width="30" height="30">MeterX</a>
-  <a class="hide-sm" href="/#how">How it works</a>
-  <a class="hide-sm" href="/#questions">Questions</a>
-  <a href="/about/">About</a>
-  <a class="cta small-cta" href="/#install" data-install="short">Get MeterX</a>
-</header>
+<!-- header -->
 
 <main id="main" class="doc">
   <div id="result" hidden>
-    <div class="head"><h1>A speed test result</h1><p class="lede" id="when"></p><p class="small" id="where"></p></div>
+    <div class="page-head"><h1>A speed test result</h1><p class="lede" id="when"></p><p class="small" id="where"></p></div>
     <div class="body">
       <div class="card frame" data-ui style="aspect-ratio:auto;max-width:560px">
         <div class="row"><span class="label">Download</span><span id="quality" class="pill">Quality</span></div>
@@ -48,23 +41,11 @@
     </div>
   </div>
   <div id="empty">
-    <div class="head"><h1>No result in this link</h1><p class="lede">This page shows results shared from MeterX. The link you opened has no result in it, or it was cut short.</p></div>
+    <div class="page-head"><h1>No result in this link</h1><p class="lede">This page shows results shared from MeterX. The link you opened has no result in it, or it was cut short.</p></div>
     <div class="body"><p><a class="cta" href="/">See what MeterX does</a></p></div>
   </div>
 </main>
-<footer class="footer" style="margin-top:var(--gap-section)">
-  <div class="top">
-    <p>MeterX by Ajith Kumar K, an open-source internet speed test for the browser.</p>
-    <a class="textlink" href="#main">Back to top</a>
-  </div>
-  <a class="big" href="https://github.com/ajithakdev/meterx">github.com/<wbr>ajithakdev/<wbr><span class="nowrap">meterx</span></a>
-  <div class="meta">
-    <nav><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="https://github.com/ajithakdev/meterx/blob/main/CHANGELOG.md">Changelog</a><a href="https://ajithakdev.com">ajithakdev.com</a></nav>
-    <span>AGPL-3.0</span>
-    <span>© <span id="year">2026</span> Ajith Kumar K</span>
-  </div>
-</footer>
-<script type="module" src="/js/common.js"></script>
+<!-- footer -->
 <script type="module" src="/js/share.js"></script>
 </body>
 </html>

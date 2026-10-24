@@ -1,0 +1,98 @@
+/**
+ * Runs the real extension pages (popup, side panel, settings) on the website in demo mode.
+ * Loaded before the page script; stands in for the extension APIs with sample data in memory.
+ * The parent page can drive the sample test with postMessage({ mxDemo: 'drive', p }).
+ * @license AGPL-3.0
+ */
+
+import type { BroadcastMessage, HistoryEntry } from '@meterx/shared';
+import { SAMPLE_PLAN, sampleFrame, sampleHistory, sampleResult } from './sample';
+
+type Area = 'local' | 'sync';
+type Changes = Record<string, { oldValue?: unknown; newValue?: unknown }>;
+const data: Record<Area, Record<string, unknown>> = { local: { history: sampleHistory() }, sync: { ispPlan: SAMPLE_PLAN } };
+const changeListeners: Array<(c: Changes, area: Area) => void> = [];
+const messageListeners: Array<(m: BroadcastMessage) => void> = [];
+
+function area(name: Area) {
+    const store = data[name];
+    return {
+        async get(keys?: string | string[] | Record<string, unknown> | null) {
+            if (keys == null) return { ...store };
+            if (typeof keys === 'string') return keys in store ? { [keys]: store[keys] } : {};
+            if (Array.isArray(keys)) return Object.fromEntries(keys.filter(k => k in store).map(k => [k, store[k]]));
+            return Object.fromEntries(Object.entries(keys).map(([k, d]) => [k, k in store ? store[k] : d]));
+        },
+        async set(items: Record<string, unknown>) {
+            const changes: Changes = {};
+            for (const [k, v] of Object.entries(items)) { changes[k] = { oldValue: store[k], newValue: v }; store[k] = v; }
+            changeListeners.forEach(f => f(changes, name));
+        },
+        async remove(keys: string | string[]) {
+            const changes: Changes = {};
+            for (const k of ([] as string[]).concat(keys)) { changes[k] = { oldValue: store[k] }; delete store[k]; }
+            changeListeners.forEach(f => f(changes, name));
+        },
+    };
+}
+
+const broadcast = (m: BroadcastMessage) => messageListeners.forEach(f => f(m));
+
+// --- The sample test, played on a timer (Run test) or driven by the parent page's scroll.
+let running = false;
+let progress = {};
+let timer: number | undefined;
+
+function show(p: number, save: boolean): void {
+    const f = sampleFrame(p);
+    if (f === null) {
+        if (running) { running = false; broadcast({ action: 'testError', error: 'Test cancelled', cancelled: true }); }
+    } else if (f === 'done') {
+        if (running) {
+            running = false;
+            const entry = sampleResult();
+            if (save) void area('local').set({ history: [entry, ...(data.local.history as HistoryEntry[])].slice(0, 200) });
+            broadcast({ action: 'testComplete', data: entry });
+        }
+    } else {
+        running = true;
+        progress = f;
+        broadcast({ action: 'testProgress', data: f });
+    }
+}
+
+function play(): void {
+    clearInterval(timer);
+    const t0 = performance.now(), length = 7000; // the real test takes about 20 s; the demo plays it faster
+    timer = window.setInterval(() => {
+        const p = (performance.now() - t0) / length;
+        show(Math.min(p, 1), true);
+        if (p >= 1) clearInterval(timer);
+    }, 120);
+}
+
+const chromeDemo = {
+    storage: { local: area('local'), sync: area('sync'), onChanged: { addListener: (f: (c: Changes, a: Area) => void) => changeListeners.push(f) } },
+    runtime: {
+        async sendMessage(m: { action?: string }) {
+            if (m?.action === 'getState') return running ? { running, progress } : null;
+            if (m?.action === 'startTest') { play(); return { ok: true }; }
+            if (m?.action === 'cancelTest') { clearInterval(timer); show(0, false); return { ok: true }; }
+            return { ok: true };
+        },
+        onMessage: { addListener: (f: (m: BroadcastMessage) => void) => messageListeners.push(f) },
+        getURL: (p: string) => p,
+        openOptionsPage: () => parent.postMessage({ mxDemo: 'openOptions' }, location.origin),
+    },
+    permissions: { contains: async () => true, request: async () => true },
+    sidePanel: { open: async () => parent.postMessage({ mxDemo: 'openSidePanel' }, location.origin) },
+    windows: { getCurrent: async () => ({ id: 1 }) },
+    tabs: { create: (o: { url?: string }) => { if (o?.url) window.open(o.url, '_blank', 'noopener'); } },
+};
+(window as unknown as { chrome: unknown }).chrome = chromeDemo;
+
+window.addEventListener('message', e => {
+    if (e.origin !== location.origin || e.data?.mxDemo !== 'drive' || typeof e.data.p !== 'number') return;
+    clearInterval(timer);
+    show(e.data.p, false);
+});

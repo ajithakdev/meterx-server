@@ -28,7 +28,20 @@ function entrances(): void {
     document.querySelectorAll('[data-enter]').forEach(s => io.observe(s));
 }
 
+/** Marks the current page in the header and gives the header an edge once the page scrolls under it. */
+function chrome(): void {
+    const path = location.pathname;
+    document.querySelectorAll<HTMLAnchorElement>('.links a').forEach(a => {
+        if (path.startsWith(a.getAttribute('href')!)) a.setAttribute('aria-current', 'page');
+    });
+    const bar = document.querySelector('.site-bar');
+    const onScroll = () => bar?.classList.toggle('is-scrolled', scrollY > 8);
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+}
+
 wireInstall();
 entrances();
+chrome();
 const year = document.getElementById('year');
 if (year) year.textContent = String(new Date().getFullYear());

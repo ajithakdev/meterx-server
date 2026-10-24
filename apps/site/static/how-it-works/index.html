@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How MeterX measures your connection</title>
+<meta name="description" content="How MeterX measures download, upload, ping, jitter and bufferbloat: the four phases, parallel streams, latency under load and where it tests.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/how-it-works/">
+<meta property="og:title" content="How MeterX measures your connection">
+<meta property="og:description" content="How MeterX measures download, upload, ping, jitter and bufferbloat: the four phases, parallel streams, latency under load and where it tests.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<!-- header -->
+<main id="main">
+  <div class="page-head" data-enter>
+    <h1>How MeterX measures</h1>
+    <p class="lede">A full test takes about twenty seconds and runs in four phases. Each one answers a different question about your line.</p>
+  </div>
+
+  <section class="section" aria-labelledby="phasesTitle">
+    <div class="head"><h2 id="phasesTitle">Where the twenty seconds go</h2><p class="small">Segments are sized by how long each phase takes.</p></div>
+    <div class="phase-bar" aria-hidden="true">
+      <div style="flex:0.9 1 0"></div>
+      <div style="flex:2 1 0"><span>2 s</span></div>
+      <div class="dl" style="flex:8.6 1 0"><span>Download, about 9 s</span></div>
+      <div class="ul" style="flex:8.6 1 0"><span>Upload, about 9 s</span></div>
+    </div>
+    <ul class="steps clean">
+      <li><h3>Connect</h3><p>MeterX opens a connection to the nearest Cloudflare location, or to your own server. Under a second.</p></li>
+      <li><h3>Ping and jitter</h3><p>A run of small requests measures the delay and how much it wobbles from one request to the next. Requests that never return count as loss.</p></li>
+      <li><h3>Download</h3><p>Four parallel streams fill your line for a fixed time. The slow start and the last moments are trimmed, so the figure is the steady speed.</p></li>
+      <li><h3>Upload</h3><p>Three streams do the same upward while pings keep running, to catch the delay that builds under load.</p></li>
+    </ul>
+  </section>
+
+  <section class="section split-text" aria-labelledby="loadTitle">
+    <div class="head"><h2 id="loadTitle">Latency under load</h2><p class="lede">A line can look fast and still stutter on a call while something downloads. That is bufferbloat: routers queue too much data, so every request waits in line.</p></div>
+    <p>MeterX keeps pinging during the download and upload and grades the worst rise above the ping at rest.</p>
+    <table class="grades">
+      <caption class="small">How the load grade is set</caption>
+      <thead><tr><th scope="col">Grade</th><th scope="col">Rise in ping under load</th><th scope="col">What you notice</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill s-good">A</span></td><td>5 ms or less</td><td>Nothing, even on calls during big downloads</td></tr>
+        <tr><td><span class="pill s-good">B</span></td><td>30 ms or less</td><td>Almost nothing</td></tr>
+        <tr><td><span class="pill s-okay">C</span></td><td>60 ms or less</td><td>Small hiccups in games and calls when the line is busy</td></tr>
+        <tr><td><span class="pill s-poor">D</span></td><td>200 ms or less</td><td>Calls stutter while someone downloads</td></tr>
+        <tr><td><span class="pill s-poor">F</span></td><td>More than 200 ms</td><td>Everything lags when the line is busy</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section" aria-labelledby="whereTitle">
+    <div class="head"><h2 id="whereTitle">Where it tests</h2></div>
+    <ul class="facts clean two">
+      <li><b>The nearest Cloudflare location</b><span>By default, a small Cloudflare Worker answers from the location closest to you. It sends and receives test bytes and keeps nothing.</span></li>
+      <li><b>Or your own server</b><span>Run the self-hosted server from the repository on your machine or network, and point MeterX at it in settings.</span></li>
+      <li><b>Why results differ from other tests</b><span>Each test uses its own servers, number of streams and length. MeterX uses several streams for a fixed time, which is close to how your browser loads pages and files.</span></li>
+      <li><b>What a quality label means</b><span>Excellent needs 50 Mbps down, 20 up and under 30 ms ping. Good needs 20, 10 and under 60 ms. Fair needs 5, 2 and under 150 ms.</span></li>
+    </ul>
+    <p style="margin-top:40px"><a class="cta" href="/get/" data-install>Get MeterX, free</a></p>
+  </section>
+</main>
+<!-- footer -->
+</body>
+</html>

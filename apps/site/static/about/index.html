@@ -18,44 +18,19 @@
 <link rel="stylesheet" href="/styles/site.css">
 </head>
 <body class="site">
-<a class="skip" href="#main">Skip to content</a>
-<header class="nav">
-  <a class="brand" href="/"><img src="/img/mark.svg" alt="" width="30" height="30">MeterX</a>
-  <a class="hide-sm" href="/#how">How it works</a>
-  <a class="hide-sm" href="/#questions">Questions</a>
-  <a href="/about/">About</a>
-  <a class="cta small-cta" href="/#install" data-install="short">Get MeterX</a>
-</header>
+<!-- header -->
 
 <main id="main" class="doc">
-  <div class="head"><h1>How MeterX measures</h1><p class="lede">One person built MeterX to answer a plain question honestly: is the connection I pay for the connection I get?</p></div>
+  <div class="page-head"><h1>About MeterX</h1><p class="lede">One person built MeterX to answer a plain question honestly: is the connection I pay for the connection I get?</p></div>
   <div class="body">
-    <h2>The test</h2>
-    <p>A full test takes about twenty seconds. It first measures ping and jitter with a run of small requests. It then downloads with four parallel streams for a fixed time and uploads with three, so one slow stream cannot hide a fast line. The first moments of each phase, while the connection speeds up, and the last moments are left out, so the figure is the steady rate.</p>
-    <h2>Latency under load</h2>
-    <p>While the line is full, MeterX keeps pinging. The difference between the ping at rest and the ping under load is bufferbloat, the reason a call stutters when someone else starts a download. It is graded from A, almost no rise, to F, a rise of several hundred milliseconds.</p>
-    <h2>Where it tests</h2>
-    <p>By default MeterX tests against a small Cloudflare Worker, so every test goes to the nearest of Cloudflare's locations. The worker sends and receives test bytes and keeps nothing. You can also run the self-hosted server from the repository on your own machine or network and point the extension at it.</p>
-    <h2>What it keeps</h2>
-    <p>Up to 200 results, in your browser's own storage. Nothing is sent anywhere else, and there is no account. You can export them as a PDF report, CSV or JSON at any time.</p>
+    <h2>How it measures</h2>
+    <p>A twenty second test in four phases, with latency measured under load. The details are on <a class="textlink" href="/how-it-works/">How it works</a>.</p>
     <h2>Open source</h2>
     <p>The extension, the worker and the self-hosted server are open source under AGPL-3.0 at <a class="textlink" href="https://github.com/ajithakdev/meterx">github.com/ajithakdev/meterx</a>. Bug reports and ideas go in the issues there.</p>
     <h2>Who made it</h2>
     <p>Ajith Kumar K, a backend engineer. More of his work is at <a class="textlink" href="https://ajithakdev.com">ajithakdev.com</a>.</p>
   </div>
 </main>
-<footer class="footer" style="margin-top:var(--gap-section)">
-  <div class="top">
-    <p>MeterX by Ajith Kumar K, an open-source internet speed test for the browser.</p>
-    <a class="textlink" href="#main">Back to top</a>
-  </div>
-  <a class="big" href="https://github.com/ajithakdev/meterx">github.com/<wbr>ajithakdev/<wbr><span class="nowrap">meterx</span></a>
-  <div class="meta">
-    <nav><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="https://github.com/ajithakdev/meterx/blob/main/CHANGELOG.md">Changelog</a><a href="https://ajithakdev.com">ajithakdev.com</a></nav>
-    <span>AGPL-3.0</span>
-    <span>© <span id="year">2026</span> Ajith Kumar K</span>
-  </div>
-</footer>
-<script type="module" src="/js/common.js"></script>
+<!-- footer -->
 </body>
 </html>
