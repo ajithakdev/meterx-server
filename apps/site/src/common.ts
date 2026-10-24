@@ -35,6 +35,11 @@ function chrome(): void {
         if (path.startsWith(a.getAttribute('href')!)) a.setAttribute('aria-current', 'page');
     });
     const bar = document.querySelector('.site-bar');
+    const menu = bar?.querySelector<HTMLButtonElement>('.menu-btn');
+    const setOpen = (open: boolean) => { bar?.classList.toggle('is-open', open); menu?.setAttribute('aria-expanded', String(open)); };
+    menu?.addEventListener('click', () => setOpen(!bar!.classList.contains('is-open')));
+    bar?.querySelectorAll('.links a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+    addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
     const onScroll = () => bar?.classList.toggle('is-scrolled', scrollY > 8);
     addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -42,6 +47,14 @@ function chrome(): void {
 
 /** Frames marked data-fit take the height their page reports, so the frame never scrolls on its own. */
 function fitFrames(): void {
+    // On phones the side panel frames switch to flow mode and take their full height too.
+    if (matchMedia('(max-width: 900px)').matches) {
+        document.querySelectorAll<HTMLIFrameElement>('iframe.device.panel').forEach(f => {
+            f.dataset.fit = '';
+            f.setAttribute('scrolling', 'no');
+            f.addEventListener('load', () => f.contentWindow?.postMessage({ mxDemo: 'flow' }, location.origin));
+        });
+    }
     addEventListener('message', e => {
         if (e.origin !== location.origin || e.data?.mxDemo !== 'height') return;
         document.querySelectorAll<HTMLIFrameElement>('iframe[data-fit]').forEach(f => {

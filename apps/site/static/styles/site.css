@@ -17,7 +17,7 @@
   --t-small: 14px;
   --bar-h: 68px;
 }
-@media (max-width: 760px) { :root { --bar-h: 108px; } }
+@media (max-width: 760px) { :root { --bar-h: 64px; } }
 @media (prefers-color-scheme: dark) { :root { --on-data: #0b0c0e; } }
 
 html { scroll-behavior: smooth; }
@@ -60,11 +60,16 @@ body.site { font: 400 var(--t-body)/1.6 var(--font); background: var(--ground); 
 .links a { padding: 8px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 15px; transition: color 120ms var(--ease), background-color 120ms var(--ease); }
 .links a:hover { color: var(--text); background: var(--raised); }
 .links a[aria-current="page"] { color: var(--text); background: var(--raised); }
+.menu-btn { display: none; }
+/* Phones: the bar keeps the brand, the action and a menu button; the links open as a panel under it. */
 @media (max-width: 760px) {
-  .site-bar .in { flex-wrap: wrap; height: auto; gap: 0 12px; padding-top: 10px; }
-  .brand { margin-right: auto; height: 44px; }
-  .links { order: 3; flex-basis: 100%; overflow-x: auto; margin: 0 calc(-1 * var(--m)); padding: 4px var(--m) 8px; scrollbar-width: none; }
-  .links a { white-space: nowrap; }
+  .site-bar .in { gap: 8px; height: 64px; }
+  .brand { margin-right: auto; }
+  .menu-btn { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: var(--round); border: 0; background: var(--raised); color: var(--text); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; order: 3; }
+  .site-bar .cta-sm { order: 2; padding: 0 14px; }
+  .links { display: none; position: absolute; left: 0; right: 0; top: 64px; flex-direction: column; gap: 2px; margin: 0; padding: 8px var(--m) 16px; background: var(--ground); border-bottom: 1px solid var(--border); }
+  .site-bar.is-open .links { display: flex; }
+  .links a { padding: 12px; font-size: 17px; }
 }
 
 /* Footer: one calm row. */
@@ -91,6 +96,7 @@ main { display: block; }
 .device.options { width: 100%; height: 620px; }
 /* The settings page pads its content by 20px; the caption lines up with that, not with the frame edge. */
 .device.options + .demo-note { padding-left: 20px; }
+.device-wrap { margin: 0; }
 .demo-note { margin-top: 12px; font-size: var(--t-small); color: var(--muted); }
 
 /* Split: words on one side, the product on the other. */

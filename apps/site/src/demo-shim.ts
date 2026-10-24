@@ -92,7 +92,10 @@ const chromeDemo = {
 (window as unknown as { chrome: unknown }).chrome = chromeDemo;
 
 window.addEventListener('message', e => {
-    if (e.origin !== location.origin || e.data?.mxDemo !== 'drive' || typeof e.data.p !== 'number') return;
+    if (e.origin !== location.origin) return;
+    if (e.data?.mxDemo === 'play') { play(); return; }
+    if (e.data?.mxDemo === 'flow') { document.documentElement.classList.add('mx-flow'); return; }
+    if (e.data?.mxDemo !== 'drive' || typeof e.data.p !== 'number') return;
     clearInterval(timer);
     show(e.data.p, false);
 });
@@ -110,7 +113,9 @@ window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
 // On the site, pages sit inside a frame: tighter padding, and the frame takes the page's height so only the site scrolls.
 document.addEventListener('DOMContentLoaded', () => {
     const style = document.createElement('style');
-    style.textContent = '.settings .wrap{max-width:none;padding:8px 20px 20px}.settings #closeBtn{visibility:hidden}';
+    style.textContent = '.settings .wrap{max-width:none;padding:8px 20px 20px}.settings #closeBtn{visibility:hidden}'
+        // Flow mode (phones): the side panel lays out at full height instead of fitting the frame, so the frame grows and nothing scrolls inside it.
+        + 'html.mx-flow .panel .wrap{height:auto!important;display:block!important}html.mx-flow .panel main{grid-template-rows:none!important}html.mx-flow .results-body{overflow:visible!important}html.mx-flow #rows tr:nth-child(n+7){display:none}';
     document.head.append(style);
     const report = () => parent.postMessage({ mxDemo: 'height', h: Math.ceil(document.documentElement.scrollHeight) }, location.origin);
     new ResizeObserver(report).observe(document.body);

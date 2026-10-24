@@ -36,6 +36,16 @@ function logState(p: number): void {
 function wireHero(): void {
     const act = $('hero'), frame = $<HTMLIFrameElement>('heroPopup');
     if (!act || !frame) return;
+    if (matchMedia('(max-width: 900px)').matches) {
+        // Phones do not pin the hero, so the popup plays the sample test by itself when it comes into view.
+        const io = new IntersectionObserver(([e]) => {
+            if (!e.isIntersecting) return;
+            frame.contentWindow?.postMessage({ mxDemo: 'play' }, location.origin);
+            io.disconnect();
+        }, { threshold: 0.5 });
+        frame.addEventListener('load', () => io.observe(frame));
+        return;
+    }
     let ready = false, last = -1;
     frame.addEventListener('load', () => { ready = true; last = -1; });
     const tick = () => {
