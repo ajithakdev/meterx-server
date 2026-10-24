@@ -49,26 +49,24 @@ async function quickTest(onSpeed: (mbps: number) => void): Promise<{ mbps: numbe
     } finally {
         clearTimeout(stop);
     }
+    // A fast line can finish inside the ramp window; then the whole transfer is the best estimate.
+    if (!mbps && bytes) mbps = (bytes * 8) / ((performance.now() - t0) * 1000);
     return { mbps, ping };
 }
 
 function wireQuickTest(): void {
-    const btn = $<HTMLButtonElement>('qtRun'), fig = $('qtFig'), ping = $('qtPing'), note = $('qtNote'), slot = $('heroSpeed');
-    if (!btn || !fig || !ping || !note) return;
-    const show = (el: HTMLElement, v: string) => { el.textContent = v; el.classList.remove('dash'); };
+    const btn = $<HTMLButtonElement>('qtRun'), note = $('qtNote');
+    if (!btn || !note) return;
     btn.addEventListener('click', async () => {
         btn.disabled = true;
         btn.textContent = 'Testing…';
-        note.textContent = 'Measuring ping, then download.';
+        note.textContent = 'Measuring ping, then download…';
         try {
-            const r = await quickTest(m => show(fig, fmtSpeed(m)));
-            show(fig, fmtSpeed(r.mbps));
-            show(ping, r.ping.toFixed(0));
-            note.textContent = 'A quick check from this page. The extension runs a full test with upload, jitter and load.';
-            if (slot) slot.textContent = `${fmtSpeed(r.mbps)} Mbps`;
+            const r = await quickTest(m => { note.innerHTML = `Download <b>${fmtSpeed(m)} Mbps</b> so far…`; });
+            note.innerHTML = `Download <b>${fmtSpeed(r.mbps)} Mbps</b>, ping ${r.ping.toFixed(0)} ms from this page.`;
             setExplorer(Math.round(r.mbps));
         } catch {
-            note.textContent = 'The test server could not be reached from this page. Install MeterX to test from your toolbar.';
+            note.textContent = 'The test server could not be reached from here. Install MeterX to test from your toolbar.';
         } finally {
             btn.disabled = false;
             btn.textContent = 'Run it again';

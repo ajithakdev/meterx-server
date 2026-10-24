@@ -30,6 +30,7 @@ body.site { font: 400 var(--t-body)/1.55 var(--font); background: var(--ground);
 .site h1, .site h2 { font-weight: 600; letter-spacing: -0.035em; line-height: 0.98; margin: 0; }
 .site h2 { font-size: var(--t-title); max-width: 18ch; }
 .small { font-size: var(--t-small); color: var(--muted); }
+.nowrap { white-space: nowrap; }
 
 /* Buttons: one shape, fully round, one fill. */
 .cta {
@@ -51,35 +52,35 @@ body.site { font: 400 var(--t-body)/1.55 var(--font); background: var(--ground);
 .nav a:not(.brand):not(.cta):hover { text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 720px) { .nav { gap: 16px; height: 64px; } .nav .hide-sm { display: none; } }
 
-/* Hero: the sentence split by a live frame. */
-.hero { min-height: calc(100svh - 76px); display: grid; grid-template-columns: 1fr minmax(360px, 440px) 1fr; grid-template-rows: 1fr auto 1fr; column-gap: 32px; }
-.hero h1 { grid-column: 1 / -1; grid-row: 2; align-self: center; display: flex; justify-content: space-between; align-items: center; gap: 504px; font-size: clamp(40px, 3.6vw, 56px); }
-.hero .half { max-width: 7.5em; }
-.hero .half.b { text-align: right; }
-.hero .frame { grid-column: 2; grid-row: 2; position: relative; z-index: 1; }
-.hero .foot { grid-column: 1 / -1; grid-row: 3; align-self: end; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 32px; }
-.hero .foot p { font-size: var(--t-body); line-height: 1.5; max-width: 46ch; margin: 0; }
-.hero .slot { color: var(--data); white-space: nowrap; }
-@media (max-width: 1000px) {
-  .hero { grid-template-columns: 1fr; grid-template-rows: auto; row-gap: 28px; min-height: 0; padding-top: 24px; }
-  .hero h1 { grid-column: 1; grid-row: 1; display: block; font-size: clamp(36px, 9vw, 60px); }
-  .hero .half { display: block; max-width: none; }
-  .hero .frame { grid-column: 1; grid-row: 2; }
-  .hero .foot { grid-column: 1; grid-row: 3; }
-  .hero .foot { padding-bottom: 0; }
-  .hero .foot .cta { width: 100%; }
+/* Hero: what it is and the two actions on the left, the real popup on the right. */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 64px; align-items: center; padding-top: 56px !important; padding-bottom: 24px !important; }
+.hero h1 { font-size: clamp(32px, 5vw, 64px); max-width: none; }
+.hero .lede { font-size: 20px; line-height: 1.5; margin: 28px 0 0; max-width: 44ch; }
+.hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.ghost {
+  height: 52px; padding: 0 24px; border-radius: var(--round); border: 0; background: var(--raised); color: var(--text);
+  font: inherit; font-size: 17px; font-weight: 500; cursor: pointer; transition: transform 120ms var(--ease), background-color 160ms var(--ease);
+}
+.ghost:hover { background: var(--control); }
+.ghost:active { transform: scale(.97); }
+.ghost:disabled { cursor: progress; opacity: .7; }
+/* One reserved line, so a result never moves anything. */
+.hero .qt { margin: 16px 0 0; min-height: 3.2em; line-height: 1.6; font-size: var(--t-small); color: var(--muted); }
+.hero .qt b { color: var(--data); font-weight: 600; font-size: 18px; }
+.hero-shot img { display: block; width: 360px; height: auto; border-radius: 16px; }
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 24px !important; }
+  .hero-shot img { width: min(360px, 100%); margin: 0 auto; }
+  .hero .actions > * { flex: 1 1 100%; }
 }
 
-/* Interface fragments: real app components at real size. */
+/* Result card (share viewer): real app components at real size. */
 [data-ui] { font-size: 14px; line-height: 20px; }
-.frame.card { padding: 24px 28px; display: grid; grid-template-rows: auto 1fr auto auto; gap: 12px; aspect-ratio: 16 / 9; }
-.frame .big { align-self: center; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.frame.card { padding: 24px 28px; display: grid; gap: 14px; }
 .frame .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .frame .label { color: var(--muted); font-size: 14px; }
 .frame .fig { font-size: 72px; line-height: 1; font-weight: 500; letter-spacing: -0.02em; color: var(--data); font-variant-numeric: tabular-nums; }
-.frame .note { color: var(--muted); font-size: 14px; line-height: 20px; min-height: 40px; margin: 0; }
 .frame .fig.dash { color: transparent; }
-@media (max-width: 1000px) { .frame.card { aspect-ratio: auto; } }
 
 /* What your speed can do: the heading is an input. */
 .explorer h2 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .25em; max-width: none; font-size: clamp(44px, 6vw, 88px); }
@@ -102,15 +103,14 @@ body.site { font: 400 var(--t-body)/1.55 var(--font); background: var(--ground);
 @media (max-width: 900px) { .explorer .answer { grid-template-columns: 1fr; gap: 24px; } }
 
 /* Features: rows hanging from one axis, each with its interface fragment at the right. */
-.features .axis { display: grid; grid-template-columns: 4fr 8fr; column-gap: 32px; }
-.features h2 { grid-column: 2; margin-bottom: 96px; }
-.feature { grid-column: 2; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: start; }
+.features .axis { display: grid; grid-template-columns: 1fr; }
+.features h2 { margin-bottom: 80px; }
+.feature { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 64px; align-items: center; }
 .feature + .feature { margin-top: 112px; }
 .feature h3 { font-size: var(--t-statement); line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 12px; }
-.feature p { margin: 0; max-width: 40ch; }
-.feature .shot { width: 340px; }
-.feature .shot.wide { width: 400px; }
-.feature .shot.narrow { width: 280px; }
+.feature p { margin: 0; max-width: 44ch; }
+.feature .shot { width: 100%; max-width: 520px; justify-self: end; }
+.feature .shot.narrow { max-width: 440px; }
 .feature .shot img { display: block; width: 100%; height: auto; border-radius: var(--radius-card); }
 @media (max-width: 1000px) {
   .features .axis { grid-template-columns: 1fr; }
@@ -120,26 +120,16 @@ body.site { font: 400 var(--t-body)/1.55 var(--font); background: var(--ground);
   .feature:nth-child(odd) .shot { justify-self: end; }
 }
 
-/* How it works: the progress bar, enlarged and stood upright in a pinned column; the step on screen lights its segment. */
-.how .wrap { display: grid; grid-template-columns: 5fr 7fr; column-gap: 64px; }
-.how .sticky { position: sticky; top: 40px; align-self: start; }
-.how h2 { margin-bottom: 40px; font-size: clamp(34px, 3.6vw, 52px); }
-.phase-bar { display: flex; flex-direction: column; gap: 6px; height: min(56vh, 520px); }
-.phase-bar > div { border-radius: 6px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; background: var(--raised); color: var(--text); transition: background-color 240ms var(--ease), color 240ms var(--ease); min-height: 44px; }
-.phase-bar > div.on { background: var(--data); color: var(--on-data); }
-.phase-bar .dur { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
-.phase-bar .what { font-size: var(--t-small); }
-.how .steps { padding: 20vh 0 10vh; }
-.how .step { min-height: 46vh; display: flex; align-items: center; opacity: .35; transition: opacity 240ms var(--ease); }
-.how .step.on { opacity: 1; }
-.how .step p { font-size: var(--t-statement); line-height: 1.35; letter-spacing: -0.01em; max-width: 30ch; margin: 0; }
-@media (max-width: 900px) {
-  .how .wrap { grid-template-columns: 1fr; }
-  .how .sticky { position: static; }
-  .phase-bar { height: 70vh; }
-  .how .steps { padding: 32px 0 0; }
-  .how .step { min-height: 0; opacity: 1; padding: 16px 0; }
-}
+/* How it works: the progress bar enlarged, segments sized by real phase length, four steps under it. */
+.how h2 { margin-bottom: 48px; max-width: none; }
+.phase-bar { display: flex; gap: 6px; height: 72px; }
+.phase-bar > div { border-radius: 6px; background: var(--raised); display: flex; align-items: center; padding: 0 16px; min-width: 10px; overflow: hidden; white-space: nowrap; font-size: var(--t-small); }
+.phase-bar > .dl { background: var(--data); color: var(--on-data); }
+.how .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 40px; }
+.how h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 8px; }
+.how .steps p { margin: 0; font-size: 17px; }
+@media (max-width: 900px) { .how .steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .how .steps { grid-template-columns: 1fr; } .phase-bar > div { padding: 0 8px; } .phase-bar span { display: none; } }
 
 /* Where it runs: the browser names as one sentence, one lit at a time. */
 .where .wrap { display: grid; grid-template-columns: 8fr 4fr; column-gap: 64px; align-items: end; }

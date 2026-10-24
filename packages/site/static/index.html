@@ -32,20 +32,19 @@
 
 <main id="main">
   <section class="hero">
-    <h1><span class="half a">Your connection,</span> <span class="half b">honestly measured.</span></h1>
-    <div class="frame card" data-ui aria-label="Quick speed test">
-      <div class="row"><span class="label">Download</span><span class="pill">Quick test</span></div>
-      <div class="big">
-        <span><span class="fig dash" id="qtFig">-</span><span class="unit">Mbps</span></span>
-        <span class="label">Ping <b id="qtPing" class="dash">-</b><span class="unit">ms</span></span>
+    <div class="copy">
+      <h1>Your internet,<br> honestly measured.</h1>
+      <p class="lede">MeterX is a free, open-source browser extension that tests download, upload, ping, jitter and bufferbloat from your toolbar. No account, nothing tracked.</p>
+      <div class="actions">
+        <a class="cta" href="#install" data-install>Get MeterX, free</a>
+        <button class="ghost" id="qtRun" type="button">Run a quick test here</button>
       </div>
-      <button id="qtRun" class="btn btn-primary" type="button">Run a quick test</button>
-      <p class="note" id="qtNote">About 5 seconds from this page, up to 25 MB of data.</p>
+      <p class="qt" id="qtNote" aria-live="polite">The quick test takes about 5 seconds and uses up to 25 MB.</p>
     </div>
-    <div class="foot">
-      <p>MeterX is a free, open-source browser extension that measures download, upload, ping, jitter and bufferbloat from your toolbar. No account, nothing tracked. <span class="slot" id="heroSpeed"></span></p>
-      <a class="cta" href="#install" data-install>Get MeterX, free</a>
-    </div>
+    <picture class="hero-shot">
+      <source srcset="/img/shot-popup-dark.png" media="(prefers-color-scheme: dark)">
+      <img src="/img/shot-popup-light.png" alt="The MeterX popup showing a 280 Mbps download, upload, ping, jitter, latency under load and what the connection is good enough for" width="720" height="1186">
+    </picture>
   </section>
 
   <section class="explorer" data-enter>
@@ -89,23 +88,19 @@
     </div>
   </section>
 
-  <section class="how" id="how">
-    <div class="wrap">
-      <div class="sticky">
-        <h2>Twenty seconds, start to finish</h2>
-        <div class="phase-bar" data-ui aria-label="The four phases of a test, sized by how long each takes">
-          <div data-seg="connect" style="flex:0.9 1 0"><span class="dur">Under a second</span><span class="what">Connect</span></div>
-          <div data-seg="latency" style="flex:2 1 0"><span class="dur">2 seconds</span><span class="what">Ping and jitter</span></div>
-          <div data-seg="download" style="flex:8.6 1 0"><span class="dur">About 9 seconds</span><span class="what">Download</span></div>
-          <div data-seg="upload" style="flex:8.6 1 0"><span class="dur">About 9 seconds</span><span class="what">Upload</span></div>
-        </div>
-      </div>
-      <div class="steps">
-        <div class="step" data-step="connect"><p>First, MeterX opens a connection to the nearest Cloudflare location, or to your own server.</p></div>
-        <div class="step" data-step="latency"><p>Then a run of small pings measures the delay and how much it wobbles from one ping to the next.</p></div>
-        <div class="step" data-step="download"><p>Four parallel streams fill your line for a fixed time. The slow start and the tail are trimmed, so the figure is the steady speed.</p></div>
-        <div class="step" data-step="upload"><p>Three streams do the same upward, while pings keep running to catch the delay that builds under load.</p></div>
-      </div>
+  <section class="how" id="how" data-enter>
+    <h2>Twenty seconds, start to finish</h2>
+    <div class="phase-bar" data-ui aria-label="The phases of a test, sized by how long each takes">
+      <div style="flex:0.9 1 0" title="Connect, under a second"></div>
+      <div style="flex:2 1 0"><span>2 s</span></div>
+      <div class="dl" style="flex:8.6 1 0"><span>Download, about 9 s</span></div>
+      <div style="flex:8.6 1 0"><span>Upload, about 9 s</span></div>
+    </div>
+    <div class="steps">
+      <div><h3>Connect</h3><p>MeterX opens a connection to the nearest Cloudflare location, or to your own server. Under a second.</p></div>
+      <div><h3>Ping and jitter</h3><p>A run of small pings measures the delay and how much it wobbles from one ping to the next.</p></div>
+      <div><h3>Download</h3><p>Four parallel streams fill your line for a fixed time. The slow start and the tail are trimmed, so the figure is the steady speed.</p></div>
+      <div><h3>Upload</h3><p>Three streams do the same upward, while pings keep running to catch the delay that builds under load.</p></div>
     </div>
   </section>
 
@@ -147,7 +142,7 @@
     <p>MeterX by Ajith Kumar K, an open-source internet speed test for the browser.</p>
     <a class="textlink" href="#main">Back to top</a>
   </div>
-  <a class="big" href="https://github.com/ajithakdev/meterx-server">github.com/<wbr>ajithakdev/<wbr>meterx-server</a>
+  <a class="big" href="https://github.com/ajithakdev/meterx-server">github.com/<wbr>ajithakdev/<wbr><span class="nowrap">meterx-server</span></a>
   <div class="meta">
     <nav><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="https://github.com/ajithakdev/meterx-server/blob/main/CHANGELOG.md">Changelog</a><a href="https://ajithakdev.com">ajithakdev.com</a></nav>
     <span>AGPL-3.0</span>

@@ -16,7 +16,7 @@ Done on the branch:
 - Site `packages/site` (plan in `docs/SITE-PLAN.md`): home with live quick test, "What can X Mbps do", features with real screenshots, pinned test phases, install, FAQ; plus `/about`, `/privacy` (rewritten for #92), `/r/` share viewer (#74), `/get`, 404. Taste-skill inspector: 0 FAIL at 1440, 768, 390 (warnings: font-size count, no video).
 - Worker CORS allows the site origin; quality rules moved to `@meterx/shared`.
 
-Owner feedback 2026-10-24: the home page UI is weak. Content is now in a centred 1120px column like Toolglass; the next session should redo the home page design (start with the hero: big empty space above and below the test card, the card itself feels sparse), checking screenshots each round.
+Home page redesigned 2026-10-24 after owner feedback: centred 1120px column, hero with headline, two actions and the real popup screenshot, quick test as a secondary button with its result on a reserved line (no layout shift, checked at 1440 and 390), full-width feature rows, one proportional phase bar with four steps. Waiting for the owner's review.
 
 Next, in order:
 1. Owner checks the site locally: `cd packages/site && node build.mjs && npx wrangler pages dev dist` (or any static server on `dist`).
