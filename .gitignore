@@ -34,3 +34,4 @@ graphify-out/
 .taste-skill/
 packages/site/dist/
 release/
+.dev/

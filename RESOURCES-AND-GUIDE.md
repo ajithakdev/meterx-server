@@ -61,7 +61,8 @@ Every link for MeterX, what it is for, and how to run, package and release it. P
 | Build everything | `npm run build` (the site build needs the extension build, which runs first) |
 | Test, lint, type check | `npm test`, `npm run lint`, `npx tsc --noEmit` in a package |
 | Load the extension | `chrome://extensions`, Developer mode, Load unpacked: `apps/extension/dist/` |
-| Preview the site | `npx wrangler pages dev apps/site/dist` |
+| Preview the site | `npm run dev:site` (builds, serves on http://localhost:8788) |
+| Test the extension | `npm run dev:ext` (builds, runs the worker on http://localhost:8787, opens Chromium with MeterX loaded in a test profile) |
 | Package for the stores | `npm run package`: `release/meterx-<version>-chromium.zip` (Chrome, Edge, Opera), `-firefox.zip`, `-source.zip` (upload with the Firefox build) |
 | Deploy the worker | `cd services/worker && npx wrangler deploy` |
 | Deploy the site | `npm run deploy -w @meterx/site` (Cloudflare Pages project `meterx-site`, custom domain `meterx.ajithakdev.com`) |

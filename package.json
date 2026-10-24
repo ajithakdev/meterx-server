@@ -16,7 +16,9 @@
     "start": "node services/server/dist/server.js",
     "dev": "npm run build --workspaces --if-present && node services/server/dist/server.js",
     "test": "npm run test --workspaces --if-present && vitest run scripts",
-    "package": "node scripts/package-stores.mjs"
+    "package": "node scripts/package-stores.mjs",
+    "dev:site": "node scripts/dev.mjs site",
+    "dev:ext": "node scripts/dev.mjs ext"
   },
   "keywords": ["speed-test", "browser-extension", "network-monitor"],
   "author": "ajithakdev (https://github.com/ajithakdev)",
