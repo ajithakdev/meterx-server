@@ -105,6 +105,16 @@ main { display: block; }
 .split { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 64px; align-items: center; }
 .split.flip { grid-template-columns: auto minmax(0, 1fr); }
 .split .words { display: grid; gap: 20px; align-content: start; }
+/* Desktop: the side panel keeps its real 420x760 layout but is drawn smaller, so its whole section fits one screen. */
+@media (min-width: 901px) {
+  .device-wrap:has(> .device.panel) { --s: .88; width: calc(420px * var(--s)); }
+  /* Negative margins shrink the frame's layout box to its drawn size, so the caption follows right under it. */
+  .device-wrap:has(> .device.panel) > .device.panel { transform: scale(var(--s)); transform-origin: top left; margin: 0 calc(420px * (var(--s) - 1)) calc(760px * (var(--s) - 1)) 0; }
+  .device-wrap:has(> .device.panel) > .demo-note { margin-top: 12px; width: max-content; max-width: 420px; }
+}
+@media (min-width: 901px) and (max-height: 900px) { .device-wrap:has(> .device.panel) { --s: .8; } }
+@media (min-width: 901px) and (max-height: 760px) { .device-wrap:has(> .device.panel) { --s: .7; } }
+
 /* Desktop: like the Reports row, the text sits centred beside the product frame. */
 @media (min-width: 901px) {
   .split.flip { align-items: center; }

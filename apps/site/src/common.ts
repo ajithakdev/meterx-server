@@ -47,6 +47,7 @@ function chrome(): void {
 
 /** Frames marked data-fit take the height their page reports, so the frame never scrolls on its own. */
 function fitFrames(): void {
+    document.querySelectorAll<HTMLIFrameElement>('iframe.device').forEach(f => f.setAttribute('scrolling', 'no'));
     // On phones the side panel frames switch to flow mode and take their full height too.
     if (matchMedia('(max-width: 900px)').matches) {
         document.querySelectorAll<HTMLIFrameElement>('iframe.device.panel').forEach(f => {

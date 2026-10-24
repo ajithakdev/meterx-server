@@ -36,8 +36,8 @@ function logState(p: number): void {
 function wireHero(): void {
     const act = $('hero'), frame = $<HTMLIFrameElement>('heroPopup');
     if (!act || !frame) return;
-    if (matchMedia('(max-width: 900px)').matches) {
-        // Phones do not pin the hero, so the popup plays the sample test by itself when it comes into view.
+    if (matchMedia('(max-width: 900px), (min-height: 1100px)').matches) {
+        // Phones and very tall windows do not pin the hero (see home.css), so the popup plays the sample test by itself when it comes into view.
         const io = new IntersectionObserver(([e]) => {
             if (!e.isIntersecting) return;
             frame.contentWindow?.postMessage({ mxDemo: 'play' }, location.origin);

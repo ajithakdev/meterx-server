@@ -26,10 +26,15 @@
 .phase-log li[data-state="active"] b { color: var(--data); }
 .phase-log li[data-state="done"] { color: var(--text); }
 
-/* Phones: no pinning. The hero is a normal block, and the popup plays its sample test once it comes into view. */
-@media (max-width: 900px) {
+/* Phones, and windows so tall (zoomed out) that a pinned stage would be mostly empty: the hero is not pinned,
+   and the popup plays its sample test by itself once it comes into view. */
+@media (max-width: 900px), (min-height: 1100px) {
   .hero[data-sc-act] { height: auto !important; }
-  .hero .hero-stage { position: static !important; height: auto !important; min-height: 0 !important; padding: 32px var(--m) 0; }
+  .hero .hero-stage { position: static !important; height: auto !important; min-height: 0 !important; padding: 48px var(--m) 0; }
+}
+/* Phones only: the hero stacks. */
+@media (max-width: 900px) {
+  .hero .hero-stage { padding-top: 32px; }
   .hero h1 { font-size: clamp(34px, 10vw, 48px); }
   .hero .phase-log { display: none; }
   .hero .split { gap: 32px; }
@@ -38,6 +43,7 @@
   .hero .device-wrap { width: 324px; height: 535px; margin: 0 auto; }
   .hero .device.popup { width: 360px; max-width: none; margin: 0; transform: scale(.9); transform-origin: top left; }
   .hero .demo-note { display: none; }
+}
 }
 
 /* The pinned stage already fills the window, so the next section starts without the usual gap. */
