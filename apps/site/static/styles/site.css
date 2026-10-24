@@ -107,9 +107,9 @@ main { display: block; }
 @media (min-width: 901px) {
   .split.flip { align-items: start; }
   .split.flip > .device-wrap { position: sticky; top: calc(var(--bar-h) + 24px); }
-  /* The text column runs longer than the frame, so the frame has room to stay pinned while the text passes. */
-  .split.flip > .words { padding: 18vh 0 40vh; }
-  .split.flip .facts { gap: 48px; }
+  /* The text starts lower and rises beside the pinned frame; the pin lets go when the text's last line reaches the frame's bottom, so the column never runs empty. */
+  .split.flip > .words { padding: 52vh 0 0; }
+  .split.flip .facts { gap: 64px; }
 }
 @media (max-width: 900px) {
   .split, .split.flip { grid-template-columns: 1fr; gap: 40px; }
