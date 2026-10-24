@@ -1,0 +1,52 @@
+/* Popup: 360px wide. Every block keeps its size in every state (no layout shift). */
+
+body.popup {
+  width: 360px;
+  padding: 4px 12px 12px;
+}
+.popup main { display: grid; gap: 8px; }
+
+.answer { padding: 14px var(--pad) 14px; }
+.answer-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 22px; }
+.answer .label { font-size: var(--fs-section); font-weight: 500; line-height: 20px; color: var(--muted); }
+.figure-row { display: flex; align-items: baseline; gap: 4px; height: 48px; margin-top: 4px; }
+.figure {
+  font-size: var(--fs-figure); line-height: 48px; font-weight: 500; letter-spacing: -0.02em;
+  color: var(--data);
+}
+.figure-row .unit { font-size: var(--fs-body); }
+/* Two lines reserved so a longer finding never pushes the cards down. */
+.finding { margin-top: 6px; min-height: 40px; color: var(--text); }
+
+/* Upload carries the longest figure ("999.9 Mbps"), loss the shortest. */
+.strip { grid-template-columns: 1.3fr 1fr 1fr .85fr; grid-auto-flow: row; }
+.strip > div { padding: 10px; }
+.strip dd { font-size: 18px; }
+.strip .unit { margin-left: 1px; }
+
+
+.actions { display: grid; gap: 8px; margin-top: 10px; }
+
+/* Thin track above the button; the status line below names the phase. */
+.progress { height: 3px; }
+.progress-track { display: block; height: 3px; border-radius: 2px; background: var(--raised); overflow: hidden; }
+.progress-track i { display: block; height: 100%; width: 0; background: var(--data); transform-origin: left; }
+.progress:not(.is-running) .progress-track { visibility: hidden; }
+
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 32px; }
+.status { color: var(--muted); font-size: var(--fs-small); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status.is-error { color: var(--negative); }
+.foot-tools { display: flex; flex: none; }
+.foot-tools .btn { height: 32px; }
+.foot .menu { right: 0; bottom: calc(100% + 6px); }
+
+/* Chrome caps popups at 600px tall; these keep the whole popup inside it with no scrollbar. */
+.popup .bar { min-height: 44px; }
+.popup main { gap: 6px; }
+.popup .card-head { padding-top: 10px; }
+.popup .card-body { padding: 8px var(--pad) 10px; }
+.popup .load-rows { gap: 4px; }
+.popup .ready { gap: 4px 12px; }
+.popup .answer { padding: 12px var(--pad); }
+.popup .actions { margin-top: 6px; gap: 6px; }
+body.popup { padding-bottom: 6px; }

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeterX privacy policy</title>
+<meta name="description" content="What the MeterX browser extension stores on your device, what it sends to the test server, and the personal data it never collects.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/privacy/">
+<meta property="og:title" content="MeterX privacy policy">
+<meta property="og:description" content="What the MeterX browser extension stores on your device, what it sends to the test server, and the personal data it never collects.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://meterx.ajithakdev.com/privacy/">
+<meta property="og:site_name" content="MeterX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<!-- header -->
+
+<main id="main" class="doc">
+  <div class="page-head"><h1>Privacy policy</h1><p class="lede">MeterX collects no personal data. Your results stay in your browser.</p><p class="small">Last updated 24 October 2026. Applies to MeterX 2027.0.0 and later.</p></div>
+  <div class="body">
+    <h2>What the extension stores</h2>
+    <ul>
+      <li>Your test results (download, upload, ping, jitter, packet loss, latency under load, the Cloudflare location and the network name the server reports), up to 200 of them, in your browser's local extension storage.</li>
+      <li>Your settings: the test server address, your ISP plan if you enter one, the schedule for automatic tests and whether to notify you. These are in your browser's synced extension storage, so they follow your browser account if you use sync.</li>
+    </ul>
+    <p>Nothing is sent to MeterX or anyone else. Uninstalling the extension, or clearing its storage, deletes all of it.</p>
+    <h2>What a test sends</h2>
+    <p>A test exchanges data with the test server: it downloads test bytes, uploads test bytes that the server throws away, and sends small ping requests. As with any web request, the server sees your IP address. The default server is a Cloudflare Worker that:</p>
+    <ul>
+      <li>keeps no request logs and no database, and stores nothing about you;</li>
+      <li>returns your IP address, its type (IPv4 or IPv6), the network name, city, country and Cloudflare location, so the extension can show them. These come from Cloudflare's own lookup of your IP and are not kept by the worker.</li>
+    </ul>
+    <p>Cloudflare runs the network the worker is on. Its handling of traffic is covered by <a class="textlink" href="https://www.cloudflare.com/privacypolicy/">Cloudflare's privacy policy</a>. If you set a custom server, your tests go to that server instead, and its owner's policy applies.</p>
+    <h2>Permissions and why</h2>
+    <ul>
+      <li><b>Storage</b>: to keep your results and settings.</li>
+      <li><b>Alarms</b>: to run tests on the schedule you choose. Off by default.</li>
+      <li><b>Notifications</b>: to tell you when a scheduled test finds that quality has dropped, if you turn it on.</li>
+      <li><b>Side panel</b>: to show your history beside the page.</li>
+      <li><b>Access to the test server's address</b>: to run tests. Access to a custom server is asked for only when you add one.</li>
+    </ul>
+    <h2>Share links and reports</h2>
+    <p>A share link carries the result inside the link itself, after the # sign, which browsers never send to a server. This site reads it in your browser to show the result. PDF, CSV and JSON reports are made on your device and saved where you choose.</p>
+    <h2>This website</h2>
+    <p>This site uses no cookies, no analytics and no trackers. The quick test on the home page runs only when you press its button and talks to the same test server. The Contribute page asks GitHub's public API for the repository's issues and contributors from your browser, so GitHub sees that request as it would any visit to github.com.</p>
+    <h2>Children</h2>
+    <p>MeterX is not aimed at children and collects no personal data from anyone.</p>
+    <h2>Changes and contact</h2>
+    <p>Changes to this policy are listed in the repository's history and the date above is updated. Questions go to <a class="textlink" href="https://github.com/ajithakdev/meterx/issues">the issue tracker</a> or <a class="textlink" href="mailto:ajithkumarks2579@gmail.com">ajithkumarks2579@gmail.com</a>.</p>
+  </div>
+</main>
+<!-- footer -->
+</body>
+</html>

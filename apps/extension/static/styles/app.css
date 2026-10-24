@@ -1,0 +1,224 @@
+/*
+ * MeterX design system (popup, side panel, settings).
+ * Style: achromatic ledger. The chrome is ink and grey; the one data hue (--data)
+ * marks download, the main figure; status colour appears only on quality pills.
+ * Badge colours in src/lib/quality.ts mirror --positive / --warning / --negative.
+ */
+
+@font-face {
+  font-family: "Geist";
+  src: url("../fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: block;
+}
+
+:root {
+  color-scheme: light dark;
+  --ground: #f2f4f7;
+  --surface: #ffffff;
+  --raised: #eaedf1;
+  --border: #e1e4e8;
+  --rule: #eceef1;
+  --control: #cdd2d8;
+  --text: #0a0a0a;
+  --muted: #5b6068;
+  --data: #1d5fbf;
+  --data-track: #dbe5f4;
+  --primary: #141414;
+  --on-primary: #ffffff;
+  --positive: #247b50;
+  --negative: #c4242a;
+  --warning: #92400e;
+  --pill-positive-bg: #dcfae5; --pill-positive-ink: #04250e;
+  --pill-negative-bg: #ffedea; --pill-negative-ink: #831c1e;
+  --pill-warning-bg: #fff4d6; --pill-warning-ink: #7a3a0b;
+  --pill-neutral-bg: #eaedf1; --pill-neutral-ink: #3d4148;
+  --focus: #1d5fbf;
+
+  /* charts.js reads these */
+  --chart-1: var(--data);
+  --chart-2: #8a8f96;
+  --chart-muted: #8a8f96;
+  --grid: #e6e8eb;
+  --axis-ink: #5b6068;
+  --ink: var(--text);
+
+  --radius-card: 8px;
+  --radius-control: 6px;
+  --gap: 12px;
+  --pad: 16px;
+  --control-height: 36px;
+  --fs-figure: 40px;
+  --fs-kpi: 24px;
+  --fs-title: 18px;
+  --fs-section: 14px;
+  --fs-body: 14px;
+  --fs-small: 12px;
+  --font: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #0b0c0e;
+    --surface: #151618;
+    --raised: #1f2124;
+    --border: #26292d;
+    --rule: #1f2124;
+    --control: #3a3e44;
+    --text: #f4f5f6;
+    --muted: #a4a8ae;
+    --data: #74a6ff;
+    --data-track: #1b2a44;
+    --primary: #f4f5f6;
+    --on-primary: #0b0c0e;
+    --positive: #4cc38a;
+    --negative: #f0717a;
+    --warning: #f0b45a;
+    --pill-positive-bg: #12291d; --pill-positive-ink: #6fdca5;
+    --pill-negative-bg: #2e1517; --pill-negative-ink: #ff9aa1;
+    --pill-warning-bg: #2d2210; --pill-warning-ink: #f4c27a;
+    --pill-neutral-bg: #1f2124; --pill-neutral-ink: #c9ccd1;
+    --focus: #74a6ff;
+    --chart-2: #8d9198;
+    --chart-muted: #8d9198;
+    --grid: #26292d;
+    --axis-ink: #a4a8ae;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font: 400 var(--fs-body)/20px var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, dl, dd, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+a { color: inherit; text-underline-offset: 3px; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[hidden] { display: none !important; }
+
+/* --- Shell bar: mark, name, scope, tools --- */
+.bar { display: flex; align-items: center; gap: 10px; min-height: 52px; }
+.mark { width: 24px; height: 24px; flex: none; color: var(--text); }
+.who { min-width: 0; flex: 1; }
+.who .name { font-weight: 600; font-size: 14px; line-height: 18px; }
+.who .scope { color: var(--muted); font-size: var(--fs-small); line-height: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tools { display: flex; gap: 2px; }
+
+/* --- Controls --- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: var(--control-height); padding: 0 14px; border-radius: var(--radius-control);
+  border: 1px solid var(--control); background: var(--surface); color: var(--text);
+  font-weight: 500; cursor: pointer; white-space: nowrap;
+  transition: background-color 120ms var(--ease), transform 80ms var(--ease), border-color 120ms var(--ease);
+}
+.btn:hover { background: var(--raised); }
+.btn:active { transform: scale(.98); }
+.btn:disabled { cursor: not-allowed; color: var(--muted); background: var(--raised); }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.btn-primary:hover { background: color-mix(in srgb, var(--primary) 86%, var(--ground)); }
+.btn-primary:disabled { background: var(--raised); border-color: var(--control); color: var(--muted); }
+.btn-text { border-color: transparent; background: transparent; padding: 0 8px; color: var(--muted); }
+.btn-text:hover { background: var(--raised); color: var(--text); }
+.btn-danger { color: var(--negative); border-color: var(--control); }
+.btn-wide { width: 100%; }
+.icon-btn {
+  width: 32px; height: 32px; display: inline-grid; place-items: center; border-radius: var(--radius-control);
+  border: 0; background: transparent; color: var(--muted); cursor: pointer;
+  transition: background-color 120ms var(--ease), color 120ms var(--ease);
+}
+.icon-btn:hover { background: var(--raised); color: var(--text); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+.field { display: grid; gap: 8px; }
+.field label, .field .label { font-weight: 500; }
+.input {
+  height: 40px; width: 100%; min-width: 0; padding: 0 12px; border-radius: var(--radius-control);
+  border: 1px solid var(--control); background: var(--surface); color: var(--text);
+}
+.input::placeholder { color: var(--muted); }
+.input:hover { border-color: var(--muted); }
+.input[aria-invalid="true"] { border-color: var(--negative); }
+
+.choice { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: var(--radius-control); cursor: pointer; }
+.choice:hover { background: var(--raised); }
+.choice input { margin: 3px 0 0; accent-color: var(--primary); width: 16px; height: 16px; flex: none; }
+.choice .t { font-weight: 500; display: block; }
+.choice .d { color: var(--muted); display: block; }
+
+/* --- Pills (status beside a value only) --- */
+.pill {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px;
+  font-size: var(--fs-small); font-weight: 500; white-space: nowrap;
+  background: var(--pill-neutral-bg); color: var(--pill-neutral-ink);
+}
+.pill.q-excellent, .pill.q-good, .pill.s-good { background: var(--pill-positive-bg); color: var(--pill-positive-ink); }
+.pill.q-fair, .pill.s-okay { background: var(--pill-warning-bg); color: var(--pill-warning-ink); }
+.pill.q-poor, .pill.s-poor { background: var(--pill-negative-bg); color: var(--pill-negative-ink); }
+.pill.is-empty { visibility: hidden; }
+
+/* --- Cards and strips --- */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 14px var(--pad) 0; }
+.card-head h2 { font-size: var(--fs-section); font-weight: 600; line-height: 20px; }
+.card-body { padding: 10px var(--pad) 14px; }
+
+/* One container split by dividers; each cell a label over a figure. */
+.strip { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.strip > div { padding: 12px 14px; min-width: 0; }
+.strip > div + div { border-left: 1px solid var(--rule); }
+.strip dt { color: var(--muted); font-size: var(--fs-small); line-height: 16px; white-space: nowrap; }
+.strip dd { font-size: 20px; line-height: 28px; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.unit { color: var(--muted); font-size: var(--fs-small); font-weight: 400; margin-left: 2px; }
+/* No value yet: a short muted bar sized to the figure instead of a dash character; the unit keeps its space but hides. */
+.dash { display: inline-block; position: relative; width: 1.1em; }
+/* Hide the hyphen itself; listed with the figure classes so their colours don't win. */
+.dash, .figure.dash, .strip .lead.dash { color: transparent; }
+.dash::after { content: ""; position: absolute; left: 0; right: 0.15em; top: 50%; height: 0.1em; min-height: 2px; margin-top: -0.05em; border-radius: 1px; background: var(--control); }
+.dash + .unit { visibility: hidden; }
+
+/* Latency under load: idle vs loaded, the bufferbloat evidence. */
+.load-rows { display: grid; gap: 8px; }
+.load-row { display: grid; grid-template-columns: 92px 1fr 64px; align-items: center; gap: 10px; }
+.load-row .k { color: var(--muted); }
+.load-row .v { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.track { height: 6px; border-radius: 3px; background: var(--raised); overflow: hidden; }
+.track > i { display: block; height: 100%; width: 0; background: var(--chart-2); border-radius: 3px; transition: width 400ms var(--ease); }
+.load-row.idle .track > i { background: var(--text); }
+
+/* Readiness list */
+.ready { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.ready li { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-width: 0; }
+.ready .k { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Floating menu (the one place a shadow is allowed) */
+.menu-wrap { position: relative; }
+.menu {
+  position: absolute; z-index: 10; min-width: 200px; padding: 4px; border-radius: var(--radius-card);
+  background: var(--surface); border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .14);
+}
+.menu button { display: block; width: 100%; text-align: left; padding: 8px 10px; border: 0; border-radius: var(--radius-control); background: transparent; cursor: pointer; }
+.menu button:hover, .menu button:focus-visible { background: var(--raised); }
+.menu small { display: block; color: var(--muted); font-size: var(--fs-small); line-height: 16px; }
+
+/* Tooltip for plain-language metric explanations */
+.mx-tooltip {
+  position: fixed; z-index: 20; max-width: 220px; padding: 6px 8px; border-radius: var(--radius-control);
+  background: var(--primary); color: var(--on-primary); font-size: var(--fs-small); line-height: 16px;
+  pointer-events: none; box-shadow: 0 4px 16px rgb(0 0 0 / .16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}

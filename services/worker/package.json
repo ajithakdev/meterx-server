@@ -1,0 +1,20 @@
+{
+  "name": "@meterx/worker",
+  "private": true,
+  "description": "MeterX Cloudflare Worker \u2014 edge speed test server",
+  "author": "ajithakdev (https://github.com/ajithakdev)",
+  "license": "AGPL-3.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@meterx/shared": "*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250313.0",
+    "wrangler": "^4.8.0",
+    "vitest": "^3.0.0"
+  }
+}

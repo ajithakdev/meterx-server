@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeterX questions and answers</title>
+<meta name="description" content="Answers about MeterX: price, browsers, privacy, why results differ from other speed tests, bufferbloat, self-hosting and sharing.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/faq/">
+<meta property="og:title" content="MeterX questions and answers">
+<meta property="og:description" content="Answers about MeterX: price, browsers, privacy, why results differ from other speed tests, bufferbloat, self-hosting and sharing.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://meterx.ajithakdev.com/faq/">
+<meta property="og:site_name" content="MeterX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<!-- header -->
+<main id="main">
+  <div class="page-head" data-enter>
+    <h1>Questions, answered</h1>
+    <p class="lede">Short answers about MeterX. Anything missing? Ask in the <a class="textlink" href="https://github.com/ajithakdev/meterx/issues">issue tracker</a>.</p>
+  </div>
+  <section class="section faq-layout">
+    <div class="faq" id="faq">
+    <details data-more="/about/"><summary>Is it free?</summary><p>Yes, with no paid tier, no account and no ads. The code is open source under AGPL-3.0.</p></details>
+    <details data-more="/get/"><summary>Which browsers does it run in?</summary><p>Firefox, Microsoft Edge and Opera today, and Chrome soon. It also runs in other browsers built on Chromium. <a class="textlink" href="/get/">Get it for your browser</a>.</p></details>
+    <details data-more="/privacy/"><summary>What leaves my browser?</summary><p>Only the test traffic: bytes downloaded from and uploaded to the test server, and the pings. Results are stored in your browser and nowhere else. The <a class="textlink" href="/privacy/">privacy page</a> has the details.</p></details>
+    <details data-more="/how-it-works/"><summary>Why is my result different from other speed tests?</summary><p>Each test uses its own servers, number of streams and length. MeterX tests against the nearest Cloudflare location with several streams for a fixed time and trims the slow start. <a class="textlink" href="/how-it-works/">How it measures</a>.</p></details>
+    <details data-more="/how-it-works/"><summary>What is bufferbloat?</summary><p>When a line is busy, routers can queue too much data, so every request waits in line. Speed looks fine but calls and games lag. MeterX measures ping while the line is full and grades the rise from A to F.</p></details>
+    <details data-more="/features/#settings"><summary>Can I use my own test server?</summary><p>Yes. The repository includes a small server you can run on your own machine or network, and the settings page lets you point MeterX at it.</p></details>
+    <details><summary>How do I share a result?</summary><p>Press Share in the popup. The link carries the result inside it, after the # sign, so it never reaches a server, and this site shows it to whoever opens it.</p></details>
+    <details><summary>Where do I report a bug?</summary><p>In the <a class="textlink" href="https://github.com/ajithakdev/meterx/issues">issue tracker on GitHub</a>.</p></details>
+    </div>
+    <aside class="faq-side">
+      <div class="faq-answer" id="faqAnswer" aria-live="polite"><div class="answer"></div></div>
+      <div class="faq-help">
+        <h2>Still have a question?</h2>
+        <p>Ask in the issue tracker. Questions that come up often get added here.</p>
+        <div class="row"><a class="ghost cta-sm" href="https://github.com/ajithakdev/meterx/issues/new">Ask on GitHub</a><a class="cta cta-sm" href="/get/" data-install="short">Get MeterX</a></div>
+      </div>
+    </aside>
+  </section>
+</main>
+<!-- footer -->
+<script type="module" src="/js/faq.js"></script>
+</body>
+</html>

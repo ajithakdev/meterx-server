@@ -1,0 +1,265 @@
+/*
+ * MeterX site. Loaded after the extension's app.css, which supplies the colour tokens (light and dark)
+ * and the Geist face, so the site and the product always share one palette.
+ * Spacing steps: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128.
+ */
+
+:root {
+  --page: 1120px;
+  --m: max(20px, calc((100vw - var(--page)) / 2));
+  --on-data: #ffffff;
+  --round: 999px;
+  --t-h1: clamp(40px, 5.2vw, 68px);
+  --t-h2: clamp(30px, 3.4vw, 44px);
+  --t-h3: 20px;
+  --t-lede: 20px;
+  --t-body: 17px;
+  --t-small: 14px;
+  --bar-h: 68px;
+}
+@media (max-width: 760px) { :root { --bar-h: 64px; } }
+@media (prefers-color-scheme: dark) { :root { --on-data: #0b0c0e; } }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body.site { font: 400 var(--t-body)/1.6 var(--font); background: var(--ground); color: var(--text); margin: 0; }
+.site h1, .site h2, .site h3 { margin: 0; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
+.site h1 { font-size: var(--t-h1); }
+.site h2 { font-size: var(--t-h2); }
+.site h3 { font-size: var(--t-h3); letter-spacing: -0.01em; line-height: 1.3; }
+.site p { margin: 0; max-width: 62ch; }
+.lede { font-size: var(--t-lede); line-height: 1.55; color: var(--muted); }
+.small { font-size: var(--t-small); color: var(--muted); }
+.nowrap { white-space: nowrap; }
+.textlink { color: inherit; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.textlink:hover { text-decoration-thickness: 2px; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 16px; top: 12px; z-index: 50; background: var(--surface); padding: 8px 12px; border-radius: 6px; }
+
+/* Buttons: fully round, one fill for the action, a quiet fill for the rest. */
+.cta, .ghost {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 24px;
+  border-radius: var(--round); border: 0; font: inherit; font-size: 16px; font-weight: 500; text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: transform 120ms var(--ease), background-color 160ms var(--ease);
+}
+.cta { background: var(--data); color: var(--on-data); }
+.cta:hover { background: color-mix(in srgb, var(--data) 88%, var(--text)); }
+.ghost { background: var(--raised); color: var(--text); }
+.ghost:hover { background: var(--control); }
+.cta:active, .ghost:active { transform: scale(.97); }
+.cta-sm { height: 40px; padding: 0 18px; font-size: 15px; }
+
+/* Header: the brand, four pages, the one action. On phones the links become a scrolling row. */
+.site-bar { position: sticky; top: 0; z-index: 40; background: var(--ground); border-bottom: 1px solid transparent; transition: border-color 160ms var(--ease); }
+.site-bar.is-scrolled { border-bottom-color: var(--border); }
+.site-bar .in { display: flex; align-items: center; gap: 32px; height: 68px; padding: 0 var(--m); }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; color: var(--text); text-decoration: none; }
+.brand img { display: block; width: 36px; height: 36px; }
+.site-foot .brand img { width: 28px; height: 28px; }
+.links { display: flex; gap: 4px; margin-right: auto; }
+.links a { padding: 8px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 15px; transition: color 120ms var(--ease), background-color 120ms var(--ease); }
+.links a:hover { color: var(--text); background: var(--raised); }
+.links a[aria-current="page"] { color: var(--text); background: var(--raised); }
+.menu-btn { display: none; }
+/* Phones: the bar keeps the brand, the action and a menu button; the links open as a panel under it. */
+@media (max-width: 760px) {
+  .site-bar .in { gap: 8px; height: 64px; }
+  .brand { margin-right: auto; }
+  .menu-btn { display: inline-flex; align-items: center; height: 40px; padding: 0 14px; border-radius: var(--round); border: 0; background: var(--raised); color: var(--text); font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; order: 3; }
+  .site-bar .cta-sm { order: 2; padding: 0 14px; }
+  .links { display: none; position: absolute; left: 0; right: 0; top: 64px; flex-direction: column; gap: 2px; margin: 0; padding: 8px var(--m) 16px; background: var(--ground); border-bottom: 1px solid var(--border); }
+  .site-bar.is-open .links { display: flex; }
+  .links a { padding: 12px; font-size: 17px; }
+}
+
+/* Footer: one calm row. */
+.site-foot { margin-top: 128px; border-top: 1px solid var(--border); }
+.site-foot .in { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 32px var(--m) 40px; }
+.site-foot nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-right: auto; }
+.site-foot nav a, .site-foot p { color: var(--muted); font-size: var(--t-small); text-decoration: none; }
+.site-foot nav a:hover { color: var(--text); }
+.site-foot .brand { font-size: 16px; }
+
+/* Page frame */
+main { display: block; }
+.wrap { padding: 0 var(--m); }
+.page-head { padding: 72px var(--m) 0; display: grid; gap: 20px; max-width: calc(var(--page) + 2 * var(--m)); }
+.page-head .lede { max-width: 56ch; }
+.section { padding: 0 var(--m); margin-top: 120px; }
+/* The first section after a page heading follows it closely; the full gap is for section to section. */
+.page-head + .section { margin-top: 64px; }
+.section > .head { display: grid; gap: 12px; margin-bottom: 40px; max-width: 64ch; }
+@media (max-width: 760px) { .page-head { padding-top: 40px; } .section { margin-top: 88px; } }
+
+/* A real extension page shown in a frame. */
+.device { border: 0; display: block; background: var(--ground); border-radius: 14px; box-shadow: 0 0 0 1px var(--border), 0 24px 48px -24px rgb(0 0 0 / .35); color-scheme: light dark; }
+.device.popup { width: 360px; height: 594px; }
+.device.panel { width: 420px; height: 760px; }
+.device.options { width: 100%; height: 620px; }
+/* The settings page pads its content by 20px; the caption lines up with that, not with the frame edge. */
+.device.options + .demo-note { padding-left: 20px; }
+.device-wrap { margin: 0; }
+.demo-note { margin-top: 12px; font-size: var(--t-small); color: var(--muted); }
+
+/* Split: words on one side, the product on the other. */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 64px; align-items: center; }
+.split.flip { grid-template-columns: auto minmax(0, 1fr); }
+.split .words { display: grid; gap: 20px; align-content: start; }
+/* Desktop: the side panel keeps its real 420x760 layout but is drawn smaller, so its whole section fits one screen. */
+@media (min-width: 901px) {
+  .device-wrap:has(> .device.panel) { --s: .88; width: calc(420px * var(--s)); }
+  /* Negative margins shrink the frame's layout box to its drawn size, so the caption follows right under it. */
+  .device-wrap:has(> .device.panel) > .device.panel { transform: scale(var(--s)); transform-origin: top left; margin: 0 calc(420px * (var(--s) - 1)) calc(760px * (var(--s) - 1)) 0; }
+  .device-wrap:has(> .device.panel) > .demo-note { margin-top: 12px; width: max-content; max-width: 420px; }
+}
+@media (min-width: 901px) and (max-height: 900px) { .device-wrap:has(> .device.panel) { --s: .8; } }
+@media (min-width: 901px) and (max-height: 760px) { .device-wrap:has(> .device.panel) { --s: .7; } }
+
+/* Desktop: like the Reports row, the text sits centred beside the product frame. */
+@media (min-width: 901px) {
+  .split.flip { align-items: center; }
+  .split.flip .facts { gap: 28px; }
+}
+@media (max-width: 900px) {
+  .split, .split.flip { grid-template-columns: 1fr; gap: 40px; }
+  .split.flip > :first-child { order: 2; }
+  .device.popup, .device.panel { margin: 0 auto; max-width: 100%; }
+}
+
+/* Lists of facts, with numbers in the product's own figure style. */
+.facts { display: grid; gap: 24px; }
+.facts li { display: grid; gap: 4px; }
+.facts b { font-weight: 600; }
+ul.clean { list-style: none; margin: 0; padding: 0; }
+
+/* Documents: about, privacy, share, get, 404. */
+.doc .body { padding: 0 var(--m); margin-top: 64px; display: grid; gap: 16px; }
+.doc .body > * { max-width: none; }
+.doc.has-toc .body { grid-template-columns: 220px minmax(0, 1fr); column-gap: 64px; align-items: start; }
+.doc.has-toc .body > .content { display: grid; gap: 16px; align-content: start; }
+.doc .content > * { max-width: none; }
+.toc { position: sticky; top: calc(var(--bar-h) + 32px); display: grid; gap: 2px; }
+.toc p { font-size: var(--t-small); color: var(--muted); margin-bottom: 8px; }
+.toc a { padding: 6px 10px; margin-left: -10px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: 15px; }
+.toc a:hover, .toc a.is-here { color: var(--text); background: var(--raised); }
+@media (max-width: 900px) { .doc.has-toc .body { grid-template-columns: 1fr; } .toc { display: none; } }
+.doc .body h2 { font-size: 24px; letter-spacing: -0.02em; margin-top: 40px; }
+.doc .body h2:first-child, .doc .content > h2:first-child { margin-top: 0; }
+.doc .body ul { list-style: disc; padding-left: 1.2em; display: grid; gap: 6px; }
+.doc .body ul li::marker { color: var(--muted); }
+
+/* Entrances: parts rise in once. Nothing is hidden without script or with reduced motion. */
+.pre { opacity: 0; transform: translateY(20px); }
+[data-enter] > * { transition: opacity 600ms var(--ease) calc(var(--i, 0) * 70ms), transform 600ms var(--ease) calc(var(--i, 0) * 70ms); }
+@media (prefers-reduced-motion: reduce) { .pre { opacity: 1; transform: none; } }
+
+/* How it works: each step carries a bar showing its share of the whole test. */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.steps li { display: grid; gap: 8px; align-content: start; }
+.dur-bar { display: block; height: 10px; border-radius: 5px; background: var(--raised); overflow: hidden; margin-bottom: 8px; }
+.dur-bar i { display: block; height: 100%; border-radius: 5px; background: var(--muted); }
+.dur-bar.dl i { background: var(--data); }
+.dur { font-size: var(--t-small); color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+
+/* Latency under load: words and table beside a sample ping chart. */
+.load-split { align-items: start; }
+.charts { display: grid; gap: 32px; width: min(440px, 100%); }
+.ping-chart { margin: 0; }
+.ping-chart svg { display: block; width: 100%; height: auto; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); }
+.ping-chart .band { fill: transparent; }
+.ping-chart .band.dl { fill: color-mix(in srgb, var(--data) 9%, transparent); }
+.ping-chart .band.ul { fill: color-mix(in srgb, var(--muted) 9%, transparent); }
+.ping-chart .grid line { stroke: var(--rule); stroke-width: 1; }
+.ping-chart .axis text { fill: var(--muted); font-size: 11px; text-anchor: end; }
+.ping-chart .labels text { fill: var(--muted); font-size: 12px; text-anchor: middle; }
+.ping-chart .rest { stroke: var(--muted); stroke-dasharray: 4 4; stroke-width: 1; }
+.ping-chart .ping { fill: none; stroke: var(--data); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.ping-chart .ping.good { stroke: var(--positive); }
+.ping-chart .note { fill: var(--text); font-size: 13px; font-weight: 600; }
+
+.grades { width: 100%; max-width: 760px; border-collapse: collapse; margin-top: 32px; }
+.grades caption { text-align: left; padding-bottom: 12px; }
+.grades th { text-align: left; font-weight: 500; color: var(--muted); font-size: var(--t-small); padding: 0 16px 10px 0; }
+.grades td { padding: 12px 16px 12px 0; border-top: 1px solid var(--rule); vertical-align: middle; }
+.grades td:first-child { width: 72px; }
+
+.facts.two { grid-template-columns: 1fr 1fr; gap: 32px 48px; }
+@media (max-width: 760px) { .facts.two { grid-template-columns: 1fr; } }
+.facts li > span { color: var(--muted); }
+
+/* Questions: list on the left, the open answer beside it on wide screens; an accordion on phones. */
+.faq-layout { display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: 48px; align-items: start; margin-top: 56px; }
+.faq { display: grid; gap: 8px; }
+.faq details { border-radius: 10px; padding: 0 18px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); transition: box-shadow 160ms var(--ease); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: 17px; font-weight: 500; padding: 16px 0; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translateY(-3px); flex: none; transition: transform 160ms var(--ease); }
+.faq details[open] summary::after { transform: rotate(225deg) translateY(-3px); }
+.faq details p { padding: 0 0 18px; color: var(--muted); }
+.faq-side .faq-answer { display: none; }
+.faq-help { display: grid; gap: 12px; padding: 24px 32px; border-radius: 14px; background: var(--raised); }
+.faq-help h2 { font-size: 20px !important; letter-spacing: -0.01em; }
+.faq-help p { color: var(--muted); }
+.faq-help .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.faq-help .ghost { background: var(--surface); }
+@media (min-width: 900px) {
+  .faq-js .faq details p { display: none; }
+  .faq-js .faq summary::after { transform: rotate(-45deg); }
+  .faq-js .faq details.is-current { box-shadow: 0 0 0 2px var(--data); }
+  .faq-js .faq-side { display: grid; gap: 16px; position: sticky; top: calc(var(--bar-h) + 24px); }
+  .faq-js .faq-answer { display: block; padding: 32px; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); min-height: 240px; }
+  .faq-answer .answer { display: grid; gap: 16px; justify-items: start; }
+  .faq-answer .more { font-size: 15px; }
+  .faq-answer h2 { font-size: 26px; letter-spacing: -0.02em; }
+  .faq-answer p { font-size: var(--t-lede); line-height: 1.6; color: var(--text); }
+}
+@media (max-width: 899px) { .faq-layout { grid-template-columns: 1fr; } }
+
+/* A full report page as a picture: the whole page, never cropped. */
+.split.report-split { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); }
+@media (max-width: 900px) { .split.report-split { grid-template-columns: 1fr; } }
+.device-wrap.report { width: 100%; max-width: 440px; }
+.device-wrap.report img { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 0 1px var(--border), 0 24px 48px -24px rgb(0 0 0 / .35); }
+
+/* Share viewer result card */
+.frame.card { padding: 24px; display: grid; gap: 14px; max-width: 520px; }
+.frame .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.frame .label { color: var(--muted); font-size: 14px; }
+.frame .fig { font-size: 64px; line-height: 1; font-weight: 500; letter-spacing: -0.02em; color: var(--data); font-variant-numeric: tabular-nums; }
+
+/* Contribute: live repo stats, issues for newcomers, contributors. */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); }
+.stats > div { padding: 20px 24px; }
+.stats > div + div { box-shadow: -1px 0 0 var(--rule); }
+.stats dt { color: var(--muted); font-size: var(--t-small); }
+.stats dd { margin: 4px 0 0; font-size: 32px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.stats dd a { color: inherit; text-decoration: none; }
+.stats:not(.is-live) dd a { font-size: 17px; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 640px) { .stats { grid-template-columns: 1fr 1fr; } .stats > div:nth-child(3) { box-shadow: 0 -1px 0 var(--rule); } .stats > div:nth-child(4) { box-shadow: -1px 0 0 var(--rule), 0 -1px 0 var(--rule); } }
+
+/* A heading row with its action on the right, then the content full width. */
+.row-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 48px; margin-bottom: 32px; }
+.row-head .head { margin-bottom: 0; }
+.issues { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr)); gap: 10px; }
+.issues a { height: 100%; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; padding: 14px 18px; border-radius: 12px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); color: var(--text); text-decoration: none; transition: box-shadow 160ms var(--ease), transform 160ms var(--ease); }
+.issues a:hover { box-shadow: 0 0 0 2px var(--data); }
+.issues .num { color: var(--muted); font-variant-numeric: tabular-nums; font-size: var(--t-small); }
+.issues .t { font-weight: 500; }
+.issues .tags { grid-column: 2; display: flex; flex-wrap: wrap; gap: 6px; }
+.issues .empty a { display: block; }
+
+.how-steps { counter-reset: step; }
+.how-steps li { counter-increment: step; padding-top: 16px; box-shadow: 0 -2px 0 var(--data); }
+.how-steps .step-n { font-weight: 600; font-size: 18px; }
+.how-steps .step-n::before { content: counter(step) "  "; color: var(--data); }
+.site code { font-size: .92em; padding: 1px 6px; border-radius: 5px; background: var(--raised); }
+
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.people a { display: grid; justify-items: center; gap: 6px; padding: 20px 12px; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border); color: var(--text); text-decoration: none; text-align: center; transition: box-shadow 160ms var(--ease); }
+.people a:hover { box-shadow: 0 0 0 2px var(--data); }
+.people img { width: 56px; height: 56px; border-radius: 50%; }
+.people .you a { box-shadow: 0 0 0 1px var(--control); background: transparent; border: 0; }
+.people .slot { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; border: 2px dashed var(--control); color: var(--muted); font-size: 24px; }
+.people .empty { grid-column: 1 / -1; }

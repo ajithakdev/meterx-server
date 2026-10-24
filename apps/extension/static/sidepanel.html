@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MeterX history</title>
+    <link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/panel.css">
+</head>
+<body class="panel">
+    <div class="wrap">
+        <header class="bar">
+            <span id="mark"></span>
+            <div class="who">
+                <div class="name">MeterX</div>
+                <div class="scope" id="scope">Testing via Cloudflare edge</div>
+            </div>
+            <button id="settingsBtn" class="icon-btn" type="button" aria-label="Settings" title="Settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+            </button>
+            <button id="runBtn" class="btn btn-primary" type="button">Run test</button>
+            <span class="live-track" id="progress" role="progressbar" aria-label="Test progress" aria-valuemin="0" aria-valuemax="100"><i id="progressFill"></i></span>
+        </header>
+
+        <main>
+            <div class="title-row">
+                <div>
+                    <h1 id="title">Connection history</h1>
+                    <p id="finding" class="finding">No tests yet. Run one to start the history.</p>
+                </div>
+                <div class="tabs" role="tablist" aria-label="Time range" id="range">
+                    <button role="tab" type="button" data-days="1">24 h</button>
+                    <button role="tab" type="button" data-days="7" aria-selected="true">7 days</button>
+                    <button role="tab" type="button" data-days="30">30 days</button>
+                    <button role="tab" type="button" data-days="0">All</button>
+                </div>
+            </div>
+
+            <dl class="strip card" id="strip" aria-label="Averages for this range" aria-live="polite">
+                <div data-tip="download"><dt id="lDown">Download, average</dt><dd><span id="avgDown" class="lead dash">-</span><span class="unit">Mbps</span></dd></div>
+                <div data-tip="upload"><dt id="lUp">Upload, average</dt><dd><span id="avgUp" class="dash">-</span><span class="unit">Mbps</span></dd></div>
+                <div data-tip="ping"><dt id="lPing">Ping, median</dt><dd><span id="medPing" class="dash">-</span><span class="unit">ms</span></dd></div>
+                <div><dt id="lCount">Tests</dt><dd><span id="count">0</span><span class="unit" id="countUnit"></span></dd></div>
+            </dl>
+
+            <section class="card" aria-labelledby="trendTitle">
+                <div class="card-head">
+                    <h2 id="trendTitle">Speed over time</h2>
+                    <span id="legend" class="legend"></span>
+                </div>
+                <div class="card-body">
+                    <div id="chart" class="chart"></div>
+                    <p id="chartEmpty" class="empty" hidden>Run two tests in this range to draw the trend.</p>
+                </div>
+            </section>
+
+            <section class="card" aria-labelledby="planTitle">
+                <div class="card-head">
+                    <h2 id="planTitle">Against your plan</h2>
+                    <span id="planName" class="muted"></span>
+                    <button id="planSetup" class="btn btn-text link" type="button" hidden>Add plan</button>
+                </div>
+                <div class="card-body">
+                    <div id="planRows" class="plan-rows"></div>
+                    <p id="planEmpty" class="muted" hidden>Compare results with the speeds you pay for.</p>
+                </div>
+            </section>
+
+            <section class="card results-card" aria-labelledby="resultsTitle">
+                <div class="card-head">
+                    <h2 id="resultsTitle">Results</h2>
+                    <p id="status" class="status" role="status"></p>
+                    <div class="menu-wrap">
+                        <button id="exportBtn" class="btn btn-text" type="button" aria-haspopup="menu" aria-expanded="false">Export</button>
+                        <div id="exportMenu" class="menu" role="menu" hidden>
+                            <button type="button" role="menuitem" data-value="pdf">PDF report<small>Summary, trend and every result</small></button>
+                            <button type="button" role="menuitem" data-value="csv">CSV<small>For spreadsheets</small></button>
+                            <button type="button" role="menuitem" data-value="json">JSON<small>Every field</small></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body results-body">
+                    <table class="results">
+                        <thead><tr><th scope="col">When</th><th scope="col" class="num">Down</th><th scope="col" class="num">Up</th><th scope="col" class="num">Ping</th><th scope="col">Quality</th></tr></thead>
+                        <tbody id="rows"></tbody>
+                    </table>
+                    <p id="rowsEmpty" class="empty" hidden>No results in this range.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="vendor/charts.js"></script>
+    <script src="sidepanel.js"></script>
+</body>
+</html>

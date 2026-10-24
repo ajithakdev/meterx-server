@@ -1,0 +1,75 @@
+/* Home: the pinned hero with the real popup, the live side panel, and the closing question. */
+
+/* The stage pins just under the sticky header and starts a short, height-aware gap below it. */
+.hero .hero-stage { display: grid; align-items: start; top: var(--bar-h); height: calc(100svh - var(--bar-h)); padding: clamp(16px, 6vh, 72px) var(--m) 0; }
+.hero .split { align-items: start; }
+/* Short desktop windows: the popup shows a little smaller so all of it stays in view while the hero is pinned. */
+@media (min-width: 901px) and (max-height: 840px) {
+  .hero .device-wrap { width: 306px; height: 505px; }
+  .hero .device.popup { transform: scale(.85); transform-origin: top left; }
+}
+@media (min-width: 901px) and (max-height: 700px) {
+  .hero .device-wrap { width: 252px; height: 416px; }
+  .hero .device.popup { transform: scale(.7); }
+  .hero .phase-log li { padding: 4px 12px; }
+}
+.hero .split { width: 100%; }
+.hero h1 { font-size: var(--t-h1); }
+.hero .words { gap: 24px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* The phase log: each step lights as the sample test reaches it. Fixed rows, so nothing moves. */
+.phase-log { display: grid; gap: 2px; max-width: 420px; }
+.phase-log li { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; padding: 8px 12px; border-radius: 8px; color: var(--muted); transition: color 200ms var(--ease), background-color 200ms var(--ease); }
+.phase-log li b { font-weight: 500; font-variant-numeric: tabular-nums; min-width: 9ch; text-align: right; color: var(--text); }
+.phase-log li[data-state="active"] { background: var(--raised); color: var(--text); }
+.phase-log li[data-state="active"] b { color: var(--data); }
+.phase-log li[data-state="done"] { color: var(--text); }
+
+/* Phones, and windows so tall (zoomed out) that a pinned stage would be mostly empty: the hero is not pinned,
+   and the popup plays its sample test by itself once it comes into view. */
+@media (max-width: 900px), (min-height: 1100px) {
+  .hero[data-sc-act] { height: auto !important; }
+  .hero .hero-stage { position: static !important; height: auto !important; min-height: 0 !important; padding: 48px var(--m) 0; }
+}
+/* Phones only: the hero stacks. */
+@media (max-width: 900px) {
+  .hero .hero-stage { padding-top: 32px; }
+  .hero h1 { font-size: clamp(34px, 10vw, 48px); }
+  .hero .phase-log { display: none; }
+  .hero .split { gap: 32px; }
+  .hero .actions > * { flex: 1 1 100%; }
+  /* The popup keeps its real 360px layout, shown at 90% so it fits a phone with margins. */
+  .hero .device-wrap { width: 324px; height: 535px; margin: 0 auto; }
+  .hero .device.popup { width: 360px; max-width: none; margin: 0; transform: scale(.9); transform-origin: top left; }
+  .hero .demo-note { display: none; }
+}
+
+/* The pinned stage already fills the window, so the next section starts without the usual gap. */
+.hero + .section { margin-top: 0; }
+
+/* The close: the heading is an input. */
+.close-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px); gap: 24px 64px; align-items: start; }
+.close-in .ask { grid-column: 1 / -1; }
+.close-in .answer-list { grid-column: 2; grid-row: 2 / span 3; }
+@media (max-width: 900px) { .close-in { grid-template-columns: 1fr; } .close-in .answer-list { grid-column: 1; grid-row: auto; } }
+.ask { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .25em; font-size: clamp(36px, 5.6vw, 72px) !important; }
+.ask input { font: inherit; letter-spacing: inherit; color: var(--data); background: transparent; border: 0; padding: 0; width: 3.4ch; caret-color: var(--data); font-variant-numeric: tabular-nums; border-bottom: 3px solid var(--control); }
+.ask input:focus-visible { outline: none; border-bottom-color: var(--data); }
+.answer-list.clean { width: 100%; padding: 4px 20px; }
+.answer-list li { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; font-size: 17px; }
+.answer-list li + li { border-top: 1px solid var(--rule); }
+.answer-list .v { font-weight: 500; font-variant-numeric: tabular-nums; }
+.qt { min-height: 3.2em; }
+.qt b { color: var(--data); font-weight: 600; }
+
+/* Phones: the closing question stacks with even spacing and full-width actions, like the hero. */
+@media (max-width: 900px) {
+  .close-in { gap: 24px; }
+  .ask { font-size: clamp(34px, 10vw, 48px) !important; row-gap: 4px; }
+  .answer-list.clean { padding: 4px 16px; }
+  .answer-list li { font-size: 16px; padding: 12px 0; }
+  .close-in .actions { flex-direction: column; }
+  .close-in .actions > * { width: 100%; }
+  .qt { margin: -8px 0 0; }
+}

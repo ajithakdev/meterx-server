@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /r/
+Disallow: /app/
+Sitemap: https://meterx.ajithakdev.com/sitemap.xml

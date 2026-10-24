@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MeterX: internet speed test in your browser toolbar</title>
+<meta name="description" content="MeterX is a free, open-source browser extension that measures download, upload, ping, jitter and bufferbloat from your toolbar. No account, nothing tracked.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MeterX: internet speed test in your browser toolbar">
+<meta property="og:description" content="Download, upload, ping, jitter and bufferbloat from your toolbar. Free and open source.">
+<meta property="og:url" content="https://meterx.ajithakdev.com/">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta property="og:site_name" content="MeterX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/sc/scrollcraft.css">
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+<link rel="stylesheet" href="/styles/home.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"MeterX","applicationCategory":"UtilitiesApplication","operatingSystem":"Firefox, Microsoft Edge, Opera","description":"Free, open-source browser extension that measures download, upload, ping, jitter and bufferbloat from the toolbar.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://meterx.ajithakdev.com/","author":{"@type":"Person","name":"Ajith Kumar K","url":"https://ajithakdev.com"},"license":"https://www.gnu.org/licenses/agpl-3.0.html"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"MeterX","url":"https://meterx.ajithakdev.com/"}</script>
+</head>
+<body class="site">
+<!-- header -->
+<main id="main">
+
+  <section class="hero" id="hero" data-sc-act="pin" data-sc-span="3">
+    <div data-sc-stage class="hero-stage">
+      <div class="split">
+        <div class="words">
+          <h1>Your internet,<br> honestly measured.</h1>
+          <p class="lede">MeterX is a free, open-source browser extension that tests download, upload, ping, jitter and bufferbloat from your toolbar. No account, nothing tracked.</p>
+          <ol class="phase-log clean" id="phaseLog" aria-label="Sample test progress">
+            <li data-phase="connect"><span>Connect</span><b></b></li>
+            <li data-phase="latency"><span>Ping and jitter</span><b></b></li>
+            <li data-phase="download"><span>Download</span><b></b></li>
+            <li data-phase="upload"><span>Upload</span><b></b></li>
+            <li data-phase="done"><span>Result</span><b></b></li>
+          </ol>
+          <div class="actions">
+            <a class="cta" href="/get/" data-install>Get MeterX, free</a>
+            <a class="ghost" href="/how-it-works/">How it works</a>
+          </div>
+        </div>
+        <figure class="device-wrap">
+          <iframe class="device popup" id="heroPopup" src="/app/popup.html" title="The MeterX popup running a sample test"></iframe>
+          <figcaption class="demo-note">The real MeterX popup, running a sample test.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" data-sc-act="flow">
+    <div class="split flip">
+      <figure class="device-wrap">
+        <iframe class="device panel" src="/app/sidepanel.html" title="The MeterX side panel with a week of sample results" loading="lazy"></iframe>
+        <figcaption class="demo-note">The real side panel with sample data. Try the tabs, Run test and Export.</figcaption>
+      </figure>
+      <div class="words" data-sc-in data-sc-stagger="70">
+        <h2>Every test, kept on your device</h2>
+        <p class="lede">The side panel keeps up to 200 results with a trend chart, so a slow evening stands out from a slow line.</p>
+        <ul class="facts clean">
+          <li><b>Against your plan</b><span>Enter the speeds you pay for and see what share of them arrives.</span></li>
+          <li><b>Reports you can hand over</b><span>A PDF with averages and a trend, or CSV and JSON with units in every column.</span></li>
+          <li><b>Tests on a timer</b><span>Every 30 minutes, 2 hours or once a day, with a notice when quality drops.</span></li>
+          <li><b>Share a result</b><span>One link carries the whole result inside it, so it never passes through a server.</span></li>
+        </ul>
+        <p><a class="textlink" href="/features/">Everything MeterX does</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section close" id="install" data-sc-act="flow">
+    <div class="close-in" data-sc-in data-sc-stagger="70">
+      <h2 class="ask"><label for="speedInput">What can</label> <input id="speedInput" inputmode="decimal" value="300" autocomplete="off" aria-describedby="explainNote"> <span>Mbps do?</span></h2>
+      <ul class="answer-list clean card" id="explain" aria-live="polite"></ul>
+      <p class="small" id="explainNote">Counts use the extension's own rules: 25 Mbps for each 4K stream and 5 Mbps for HD.</p>
+      <div class="actions">
+        <a class="cta" href="/get/" data-install>Get MeterX, free</a>
+        <button class="ghost" id="qtRun" type="button">Measure this browser</button>
+      </div>
+      <p class="qt small" id="qtNote" aria-live="polite">A five second check from this page fills in your own speed. It uses up to 25 MB.</p>
+    </div>
+  </section>
+
+</main>
+<!-- footer -->
+<script src="/sc/scrollcraft.js"></script>
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>

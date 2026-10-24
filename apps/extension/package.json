@@ -1,0 +1,16 @@
+{
+  "name": "@meterx/extension",
+  "private": true,
+  "license": "AGPL-3.0",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "npx vitest run"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287"
+  },
+  "dependencies": {
+    "@meterx/reports": "*",
+    "@meterx/shared": "*"
+  }
+}

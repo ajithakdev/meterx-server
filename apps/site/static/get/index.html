@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get MeterX for your browser</title>
+<meta name="description" content="Install MeterX, the free open-source speed test, from Firefox Add-ons or Microsoft Edge Add-ons. Chrome, Opera, Safari and Firefox for Android are coming.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/get/">
+<meta property="og:title" content="Get MeterX">
+<meta property="og:description" content="Install MeterX, the free open-source speed test, from Firefox Add-ons or Microsoft Edge Add-ons. Chrome, Opera, Safari and Firefox for Android are coming.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://meterx.ajithakdev.com/get/">
+<meta property="og:site_name" content="MeterX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+<link rel="stylesheet" href="/styles/get.css">
+</head>
+<body class="site">
+<!-- header -->
+
+<main id="main" class="get">
+  <div class="get-layout">
+    <div class="dial-col">
+      <div class="get-hero">
+        <div class="dial" id="dial" aria-hidden="true">
+          <svg class="dial-arc" viewBox="0 0 200 200"><path d="M50.5 149.5A70 70 0 1 1 149.5 149.5" pathLength="100"/></svg>
+          <span class="needle" id="needle"></span>
+        </div>
+        <picture class="dial-mark"><source srcset="/img/glyph-on-dark.svg" media="(prefers-color-scheme: dark)"><img src="/img/glyph-on-light.svg" alt="" width="96" height="96"></picture>
+      </div>
+    </div>
+
+    <div class="get-side">
+      <div class="get-intro">
+        <h1>Get MeterX</h1>
+        <p class="lede" id="getLine">Free for every major browser. Pick yours.</p>
+        <a class="cta" id="getMain" href="#stores">Choose your browser</a>
+      </div>
+
+      <section id="stores" aria-labelledby="nowTitle">
+        <h2 id="nowTitle">Available now</h2>
+        <ul class="stores clean" id="storesNow"></ul>
+      </section>
+
+    </div>
+  </div>
+
+  <section class="section" id="next" aria-labelledby="nextTitle">
+    <div class="head"><h2 id="nextTitle">Coming next</h2><p class="lede">Where MeterX goes after this release. Every listing stays free.</p></div>
+    <ul class="stores clean soon grid" id="storesNext"></ul>
+  </section>
+</main>
+<!-- footer -->
+<script type="module" src="/js/get.js"></script>
+</body>
+</html>

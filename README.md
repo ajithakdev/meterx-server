@@ -1,117 +1,70 @@
 # MeterX
 
-Every link and how-to is in [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md).
+Links, accounts and how-tos: [RESOURCES-AND-GUIDE.md](RESOURCES-AND-GUIDE.md)
 
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![CI](https://github.com/ajithakdev/meterx-server/actions/workflows/ci.yml/badge.svg?branch=add/dev/2026.0.MAR.1)](https://github.com/ajithakdev/meterx-server/actions)
+MeterX is a free, open-source browser extension that tests your internet from the toolbar: download, upload, ping, jitter, packet loss and latency under load (bufferbloat). Results stay in your browser.
 
-Open-source speed test browser extension. Measures download, upload, ping, jitter, and packet loss from your toolbar — powered by Cloudflare's edge network.
+Website: [meterx.ajithakdev.com](https://meterx.ajithakdev.com)
 
-## Features
+## Install
 
-- **Full speed test** — download, upload, ping, jitter, packet loss
-- **Use-case readiness** — labels for Calls, Streaming, Gaming, Uploads
-- **Connection quality badge** — live rating on the extension icon
-- **PDF health report** — export a full network report as PDF
-- **Test history** — last 7 displayed, 200 stored locally
-- **Cloudflare edge** — serverless backend at 300+ PoPs worldwide
-- **Self-hostable server** — Express.js fallback for LAN or self-hosting
-- **Settings page** — configure custom server URL
-- **Animated UI** — progress steps, speed bars, smooth transitions
-- **No tracking, no accounts** — everything stays in your browser
+- Firefox: [addons.mozilla.org](https://addons.mozilla.org/firefox/addon/meterx-by-ajithakdev/)
+- Microsoft Edge: [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/glkpolbkpachomgmmhdkmjnghejbhlfc)
+- Opera: listing link coming soon
+- Chrome, Brave and Vivaldi: planned
 
-## Install from Source
+Or open [meterx.ajithakdev.com/get](https://meterx.ajithakdev.com/get/), which picks the store for your browser.
 
-```bash
-git clone https://github.com/ajithakdev/meterx-server.git
-cd meterx-server
-npm install
-npm run build
-```
+## What it does
 
-**Load the extension:**
-1. Go to `chrome://extensions` (or `edge://extensions`)
-2. Enable "Developer mode"
-3. Click "Load unpacked" and select `packages/extension/dist/`
+- A full test in about twenty seconds, with several parallel streams and the slow start trimmed.
+- Latency under load, graded from A to F, so you can see why calls stutter while something downloads.
+- A plain answer about what the connection is good enough for: calls, 4K streaming, gaming, uploads.
+- History of up to 200 results in the side panel, with a trend chart and a comparison with your ISP plan.
+- Scheduled tests with a notice when quality drops.
+- PDF reports, and CSV and JSON exports with units in every column.
+- Share links that carry the result inside the link, never through a server.
+- Tests against the nearest Cloudflare location, or against your own server.
 
-**Run the server locally (optional):**
-```bash
-npm start
-```
-
-## Architecture
+## Repository layout
 
 ```text
-meterx-server/
-  packages/
-    extension/        # Browser extension (TypeScript, Manifest V3, esbuild)
-      src/
-        background.ts     # Service worker — test orchestration
-        popup.ts          # Popup UI, history, PDF export
-      static/             # HTML, CSS, manifest, icons
-      build.mjs           # esbuild bundler
-
-    worker/           # Cloudflare Worker — primary backend (serverless)
-      src/index.ts        # Edge handler — download, upload, ping, health
-      wrangler.toml       # Wrangler config
-
-    server/           # Express.js server — self-host fallback
-      src/
-        app.ts            # Express app (routes, middleware)
-        server.ts         # Entry point
-        app.test.ts       # Vitest + supertest (8 tests)
+apps/extension     Manifest V3 extension (popup, side panel, settings, service worker)
+apps/site          meterx.ajithakdev.com, which runs the extension's own pages in demo mode
+services/worker    Cloudflare Worker, the default test server (stores nothing)
+services/server    Express server with the same API, for self-hosting
+packages/shared    types, API constants, version, quality rules, formatting, share links
+packages/reports   PDF, CSV and JSON builders
+brand/             logo and the script that makes every icon and store image
+scripts/           store packaging, local dev runner and the code map generator
 ```
 
-```text
-Browser Extension  -->  Cloudflare Worker (default, 300+ PoPs)
-                   -->  Express Server    (self-host / LAN fallback)
-```
-
-## Server Endpoints
-
-Both the worker and self-host server expose the same API:
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/ping` | GET/HEAD | Latency measurement |
-| `/test-file/:size` | GET | Download test (1, 5, 10, 25 MB) |
-| `/upload` | POST | Upload drain |
-| `/health` | GET | Health check (includes edge location on worker) |
-
-All endpoints are rate-limited. CORS restricted to browser extensions and configured origins.
+More detail in [CLAUDE.md](CLAUDE.md) and [docs/CODEMAP.md](docs/CODEMAP.md).
 
 ## Development
 
 ```bash
-npm install                              # Install all workspace deps
-npm run build                            # Build all packages
-npm start                                # Run self-host server
-npm test                                 # Run all tests
-cd packages/worker && npx wrangler dev   # Run worker locally
-npm run lint                             # ESLint
+git clone https://github.com/ajithakdev/meterx.git
+cd meterx
+npm install
+npm run build      # extension, site and server
+npm test
+npm run lint
+npm run dev:ext    # build the extension, run the test server on :8787
+npm run dev:site   # build and serve the site on :8788
+npm run package    # store uploads in release/
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
+To try the extension, open `chrome://extensions`, turn on Developer mode, choose Load unpacked and pick `apps/extension/dist/`. To test against your local worker, set Custom server to `http://localhost:8787` in MeterX settings. Rebuild with `npm run build -w @meterx/extension` and reload the extension after each change.
 
-## Tech Stack
-
-- **Extension:** TypeScript, Manifest V3, esbuild
-- **Worker:** Cloudflare Workers, TypeScript, Wrangler
-- **Server:** TypeScript, Express.js 5, esbuild
-- **Testing:** Vitest, supertest
-- **CI:** GitHub Actions
+To self-host the test server, run `npm start` (port 3000) or deploy `services/worker` to your own Cloudflare account. [CONTRIBUTING.md](CONTRIBUTING.md) has the rest.
 
 ## Privacy
 
-MeterX collects zero personal data. All results are stored locally in your browser. Network requests go only to the configured test server. See [privacy-policy.md](privacy-policy.md).
+MeterX collects no personal data. Results are stored in your browser, and the default test server keeps no logs. The full policy is at [meterx.ajithakdev.com/privacy](https://meterx.ajithakdev.com/privacy/).
 
 ## License
 
-[AGPL-3.0](LICENSE) — see [TRADEMARK.md](TRADEMARK.md) for brand usage policy.
+[AGPL-3.0](LICENSE). See [TRADEMARK.md](TRADEMARK.md) for the name and logo.
 
-## Author
-
-**Ajith Kumar K** ([@ajithakdev](https://github.com/ajithakdev))
-
-- GitHub: [github.com/ajithakdev](https://github.com/ajithakdev)
-- Email: ajithkumarks2579@gmail.com
+Made by Ajith Kumar K ([@ajithakdev](https://github.com/ajithakdev)).

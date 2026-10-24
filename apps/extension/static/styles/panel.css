@@ -1,0 +1,106 @@
+/* Side panel (usually 320-480px) and the same page opened in a tab. */
+
+.panel .wrap { max-width: 880px; margin: 0 auto; padding: 4px 16px 24px; }
+.panel .bar { position: sticky; top: 0; z-index: 5; background: var(--ground); }
+.panel .bar .btn { height: 32px; }
+.panel main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap); }
+
+.title-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.title-row > div { flex: 1 1 240px; min-width: 0; }
+.title-row h1 { font-size: var(--fs-title); line-height: 26px; font-weight: 600; letter-spacing: -0.01em; }
+.finding { margin-top: 4px; min-height: 40px; max-width: 60ch; }
+
+.tabs { display: flex; gap: 2px; padding: 2px; border-radius: var(--radius-control); background: var(--raised); }
+.tabs button {
+  height: 28px; padding: 0 10px; border: 0; border-radius: 4px; background: transparent; color: var(--muted);
+  font-size: var(--fs-small); font-weight: 500; cursor: pointer; white-space: nowrap;
+}
+.tabs button:hover { color: var(--text); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--text); }
+
+.strip { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); }
+.strip dd { font-size: 20px; }
+.strip .lead { font-size: 28px; line-height: 32px; color: var(--data); letter-spacing: -0.01em; }
+.strip dd { display: flex; align-items: baseline; min-height: 32px; }
+@media (max-width: 600px) {
+  .strip { grid-template-columns: 1fr 1fr; }
+  .strip > div:nth-child(3) { border-left: 0; }
+  .strip > div:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+}
+
+.legend { display: flex; gap: 12px; color: var(--muted); font-size: var(--fs-small); }
+.legend > * { display: inline-flex; align-items: center; gap: 6px; }
+.chart { min-height: 96px; }
+.empty {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+  min-height: 40px; padding: 8px 12px; border: 1px dashed var(--control); border-radius: var(--radius-card); color: var(--muted);
+}
+#chartEmpty { min-height: 96px; justify-content: center; text-align: center; }
+.link { color: var(--text); text-decoration: underline; }
+
+.plan-rows { display: grid; gap: 10px; }
+.plan-row .top { display: flex; justify-content: space-between; gap: 8px; }
+.plan-row .top b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.plan-row .bar-track { position: relative; height: 8px; margin-top: 6px; border-radius: 4px; background: var(--raised); }
+.plan-row .bar-track i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--text); }
+.plan-row.down .bar-track i { background: var(--data); }
+.plan-row .bar-track .target { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text); }
+.plan-row .share { margin-left: 6px; }
+.plan-row .share.is-low { color: var(--negative); }
+
+.results { width: 100%; border-collapse: collapse; }
+.results th { text-align: left; color: var(--muted); font-size: var(--fs-small); font-weight: 400; padding: 0 0 6px; }
+.results td { padding: 9px 0; border-top: 1px solid var(--rule); white-space: nowrap; }
+.results th + th, .results td + td { padding-left: 10px; }
+.results .num { text-align: right; font-variant-numeric: tabular-nums; }
+/* Equal number columns so the gaps between Down, Up and Ping match; When takes the rest. */
+.results th.num, .results td.num { width: 3.6em; }
+.results td.when { width: 100%; }
+.results td.when { color: var(--muted); }
+.results td.down { color: var(--data); font-weight: 500; }
+/* Status sits in the Results header, between the title and Export, so it never needs its own row. */
+.card-head .status { flex: 1; min-width: 0; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: var(--fs-small); }
+.status.is-error { color: var(--negative); }
+.card-head .menu { right: 0; top: calc(100% + 4px); }
+
+/* Narrowest panel (320px): tighter columns, and the table scrolls inside its card, never the page. */
+.results-body { overflow-x: auto; }
+@media (max-width: 360px) {
+  .results th + th, .results td + td { padding-left: 6px; }
+  .results td.when { font-size: var(--fs-small); }
+}
+
+/* Fit the window: everything stays in place and only the results list scrolls, under pinned column names.
+   Short windows (under 740px) fall back to scrolling the whole page. */
+@media (min-height: 740px) {
+  .panel .wrap { height: 100vh; display: flex; flex-direction: column; padding-bottom: 12px; }
+  .panel main { flex: 1; min-height: 0; gap: 10px; grid-template-rows: auto auto auto auto minmax(132px, 1fr); }
+  .results-card { display: flex; flex-direction: column; min-height: 0; }
+  .results-body { flex: 1; min-height: 0; overflow-y: auto; padding-top: 0; margin-top: 10px; }
+  /* No padding above the pinned names, or rows show through the gap while scrolling. */
+  .panel .card-body.results-body { padding-top: 0; }
+  .results thead th { position: sticky; top: 0; z-index: 1; background: var(--surface); padding-top: 4px; box-shadow: 0 1px 0 var(--rule); }
+}
+
+/* Thin scrollbars in the theme's colours instead of the platform's grey bars. */
+* { scrollbar-width: thin; scrollbar-color: var(--control) transparent; }
+
+/* Compact cells so the results list keeps room in a typical side panel. */
+.panel .strip > div { padding: 8px 12px; }
+.panel .card-head .btn { height: 28px; margin: -4px -8px -4px 0; }
+
+/* Live test: the header gets a progress line and the summary card shows the running figures in place. */
+.panel .bar { position: sticky; }
+.live-track { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--raised); visibility: hidden; overflow: hidden; }
+.live-track i { display: block; height: 100%; width: 0; background: var(--data); }
+.panel.is-running .live-track { visibility: visible; }
+.panel.is-running .strip { border-color: var(--data); }
+
+/* Short panels: tighter cards so the results list keeps a few rows in view. */
+@media (max-height: 900px) {
+  .panel main { gap: 8px; }
+  .panel .card-head { padding-top: 10px; }
+  .panel .card-body { padding: 8px var(--pad) 10px; }
+  .panel .strip .lead { font-size: 24px; line-height: 28px; }
+  .panel .strip dd { min-height: 28px; }
+}

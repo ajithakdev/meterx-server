@@ -1,0 +1,18 @@
+name = "meterx-speedtest"
+main = "src/index.ts"
+compatibility_date = "2025-03-14"
+
+# Per-IP limit so one script can't use up the free plan's daily request quota (#79).
+# One test makes about 150 requests; 400 per minute leaves room for shared (CGNAT) IPs.
+# Counts are per Cloudflare location and approximate.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "2027"
+
+  [ratelimits.simple]
+  limit = 400
+  period = 60
+
+# No request logs: the privacy policy promises none (#92).
+[observability]
+enabled = false

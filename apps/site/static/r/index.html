@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A MeterX speed test result</title>
+<meta name="description" content="A speed test result shared from MeterX, the open-source speed test for your browser toolbar.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="A MeterX speed test result">
+<meta property="og:description" content="A speed test result shared from MeterX, the open-source speed test for your browser toolbar.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<!-- header -->
+
+<main id="main" class="doc">
+  <div id="result" hidden>
+    <div class="page-head"><h1>A speed test result</h1><p class="lede" id="when"></p><p class="small" id="where"></p></div>
+    <div class="body">
+      <div class="card frame" data-ui style="aspect-ratio:auto;max-width:560px">
+        <div class="row"><span class="label">Download</span><span id="quality" class="pill">Quality</span></div>
+        <div><span class="fig" id="down">-</span><span class="unit">Mbps</span></div>
+        <dl class="strip card">
+          <div><dt>Upload</dt><dd><span id="up">-</span><span class="unit">Mbps</span></dd></div>
+          <div><dt>Ping</dt><dd><span id="ping">-</span><span class="unit">ms</span></dd></div>
+          <div><dt>Jitter</dt><dd><span id="jitter">-</span><span class="unit">ms</span></dd></div>
+          <div><dt>Loss</dt><dd><span id="loss">-</span><span class="unit">%</span></dd></div>
+        </dl>
+        <span id="grade" class="pill"></span>
+      </div>
+      <h2>Measured with MeterX</h2>
+      <p>MeterX is a free, open-source browser extension that tests your connection from the toolbar and keeps your results private.</p>
+      <p style="margin-top:24px"><a class="cta" href="/#install" data-install>Get MeterX, free</a></p>
+    </div>
+  </div>
+  <div id="empty">
+    <div class="page-head"><h1>No result in this link</h1><p class="lede">This page shows results shared from MeterX. The link you opened has no result in it, or it was cut short.</p></div>
+    <div class="body"><p><a class="cta" href="/">See what MeterX does</a></p></div>
+  </div>
+</main>
+<!-- footer -->
+<script type="module" src="/js/share.js"></script>
+</body>
+</html>

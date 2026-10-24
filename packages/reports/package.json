@@ -1,0 +1,18 @@
+{
+  "name": "@meterx/reports",
+  "private": true,
+  "license": "AGPL-3.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@meterx/shared": "*",
+    "jspdf": "^4.2.1"
+  }
+}

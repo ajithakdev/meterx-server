@@ -29,3 +29,10 @@ Thumbs.db
 
 # graphify knowledge graph (local)
 graphify-out/
+
+# taste-skill working files (local)
+.taste-skill/
+packages/site/dist/
+release/
+.dev/
+.wrangler/

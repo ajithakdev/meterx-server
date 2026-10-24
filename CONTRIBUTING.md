@@ -5,8 +5,8 @@ Here's how to get set up and contribute.
 ## Dev Setup
 
 ```bash
-git clone https://github.com/ajithakdev/meterx-server.git
-cd meterx-server
+git clone https://github.com/ajithakdev/meterx.git
+cd meterx
 npm install
 npm run build
 ```
@@ -16,14 +16,14 @@ npm run build
 1. Go to `chrome://extensions` (or `edge://extensions`)
 2. Enable "Developer mode"
 3. Click "Load unpacked"
-4. Select `packages/extension/dist/`
+4. Select `apps/extension/dist/`
 
 Rebuild with `npm run build` after changes, then hit reload on the extensions page.
 
 ## Run the Worker Locally
 
 ```bash
-cd packages/worker
+cd services/worker
 npx wrangler dev
 ```
 
@@ -40,11 +40,15 @@ Starts the Express.js self-host server. Useful for LAN testing or when you don't
 ## Project Structure
 
 ```text
-packages/
-  extension/    # Browser extension (TypeScript, Manifest V3, esbuild)
-  worker/       # Cloudflare Worker — primary serverless backend
-  server/       # Express.js server — self-host fallback
+apps/extension     Browser extension (TypeScript, Manifest V3, esbuild)
+apps/site          meterx.ajithakdev.com
+services/worker    Cloudflare Worker, the default test server
+services/server    Express server, for self-hosting
+packages/shared    Types, API constants and rules every part shares
+packages/reports   PDF, CSV and JSON builders
 ```
+
+The full map is in [docs/CODEMAP.md](docs/CODEMAP.md).
 
 ## Commands
 
@@ -57,12 +61,12 @@ packages/
 | `npm run lint` | ESLint check |
 | `npm run lint:fix` | Auto-fix lint issues |
 | `npm -w @meterx/server run test` | Run server tests only |
-| `cd packages/worker && npx wrangler dev` | Run worker locally |
-| `cd packages/worker && npx wrangler deploy` | Deploy worker to Cloudflare |
+| `cd services/worker && npx wrangler dev` | Run worker locally |
+| `cd services/worker && npx wrangler deploy` | Deploy worker to Cloudflare |
 
 ## Code Style
 
-- TypeScript everywhere — no plain JS
+- TypeScript everywhere, no plain JS
 - ESLint with strict rules, run `npm run lint` before committing
 - Prefix unused parameters with `_`
 - Keep functions short and focused
@@ -73,7 +77,7 @@ packages/
 
 1. Fork the repo, branch from `main`
 2. Make your changes
-3. Run `npm run lint && npm run build && npm test` — all must pass
+3. Run `npm run lint && npm run build && npm test`: all must pass
 4. Open a PR with a clear description of what changed and why
 5. One approval required to merge
 

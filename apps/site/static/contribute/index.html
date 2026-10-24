@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contribute to MeterX</title>
+<meta name="description" content="MeterX is open source. Pick an issue for newcomers, run it locally in four steps, and join the people who build it.">
+<link rel="canonical" href="https://meterx.ajithakdev.com/contribute/">
+<meta property="og:title" content="Contribute to MeterX">
+<meta property="og:description" content="Open source, AGPL-3.0. Issues for newcomers, a four step setup, and everyone who has contributed.">
+<meta property="og:image" content="https://meterx.ajithakdev.com/img/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://meterx.ajithakdev.com/contribute/">
+<meta property="og:site_name" content="MeterX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/img/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles/app.css">
+<link rel="stylesheet" href="/styles/site.css">
+</head>
+<body class="site">
+<!-- header -->
+<main id="main">
+  <div class="page-head" data-enter>
+    <h1>Build MeterX with us</h1>
+    <p class="lede">MeterX is open source and made in the open. Fixes, ideas, translations, docs and design are all welcome, and small first steps are marked for you.</p>
+  </div>
+
+  <section class="section">
+    <dl class="stats" id="stats">
+      <div><dt>Stars</dt><dd><a id="stStars" href="https://github.com/ajithakdev/meterx/stargazers">See</a></dd></div>
+      <div><dt>Forks</dt><dd><a id="stForks" href="https://github.com/ajithakdev/meterx/forks">See</a></dd></div>
+      <div><dt>Open issues</dt><dd><a id="stIssues" href="https://github.com/ajithakdev/meterx/issues">See</a></dd></div>
+      <div><dt>License</dt><dd>AGPL-3.0</dd></div>
+    </dl>
+  </section>
+
+  <section class="section" aria-labelledby="issuesTitle">
+    <div class="row-head">
+      <div class="head">
+        <h2 id="issuesTitle">Good places to start</h2>
+        <p class="lede">Issues marked <b>good first issue</b> are small and well described. <b>Help wanted</b> means the owner would love a hand.</p>
+      </div>
+      <a class="cta" href="https://github.com/ajithakdev/meterx/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22help+wanted%22">See every open one</a>
+    </div>
+    <div>
+      <ul class="issues clean" id="issues">
+        <li class="empty"><a href="https://github.com/ajithakdev/meterx/issues?q=is%3Aopen+label%3A%22good+first+issue%22">Open issues for newcomers on GitHub</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="start" aria-labelledby="startTitle">
+    <div class="head"><h2 id="startTitle">From zero to a pull request</h2></div>
+    <ol class="steps how-steps clean">
+      <li><span class="step-n">Fork and clone</span><p>Fork <a class="textlink" href="https://github.com/ajithakdev/meterx">ajithakdev/meterx</a>, then <code>git clone</code> your fork and run <code>npm install</code>.</p></li>
+      <li><span class="step-n">Build and load</span><p><code>npm run build</code>, then load <code>apps/extension/dist/</code> as an unpacked extension in Chrome, Edge or Firefox.</p></li>
+      <li><span class="step-n">Change and check</span><p>Make the change on a branch. <code>npm test</code> and <code>npm run lint</code> must pass.</p></li>
+      <li><span class="step-n">Open a pull request</span><p>Say what changed and why, and link the issue. Small pull requests get reviewed fastest.</p></li>
+    </ol>
+    <p class="small" style="margin-top:24px">The full guide, with the repo layout and every command, is in <a class="textlink" href="https://github.com/ajithakdev/meterx/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+  </section>
+
+  <section class="section" aria-labelledby="peopleTitle">
+    <div class="head"><h2 id="peopleTitle">The people who build it</h2><p class="lede">Everyone with a merged change, straight from GitHub.</p></div>
+    <ul class="people clean" id="people">
+      <li class="empty"><a class="textlink" href="https://github.com/ajithakdev/meterx/graphs/contributors">See the contributors on GitHub</a></li>
+    </ul>
+  </section>
+
+  <section class="section" aria-labelledby="otherTitle">
+    <div class="head"><h2 id="otherTitle">Not a coder?</h2></div>
+    <ul class="facts clean two">
+      <li><b>Report a bug</b><span>Something looks or measures wrong? <a class="textlink" href="https://github.com/ajithakdev/meterx/issues/new">Open an issue</a> with your browser and what you saw.</span></li>
+      <li><b>Suggest an idea</b><span>Missing a feature? Describe the problem it solves in a new issue.</span></li>
+      <li><b>Translate</b><span>MeterX is English only today. Translations are tracked under the <a class="textlink" href="https://github.com/ajithakdev/meterx/labels/i18n">i18n label</a>.</span></li>
+      <li><b>Spread the word</b><span>Share <a class="textlink" href="/get/">meterx.ajithakdev.com/get</a>, or leave a review on your browser's store.</span></li>
+    </ul>
+  </section>
+</main>
+<!-- footer -->
+<script type="module" src="/js/contribute.js"></script>
+</body>
+</html>
