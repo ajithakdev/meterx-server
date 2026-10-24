@@ -66,7 +66,7 @@ The full map is in [docs/CODEMAP.md](docs/CODEMAP.md).
 
 ## Code Style
 
-- TypeScript everywhere — no plain JS
+- TypeScript everywhere, no plain JS
 - ESLint with strict rules, run `npm run lint` before committing
 - Prefix unused parameters with `_`
 - Keep functions short and focused
@@ -77,7 +77,7 @@ The full map is in [docs/CODEMAP.md](docs/CODEMAP.md).
 
 1. Fork the repo, branch from `main`
 2. Make your changes
-3. Run `npm run lint && npm run build && npm test` — all must pass
+3. Run `npm run lint && npm run build && npm test`: all must pass
 4. Open a PR with a clear description of what changed and why
 5. One approval required to merge
 
