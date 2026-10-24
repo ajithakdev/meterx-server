@@ -48,12 +48,12 @@ To point the extension at a self-hosted server, click the settings gear icon in 
 | Install dependencies | `npm install` |
 | Build all packages | `npm run build` |
 | Run Express server | `npm start` |
-| Run Worker locally | `cd packages/worker && npx wrangler dev` |
+| Run Worker locally | `cd services/worker && npx wrangler dev` |
 | Run tests | `npm test` |
 | Lint codebase | `npm run lint` |
-| Load unpacked extension | Open `chrome://extensions`, enable Developer mode, and load `packages/extension/dist/` |
-| Package extension zip | `cd packages/extension/dist && zip -r ../../../meterx-extension.zip .` |
-| Deploy Worker | `cd packages/worker && npx wrangler deploy` |
+| Load unpacked extension | Open `chrome://extensions`, enable Developer mode, and load `apps/extension/dist/` |
+| Package extension zip | `cd apps/extension/dist && zip -r ../../../meterx-extension.zip .` |
+| Deploy Worker | `cd services/worker && npx wrangler deploy` |
 
 ## When something goes wrong
 

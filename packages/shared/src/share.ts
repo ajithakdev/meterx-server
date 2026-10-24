@@ -1,6 +1,6 @@
 /**
  * Share links: the result is base64url JSON in the URL fragment, so it never
- * reaches a server. The viewer lives at SHARE_VIEWER (packages/site/public/r/).
+ * reaches a server. The viewer lives at SHARE_VIEWER (apps/site/public/r/).
  * @license AGPL-3.0
  */
 

@@ -16,7 +16,7 @@ popup.html / sidepanel.html / options.html      (extension pages)
                                                        │ fetch
                     ┌──────────────────────────────────┴───────────┐
                     ▼                                              ▼
-   packages/worker (Cloudflare Worker, default)     packages/server (Express, self-host)
+   services/worker (Cloudflare Worker, default)     services/server (Express, self-host)
    /ping /test-file/:n MB.bin /upload /health /ip   same routes, rate limited
 ```
 
@@ -42,15 +42,15 @@ popup.html / sidepanel.html / options.html      (extension pages)
 
 | File | Notes |
 |---|---|
-| `package.json` | npm workspaces `packages/*`. Scripts: `build`, `test`, `lint`, `start` (Express from `packages/server/dist`). |
+| `package.json` | npm workspaces `packages/*`. Scripts: `build`, `test`, `lint`, `start` (Express from `services/server/dist`). |
 | `eslint.config.js` | Flat config for extension TS, build scripts, server TS, CSS and Markdown. Worker and shared are not covered (#86). |
-| `.github/workflows/ci.yml` | One `check` job on Node 22: lint, `tsc` for server and extension, build, test, then zips `packages/extension/dist` on pushes to `main`. |
+| `.github/workflows/ci.yml` | One `check` job on Node 22: lint, `tsc` for server and extension, build, test, then zips `apps/extension/dist` on pushes to `main`. |
 | `.github/dependabot.yml` | Grouped monthly updates. |
 | `RESOURCES-AND-GUIDE.md` | Links, accounts, how-tos. |
 | `CHANGELOG.md`, `README.md`, `CONTRIBUTING.md`, `privacy-policy.md`, `TRADEMARK.md` | Human docs. Several are out of date (#90, #91, #92). |
 | `.junie/guidelines.md` | Stale, describes the pre-monorepo layout (#93). |
 
-### packages/extension
+### apps/extension
 
 | File | Exports / role | Notes |
 |---|---|---|
@@ -73,14 +73,14 @@ popup.html / sidepanel.html / options.html      (extension pages)
 | `static/*.html`, `static/*.css` | Pages and styles | `popup.css` (556) is the largest. |
 | `vitest.config.mjs` | Tests in `src/**/*.test.ts` | |
 
-### packages/worker
+### services/worker
 
 | File | Notes |
 |---|---|
 | `src/index.ts` (220) | Default-export `fetch`. `corsHeaders` (19), `getEdgeLocation` from `cf.colo` (41), `streamBinaryData` 64 KB chunks (50), handlers for download (72), upload (91, drains body), ping (119), ip (137), health (158). No rate limit (#79). |
 | `wrangler.toml` | Name `meterx-speedtest`, observability on. |
 
-### packages/server
+### services/server
 
 | File | Notes |
 |---|---|
@@ -99,6 +99,6 @@ popup.html / sidepanel.html / options.html      (extension pages)
 
 | Package | Files | Run one |
 |---|---|---|
-| extension | `format`, `quality`, `share` (21 tests) | `cd packages/extension && npx vitest run src/quality.test.ts` |
-| server | `app.test.ts` (10 tests) | `cd packages/server && npx vitest run src/app.test.ts` |
+| extension | `format`, `quality`, `share` (21 tests) | `cd apps/extension && npx vitest run src/quality.test.ts` |
+| server | `app.test.ts` (10 tests) | `cd services/server && npx vitest run src/app.test.ts` |
 | worker, shared | none | (#86) |

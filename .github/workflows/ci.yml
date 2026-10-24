@@ -35,10 +35,10 @@ jobs:
         run: npm run lint
 
       - name: Type check server
-        run: cd packages/server && npx tsc --noEmit
+        run: cd services/server && npx tsc --noEmit
 
       - name: Type check extension
-        run: cd packages/extension && npx tsc --noEmit
+        run: cd apps/extension && npx tsc --noEmit
 
       - name: Build
         run: npm run build
@@ -48,7 +48,7 @@ jobs:
 
       - name: Package extension
         if: github.event_name != 'pull_request'
-        run: cd packages/extension/dist && zip -r ../../../meterx-extension.zip .
+        run: cd apps/extension/dist && zip -r ../../../meterx-extension.zip .
 
       - name: Upload extension
         if: github.event_name != 'pull_request'

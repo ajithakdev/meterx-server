@@ -32,7 +32,7 @@ npm run build
 **Load the extension:**
 1. Go to `chrome://extensions` (or `edge://extensions`)
 2. Enable "Developer mode"
-3. Click "Load unpacked" and select `packages/extension/dist/`
+3. Click "Load unpacked" and select `apps/extension/dist/`
 
 **Run the server locally (optional):**
 ```bash
@@ -87,7 +87,7 @@ npm install                              # Install all workspace deps
 npm run build                            # Build all packages
 npm start                                # Run self-host server
 npm test                                 # Run all tests
-cd packages/worker && npx wrangler dev   # Run worker locally
+cd services/worker && npx wrangler dev   # Run worker locally
 npm run lint                             # ESLint
 ```
 

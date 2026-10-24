@@ -11,7 +11,7 @@ export default defineConfig([
   },
   // Extension TypeScript - browser globals
   {
-    files: ["packages/extension/src/**/*.ts"],
+    files: ["apps/extension/src/**/*.ts"],
     plugins: { js, "@typescript-eslint": tseslint.plugin },
     languageOptions: {
       ecmaVersion: 2022,
@@ -32,7 +32,7 @@ export default defineConfig([
   },
   // Extension build scripts
   {
-    files: ["packages/extension/**/*.mjs"],
+    files: ["apps/extension/**/*.mjs"],
     plugins: { js },
     languageOptions: {
       ecmaVersion: 2022,
@@ -43,7 +43,7 @@ export default defineConfig([
   },
   // Server TypeScript - node globals
   {
-    files: ["packages/server/src/**/*.ts"],
+    files: ["services/server/src/**/*.ts"],
     plugins: { js, "@typescript-eslint": tseslint.plugin },
     languageOptions: {
       ecmaVersion: 2022,
@@ -67,7 +67,7 @@ export default defineConfig([
   },
   // CSS
   {
-    files: ["packages/extension/**/*.css"],
+    files: ["apps/extension/**/*.css"],
     plugins: { css },
     language: "css/css",
     extends: ["css/recommended"]

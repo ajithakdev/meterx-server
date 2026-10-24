@@ -16,14 +16,14 @@ npm run build
 1. Go to `chrome://extensions` (or `edge://extensions`)
 2. Enable "Developer mode"
 3. Click "Load unpacked"
-4. Select `packages/extension/dist/`
+4. Select `apps/extension/dist/`
 
 Rebuild with `npm run build` after changes, then hit reload on the extensions page.
 
 ## Run the Worker Locally
 
 ```bash
-cd packages/worker
+cd services/worker
 npx wrangler dev
 ```
 
@@ -57,8 +57,8 @@ packages/
 | `npm run lint` | ESLint check |
 | `npm run lint:fix` | Auto-fix lint issues |
 | `npm -w @meterx/server run test` | Run server tests only |
-| `cd packages/worker && npx wrangler dev` | Run worker locally |
-| `cd packages/worker && npx wrangler deploy` | Deploy worker to Cloudflare |
+| `cd services/worker && npx wrangler dev` | Run worker locally |
+| `cd services/worker && npx wrangler deploy` | Deploy worker to Cloudflare |
 
 ## Code Style
 

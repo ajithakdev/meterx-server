@@ -13,15 +13,15 @@ Done on the branch:
 - Exports redesigned: vector PDF (watermark, Report ID), CSV and JSON with units and a summary.
 - One version source (root `package.json`, stamped into the manifest at build). No em or en dashes anywhere.
 - Logo chosen: option 8, "X on a dial". `brand/build.mjs` makes every asset (icons, maskable, Edge 300 logo, 440x280 tile, 1400x560 marquee, OG and GitHub cards, five 1280x800 store screenshots) and copies icons into the extension and site. Alternates kept in `brand/alternates/` (rising bars, up/down X).
-- Site `packages/site` (plan in `docs/SITE-PLAN.md`): home with live quick test, "What can X Mbps do", features with real screenshots, pinned test phases, install, FAQ; plus `/about`, `/privacy` (rewritten for #92), `/r/` share viewer (#74), `/get`, 404. Taste-skill inspector: 0 FAIL at 1440, 768, 390 (warnings: font-size count, no video).
+- Site `apps/site` (plan in `docs/SITE-PLAN.md`): home with live quick test, "What can X Mbps do", features with real screenshots, pinned test phases, install, FAQ; plus `/about`, `/privacy` (rewritten for #92), `/r/` share viewer (#74), `/get`, 404. Taste-skill inspector: 0 FAIL at 1440, 768, 390 (warnings: font-size count, no video).
 - Worker CORS allows the site origin; quality rules moved to `@meterx/shared`.
 
 Home page redesigned 2026-10-24 after owner feedback: centred 1120px column, hero with headline, two actions and the real popup screenshot, quick test as a secondary button with its result on a reserved line (no layout shift, checked at 1440 and 390), full-width feature rows, one proportional phase bar with four steps. Waiting for the owner's review.
 
 Next, in order:
-1. Owner checks the site locally: `cd packages/site && node build.mjs && npx wrangler pages dev dist` (or any static server on `dist`).
-2. Fill the Edge and Opera listing URLs in `packages/site/src/stores.ts` (and the names on the home page).
-3. Look at the phone renders of the site once more (`.taste-skill/inspect/mobile-*.jpg`, rerun the inspector from `packages/site/dist`); add a motion pass if needed.
+1. Owner checks the site locally: `cd apps/site && node build.mjs && npx wrangler pages dev dist` (or any static server on `dist`).
+2. Fill the Edge and Opera listing URLs in `apps/site/src/stores.ts` (and the names on the home page).
+3. Look at the phone renders of the site once more (`.taste-skill/inspect/mobile-*.jpg`, rerun the inspector from `apps/site/dist`); add a motion pass if needed.
 4. Cloudflare Pages: create project `meterx-site` (free), `npm run deploy -w @meterx/site`, add custom domain `meterx.ajithakdev.com`. Write `docs/SEO.md`, add site rows to `RESOURCES-AND-GUIDE.md`.
 5. Verify the scan's bug fixes against their issues (#60, #64 to #70, #73, #76 to #79, #81, #82, #85) and close them; check #61, #62, #63, #80, #87.
 6. Firefox build check, README refresh (it is stale), open the PR, then on Sunday: merge on the owner's word, tag `v2027.0.0`, `wrangler deploy` the worker, upload to the stores with the `brand/png/store/` images, deploy the site, add MeterX to the portfolio.

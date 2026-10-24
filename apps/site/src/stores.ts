@@ -7,7 +7,7 @@ export type StoreId = 'firefox' | 'edge' | 'opera' | 'chrome';
 
 export const STORES: Record<StoreId, { name: string; url: string }> = {
     firefox: { name: 'Firefox', url: 'https://addons.mozilla.org/firefox/addon/meterx-by-ajithakdev/' },
-    edge: { name: 'Edge', url: '' }, // shortcut: fill in from the Edge Add-ons listing
+    edge: { name: 'Edge', url: 'https://microsoftedge.microsoft.com/addons/detail/glkpolbkpachomgmmhdkmjnghejbhlfc' },
     opera: { name: 'Opera', url: '' }, // shortcut: fill in from the Opera Add-ons listing
     chrome: { name: 'Chrome', url: '' }, // not listed yet
 };

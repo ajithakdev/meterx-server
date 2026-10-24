@@ -42,7 +42,7 @@ const SVG = {
 for (const [name, body] of Object.entries(SVG)) writeFileSync(out('svg', name), body);
 
 const uri = s => `data:image/svg+xml;base64,${Buffer.from(s).toString('base64')}`;
-const font = readFileSync(resolve(root, 'packages/extension/static/fonts/Geist-Variable.woff2')).toString('base64');
+const font = readFileSync(resolve(root, 'apps/extension/static/fonts/Geist-Variable.woff2')).toString('base64');
 const page = (w, h, bg, body, css = '') => `<!doctype html><meta charset="utf-8"><style>
 @font-face{font-family:Geist;src:url(data:font/woff2;base64,${font}) format("woff2");font-weight:100 900}
 *{margin:0;box-sizing:border-box}html,body{width:${w}px;height:${h}px;overflow:hidden}body{background:${bg};font-family:Geist,sans-serif;-webkit-font-smoothing:antialiased}${css}</style>${body}`;
@@ -73,7 +73,7 @@ await render(lockup('dark'), 1200, 400, 'png/lockup-on-dark.png');
 await render(lockup('light'), 1200, 400, 'png/lockup-on-light.png');
 
 // --- Real interface captures from the built extension, with sample results (a 300/100 plan, a week of tests).
-const dist = resolve(root, 'packages/extension/dist');
+const dist = resolve(root, 'apps/extension/dist');
 const now = Date.now() - 30 * 60e3;
 let seed = 11;
 const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -147,10 +147,10 @@ for (const [i, [file, title, line]] of shots.entries()) {
 await browser.close();
 
 // --- Copy into the extension and the site.
-const ext = resolve(root, 'packages/extension/static/images');
+const ext = resolve(root, 'apps/extension/static/images');
 mkdirSync(ext, { recursive: true });
 for (const s of [16, 32, 48, 128]) copyFileSync(out(`png/icons/icon-${s}.png`), resolve(ext, `icon-${s}.png`));
-const site = resolve(root, 'packages/site/static/img');
+const site = resolve(root, 'apps/site/static/img');
 mkdirSync(site, { recursive: true });
 copyFileSync(out('svg/mark.svg'), resolve(site, 'mark.svg'));
 copyFileSync(out('png/icons/icon-32.png'), resolve(site, 'icon-32.png'));

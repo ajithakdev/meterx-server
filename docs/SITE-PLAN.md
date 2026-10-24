@@ -27,8 +27,8 @@ It follows the pattern of `toolglass.ajithakdev.com` and `minnoli.ajithakdev.com
 
 ## Hosting and build
 
-- **Hosting:** Cloudflare Pages on the free plan, connected to this repo, building `packages/site`. DNS for `ajithakdev.com` is already on Cloudflare, so the custom domain is one CNAME. It costs nothing and has no bandwidth charge. Vercel Hobby (used by minnoli) works too, but Cloudflare keeps the site next to the worker in one account.
-- **Builds:** only when `packages/site/**` or `packages/shared/**` changes (Pages build watch paths), so extension commits do not use the 500 builds a month.
+- **Hosting:** Cloudflare Pages on the free plan, connected to this repo, building `apps/site`. DNS for `ajithakdev.com` is already on Cloudflare, so the custom domain is one CNAME. It costs nothing and has no bandwidth charge. Vercel Hobby (used by minnoli) works too, but Cloudflare keeps the site next to the worker in one account.
+- **Builds:** only when `apps/site/**` or `packages/shared/**` changes (Pages build watch paths), so extension commits do not use the 500 builds a month.
 - **Stack:** plain HTML and CSS with a little TypeScript bundled by esbuild, the same tool the extension uses. No framework. The site imports `@meterx/shared` for share links, quality rules and use-case thresholds, so the page and the extension can never disagree.
 - **Releases:** the site deploys from `main` like minnoli. It changes rarely, and a page fix should not wait for Sunday.
 - **SEO:** `docs/SEO.md` (required for every site repo): titles and descriptions per route, Open Graph card, sitemap, robots, canonical URLs, Search Console and Bing Webmaster Tools set-up, and a release checklist.
@@ -89,7 +89,7 @@ Store sizes change; check each store's upload page before exporting. Opera's lis
 ## Order of work
 
 1. Pick the logo, then make the icon set and swap it into the extension.
-2. `packages/site` skeleton, tokens shared with the extension's `app.css`, Cloudflare Pages project and DNS.
+2. `apps/site` skeleton, tokens shared with the extension's `app.css`, Cloudflare Pages project and DNS.
 3. `/privacy` and `/r/` first: the stores and the extension's share button need them before 2027.0.0 ships.
 4. `/` hero with the live quick test, then the other sections, then `/about` and `/get`.
 5. Store screenshots and banners from the finished UI; OG card and social preview.
